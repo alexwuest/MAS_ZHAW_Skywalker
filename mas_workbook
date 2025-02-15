@@ -42,4 +42,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> print(django.get_version())
 5.1.6
 
+# As all documentation always use "pyton" as command but my mac only accepts "python3" as command
+# I created an Symlink for python
+sudo ln -s /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 /usr/local/bin/python
+
+# But i thought that is not the right approach as this is a static way and it probably needs to be updated regularly so i found the possibly of a Dynamic Symlink.
+sudo ln -sf /Library/Frameworks/Python.framework/Versions/Current/bin/python3 /usr/local/bin/python
+
+# I started with the first Django project
+
 # Now i'm ready to work with Django, Python
