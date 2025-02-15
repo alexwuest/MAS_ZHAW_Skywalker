@@ -54,3 +54,8 @@ sudo ln -sf /Library/Frameworks/Python.framework/Versions/Current/bin/python3 /u
 python manage.py runserver
 
 # Now i'm ready to work with Django, Python
+# Some notices to handle django db's
+
+#Change your models (in models.py).
+python manage.py makemigrations #to create migrations for those changes
+python manage.py migrate #to apply those changes to the database.
