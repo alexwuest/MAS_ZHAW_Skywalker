@@ -1,0 +1,45 @@
+############################################################################################################
+## Here i will write down my history. The steps for an easier understanding of the process.
+############################################################################################################
+
+################################
+## Starting February 2025
+################################
+# Searched for a setting how to achieve the goal to route all traffic from mobiles trough a Firewall where all traffic will natively be dropped. 
+# The idea is to not develop the firewall logic / software by myself so i looked for reliable software firewall solutions. I finally compared OPNsense and pfSense.
+# I found that OPNSense is more user friendly and has a better UI. I decided to go with OPNSense.
+# The idea is to route all traffic trough a hardware where the OPNSense Firewall is installed. Before there will be a WLAN Access Point
+
+################################
+## Buying the hardware Firewall
+################################
+# With Protectli i found a company located in Europe which offers hardware firewalls with ONSense installed. Ordered 09.02.2025 // 284.55€
+# V1410 - 32GB RAM, 250GB SSD, 4x Intel NICs, 2x USB 3.0, 1x HDMI, 1x COM, 1x VGA, 1x Power Supply
+
+################################
+## Buying the Access Point
+################################
+# TP-Link Omada EAP610GP-DESKTOP WLAN Access Point 1201. Ordered 12.02.2025 // 93.90 CHF
+
+################################
+## 15.02.2025
+################################
+# Checked the actual Python version on the notebook no update needed :-)
+wunderli@MacBook-Air-von-Alex ~ % python3 --version
+Python 3.13.1
+# Setup the GitHub (mas) Private Repository for the project
+# Created this mas_workbook.md file and made the first entries
+
+# Worked trough the django documentation to get a better understanding of the framework
+# Installed Django 5.1.6
+python3 -m pip install Django==5.1.6
+
+# Verfied does the actual Django version is accessible from python
+wunderli@MacBook-Air-von-Alex ~ % python3 
+Python 3.13.1 (v3.13.1:06714517797, Dec  3 2024, 14:00:22) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import django
+>>> print(django.get_version())
+5.1.6
+
+# Now i'm ready to work with Django, Python
