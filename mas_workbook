@@ -50,5 +50,7 @@ sudo ln -s /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 /usr/l
 sudo ln -sf /Library/Frameworks/Python.framework/Versions/Current/bin/python3 /usr/local/bin/python
 
 # I started with the first Django project
+# Django has an built in webserver for development purposes it can be started with the following command
+python manage.py runserver
 
 # Now i'm ready to work with Django, Python
