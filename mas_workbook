@@ -59,3 +59,22 @@ python manage.py runserver
 #Change your models (in models.py).
 python manage.py makemigrations #to create migrations for those changes
 python manage.py migrate #to apply those changes to the database.
+
+################################
+## 25.02.2025 - 12.02.2025
+################################
+# Went on holiday and spent a bunch of time programming on another project for Stadtpolizei Zurich.
+# I learned a lot and i'm ready to continue with the python firewall project.
+
+################################
+## 14.03.2025
+################################
+# I moved the setting to my cellar and started to install the hardware firewall and the access point.
+# I had troubles with the setup last time as i'm in my office behind some hardware i don't want to change the settings.
+# Now the Firewall is up and running and i'm able to access the web interface. It is directly connected to my Router
+# In the OPNSense Firewall i just plugged in a WLAN Router and configured it as an Access Point.
+
+# Configuration of the Firewall
+# All traffic within the LAN_net to the Firewall is allowed to always be able to access the webgui. This is the main rule.
+# The last rule i added is a block all traffic rule. So no traffic within the network and also no traffic out of the network is allowed. Also no inbound traffic is allowed.
+# The aim for today is to get access to the API and be able to configure firewall settings via the API and if possible to get the logs especially the blocked traffic.
