@@ -78,3 +78,82 @@ python manage.py migrate #to apply those changes to the database.
 # All traffic within the LAN_net to the Firewall is allowed to always be able to access the webgui. This is the main rule.
 # The last rule i added is a block all traffic rule. So no traffic within the network and also no traffic out of the network is allowed. Also no inbound traffic is allowed.
 # The aim for today is to get access to the API and be able to configure firewall settings via the API and if possible to get the logs especially the blocked traffic.
+# I was able to get the firewall rules which were before made by the api... not the other rules but i think that will be ok as all rules will be made by the API.
+# I was not able to retrieve the logs via the API. It seems that is not supported yet. I tried to get the logs by ssh so i can parse them and use them in the program. 
+
+ssh root@192.168.5.1
+/var/log/filter/latest.log
+
+# One entry looks like this
+<134>1 2025-03-14T16:16:55+00:00 OPNsense.localdomain filterlog 36886 - [meta sequenceId="2631"] 69,,,1eb94a38e58994641aff378c21d5984f,igc1,match,block,in,4,0x0,,64,32149,0,DF,17,udp,32,192.168.1.14,255.255.255.255,3000,2000,12
+
+ChatGPT:
+A UDP packet was blocked by the firewall.
+The packet came from 192.168.1.14 (inside the LAN).
+The destination was 255.255.255.255 (a broadcast message).
+The source port was 3000, and the destination port was 2000.
+The firewall blocked this packet on the igc1 interface (likely LAN).
+The rule that blocked it has ID 69.
+
+# The next idea is now to get all connected devices to the firewall. Get IP and MAC address and make a list of all devices.
+# After i want to give fixed ip addresses to the devices to keep them always on the same ip address. And keep management easier. As all logfiles will not have any mac address entries. Probably it make sense to have a bigger address area like 255.255.0.0/16. I expect not more than 100 devices in the network during one year and the inspection period is probably just a few weeks so after the case is closed the ip address could be released again.
+
+################################
+## 15.03.2025
+################################
+
+# Connected today my iphone to the wlan network the first time. I knew that the iphone has by default the option to change the mac address regularly. But it connected also twice to the network with different ip addresses and different mac addresses at the same time. Ok i was wrong... that was my apple watch which just a few seconds after joined the wlan as well. I deleted the leases on the firewall and the iphone yet did not change the mac address. Actually it is 02:89:49:2b:5c:f2. However as we block all devices on unknown devices that will not be a problem. If the mac address changes we need to add a new mac address. My idea is now to have the Asservate Nr. as centralized ID. To add a list with mac addresses to it to identify the devices. However i need to make sure no other device has the same mac address and need to make sure that the mac address is also in relation to the time when it was active. So if there is another mac address which is the same i hope it will not be in the same time frame.
+
+#Some API Feedbacks
+
+{"total":4,"rowCount":4,"current":1,"rows":
+ 
+ [{"address":"192.168.5.101","starts":"2025\/03\/15 07:11:57","ends":"2025\/03\/16 07:11:57","tstp":1742109117,"cltt":1742022717,"binding":"active","uid":"\\001\\330D\\211wVH","client-hostname":"EAP610GP-Desktop-D8-44-89-77-56-48","type":"dynamic","status":"online","descr":"","mac":"d8:44:89:77:56:48","hostname":"EAP610GP-Desktop-D8-44-89-77-56-48","state":"active","man":"TP-LINK CORPORATION PTE. LTD.","if":"lan","if_descr":"LAN"},
+  
+  {"address":"192.168.5.103","starts":"2025\/03\/15 07:21:59","ends":"2025\/04\/14 07:21:59","tstp":1744615319,"cltt":1742023319,"binding":"active","uid":"\\001\\262\\254\\034a\\216\\021","type":"dynamic","status":"online","descr":"","mac":"b2:ac:1c:61:8e:11","hostname":"","state":"active","man":"","if":"lan","if_descr":"LAN"},
+  
+  {"address":"192.168.5.155","starts":"2025\/03\/15 07:22:06","ends":"2025\/04\/14 07:22:06","tstp":1744615326,"cltt":1742023326,"binding":"active","uid":"\\001P\\246\\330\\256f\\220","client-hostname":"Air-von-Alex","type":"dynamic","status":"online","descr":"","mac":"50:a6:d8:ae:66:90","hostname":"Air-von-Alex","state":"active","man":"Apple, Inc.","if":"lan","if_descr":"LAN"},
+  
+  {"address":"192.168.5.156","starts":"2025\/03\/15 07:07:58","ends":"2025\/04\/14 07:07:58","tstp":1744614478,"cltt":1742022478,"binding":"active","uid":"\\001\\002\\211I+\\\\\\362","type":"dynamic","status":"online","descr":"","mac":"02:89:49:2b:5c:f2","hostname":"","state":"active","man":"","if":"lan","if_descr":"LAN"}],"interfaces":{"lan":"LAN"}}
+
+# Feedback for a specific block...
+
+{"rulenr":"81","subrulenr":"","anchorname":"","rid":"b9f1d749b2037601dc5e6d1798e9faf2","interface":"igc0","reason":"match","action":"block","dir":"in","ipversion":"4","tos":"0x0","ecn":"","ttl":"64","id":"0","offset":"0","ipflags":"DF","protonum":"6","protoname":"tcp","length":"64","src":"192.168.5.156","dst":"17.248.209.68","srcport":"61102","dstport":"443","datalen":"0","tcpflags":"S","seq":"2973452762","ack":"","urp":"0","tcpopts":"","__timestamp__":"2025-03-15T14:41:18","__host__":"OPNsense.localdomain","__digest__":"8b127b564bf8acdfa90234321b703846","__spec__":["rulenr","subrulenr","anchorname","rid","interface","reason","action","dir","ipversion","tos","ecn","ttl","id","offset","ipflags","protonum","protoname","length","src","dst","srcport","dstport","datalen","tcpflags","seq","ack","urp","tcpopts"],"label":"BLOCK all LAN communication and internet traffic"},
+
+# Some IP addresses when opening the heise app on my mobilephone
+New Unique IPs: {'116.203.25.165', '159.69.45.25', '91.215.100.40', '185.54.150.27', '193.99.144.85', '159.69.145.0', '78.46.198.121'}
+
+# Had a great day. I wanted to now just accept traffic to a specific app. Web Apps seem to be a bit hard as i don't really want to accept Apple traffic. So i tried it with WhatsApp and Telegram. Not really a great success. I was able to get the IP addresses but the traffic is still blocked. I think i need to allow the traffic to the IP addresses. When i accept one ip the next is coming i have to allow and so one... For whatsapp after 8 ip addresses i gave up, the app is still not connected. I also added some CDN to the allow list.
+# 
+#157.240.17.61 -> whatsapp-chatd-edge-shv-01-zrh1.facebook.com
+#157.240.0.61 -> whatsapp-chatd-edge-shv-02-fra3.facebook.com
+#31.13.88.61 -> whatsapp-chatd-edge-shv-02-atl3.facebook.com
+#157.240.11.54 -> whatsapp-chatd-edge-shv-02-lax3.facebook.com
+#15.197.206.217 -> ac9293e5fb5d2d1d2.awsglobalaccelerator.com
+#80.67.82.201 -> a80-67-82-201.deploy.static.akamaitechnologies.com
+#173.222.108.248 -> a173-222-108-248.deploy.static.akamaitechnologies.com
+#3.33.221.48 -> a66e5b8d30b652954.awsglobalaccelerator.com
+#
+# I need to look if i can make rules based on dns names...
+#
+#
+#Remove all rules and connecting the mobile again with the wlan
+#Already seen:
+{'4.153.25.42', '52.97.201.242', '17.167.200.10', '49.12.196.20', '17.253.57.216', '172.224.55.13', '23.10.249.161', '17.188.143.126', '17.248.209.66', '17.253.57.206', '17.253.57.218', '17.248.209.64', '20.190.177.85', '17.253.57.199', '17.248.209.68', '17.248.209.67', '17.188.143.157', '172.224.55.7', '17.253.57.209', '20.190.147.7', '17.188.143.187', '17.188.143.189', '52.97.232.194', '40.99.201.210', '17.253.57.195', '17.253.57.202', '172.224.55.9', '194.56.36.112', '20.190.177.149', '17.188.179.2', '17.248.209.70', '17.253.57.196', '23.0.174.10', '172.224.55.3', '20.190.147.5', '172.224.55.12', '20.44.10.123', '172.224.55.5', '92.123.27.145', '17.57.172.5', '17.253.57.204', '17.248.209.69', '17.188.178.226', '2.21.22.154', '172.224.55.10', '17.248.209.65', '74.125.128.108', '20.190.147.10', '52.97.201.194', '172.224.55.6', '17.248.209.74', '20.190.177.21', '17.253.57.207', '23.0.174.16', '52.98.168.178', '40.99.201.194', '40.99.217.50', '20.190.147.2', '17.253.57.208', '52.97.232.210', '194.56.36.100', '17.188.178.2', '74.125.128.109', '20.190.177.84', '17.188.179.34', '2.21.22.160', '17.248.209.71', '17.253.57.200', '17.253.57.213', '172.224.55.8', '172.224.55.4', '23.0.174.9', '146.75.119.6', '20.42.73.27', '172.224.55.11', '17.253.57.214', '17.188.178.34', '17.188.143.125', '92.123.27.144', '17.248.209.72'}
+# That are the ip addresses which are called just after joining the wlan...
+#
+# I see many entries like this:
+# akamaitechnologies.com #CDN one of the biggest CDN providers
+# aaplimg.com #Apple CDN
+#
+# Ok finaly i was not able to get any app online. I have now added all ip's which were blocked before and added a pass rule. I have now 158 ip's added with a regular iphone setting and i wanted just to open the swiss sbb app. So the iphone called 158 ips without any open app and with just opening the sbb app. I also added in the configuration as dns server 8.8.8.8 and also give the traffic to its destination free. I have also added a request for playing a sound when my iphone goes online by find my iphone... during the whole test my iphone was not ringging :p.
+# As soon i add a firewall rule to allow all traffic from my phone to any it works... it also played the sound.
+#
+#
+# Hours later... i tried to reboot the firewall and it worked. I could get access to the apps. Still quite restricted but it worked out! I need to figure out what the problem is as i'm already killing the states and it does not work as expected.
+#
+################################
+## 16.03.2025
+################################
+# A point i have completly ignored yet is the Apple Private Relay. As i use a Apple iPhone i made some light research and found out does the Private Relay is deeper implementet in the system as i first tought. It is not just the Safari which is affected it is also regular web traffic made by apps if implemented. So i will make some tests today to see if this is the case for apps. If so I probably need to deactivate the Private Relay in the future to keep that traffic sorted. As in our use case we will have pysical access to the device and we will be able to deactivate Private Relay.
+# Again i tested to get access after giving ip's for traffic free to sbb app or telegram. It worked after i restarted the firewall. Still not quite sure how i can cancel the connections so it needs to make a new connection with a pass firewall rule. I will make some tests today to see if i can find a solution for that.
