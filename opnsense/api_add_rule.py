@@ -55,8 +55,10 @@ def add_firewall_rule(ip_source, ip_destination):
 
         if response.status_code == 200:
             print(f"✅ Rule added for {ip_destination}")
+            return True
         else:
             print(f"❌ Error adding rule for {ip_destination}: {response.status_code} - {response.text}")
+            return False
 
     except requests.RequestException as e:
         print(f"⚠️ Network error: {e}")
@@ -68,14 +70,14 @@ def check_rule_exists(ip_source, ip_destination):
     response = requests.post(apply_url, auth=(API_KEY, API_SECRET), verify="certificate_crt.pem")
 
     if response.status_code == 200:
-        rules = response.json().get("rule", [])
+        rules = response.json().get("rows", [])
     
         for rule in rules:
-            uuid = rule.get("uuid")
+            uuid = rule.get("uuid", "")
             description = rule.get("description", "")
             if ip_destination in description:
                 if ip_source in description:
-                    print(f"IP Address already exists in the firewall rules: {uuid}")       
+                    print(f"❌ IP Address already exists in the firewall rules: {uuid}")       
                     return True
                 
         return False # If no IP address found
@@ -100,14 +102,16 @@ if __name__ == "__main__":
     while True:
         ip_destination_input = input("Enter the destination IP addresses (separate multiple with commas): ")
         ip_destinations = [ip.strip() for ip in ip_destination_input.split(",")]
-
+        
+        rules_added = False
+        
         for ip in ip_destinations:
             if check_rule_exists(ip_source, ip):
                 continue
             else:
-                add_firewall_rule(ip_source, ip)
+                if add_firewall_rule(ip_source, ip):
+                    rules_added = True
         
-        time.sleep(5)
-        #kill_states(ip_source)
-        #print(f"Killing states for the source IP {ip_source}")
-        apply_firewall_changes()
+        if rules_added:
+            time.sleep(5)
+            apply_firewall_changes()

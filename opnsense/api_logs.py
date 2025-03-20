@@ -48,7 +48,6 @@ def filter_blocked_logs(logs, search_address=None):
             log for log in filtered_logs 
             if log.get("src", "") == search_address or log.get("dst", "") == search_address
         ]
-
     return filtered_logs
 
 
@@ -59,6 +58,23 @@ def reverse_dns_lookup(ip):
         return hostname
     except socket.herror:
         return None  # No DNS record found
+    
+
+def get_ip_api(ip):
+    url = f"http://ip-api.com/json/{ip}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        country = data.get("country", "N/A")
+        city = data.get("city", "N/A")
+        zip = data.get("zip", "N/A")
+        isp = data.get("isp", "N/A")
+        org = data.get("org", "N/A")
+        response_as = data.get("as", "N/A")
+        return org, response_as, isp, zip, city, country
+
+    else:
+        return False
 
 
 def parse_logs(search_address=None):
@@ -88,12 +104,35 @@ def parse_logs(search_address=None):
 
             for ip in new_ips:
                 dns_name = reverse_dns_lookup(ip)
-                resolved_ips[ip] = dns_name if dns_name else "No DNS found"
 
+                # DNS Entry to IP
+                resolved_ips[ip] = {"dns_name": dns_name if dns_name else "No DNS found"}
+
+                ip_api_data = get_ip_api(ip)
+                
+                if ip_api_data is False:
+                    resolved_ips[ip]["org"] = "❌ Error fetching ip-api.com - too many requests? Max 45 per 60 seconds"
+                else:
+                    org, response_as, isp, zip, city, country = ip_api_data
+                    resolved_ips[ip].update({
+                        "org": org,
+                        "response_as": response_as,
+                        "isp": isp,
+                        "zip": zip,
+                        "city": city,
+                        "country": country
+                    })
+            
             timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
-            print(f"\n{timestamp} New Unique IPs with DNS Resolution:")
-            for ip, dns_name in resolved_ips.items():
-                print(f"{ip} -> {dns_name}")
+                     
+            print(f"\n{timestamp} New Unique IP with Lookups:")
+            for ip, data in resolved_ips.items():
+                print(f"🌐 {ip}".ljust(20) +
+                      f"{data.get('org', 'N/A'):<35} " +
+                      f"{data.get('response_as', 'N/A'):<55} " +
+                      f"{data.get('isp', 'N/A'):<45} " +
+                      f"{data.get('zip', 'N/A'):<5} {data.get('city', 'N/A'):<20}{data.get('country', 'N/A'):<15} " +
+                      f"{data.get('dns_name', 'N/A')}")
 
             # Print all IPs in a single line, comma-separated
             ip_list = ",".join(resolved_ips.keys())
@@ -118,9 +157,3 @@ if __name__ == "__main__":
         timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
         print(f"\n{timestamp} Already seen:")
         print(",".join(config.UNIQUE_IPS))
-
-
-
-
-
-
