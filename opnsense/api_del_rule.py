@@ -53,14 +53,14 @@ def fetch_and_delete_firewall_rules(search_string):
         print("ERROR: No firewall rules found.")
         return
 
-    print("\nDeleted Firewall Rules")
+    print("\nDelete Firewall Rules:")
     for rule in rules:
         uuid = rule.get("uuid")
         details = get_rule_details(uuid)
 
         if details:
             description = rule.get("description", "No description")
-            if description == search_string + " automatically added rule":
+            if search_string in description:
                 del_rule = requests.post(f"{DEL_RULE_ENDPOINT}/{uuid}", auth=HTTPBasicAuth(API_KEY, API_SECRET), verify="certificate_crt.pem")
                 if del_rule.status_code == 200:
                     print(f"✅ SUCCESS: Deleted rule {uuid}")

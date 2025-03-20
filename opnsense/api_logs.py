@@ -94,8 +94,12 @@ def parse_logs(search_address=None):
             print(f"\n{timestamp} New Unique IPs with DNS Resolution:")
             for ip, dns_name in resolved_ips.items():
                 print(f"{ip} -> {dns_name}")
+
+            # Print all IPs in a single line, comma-separated
+            ip_list = ",".join(resolved_ips.keys())
+            print(f"\nNew ip addresses:\n{ip_list}")
         
-        time.sleep(10)  # Wait for the next batch
+        time.sleep(5)  # Wait for the next batch
 
 
 def start_log_parser(search_address=None):

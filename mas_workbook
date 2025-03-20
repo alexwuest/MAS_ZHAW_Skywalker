@@ -157,3 +157,25 @@ New Unique IPs: {'116.203.25.165', '159.69.45.25', '91.215.100.40', '185.54.150.
 ################################
 # A point i have completly ignored yet is the Apple Private Relay. As i use a Apple iPhone i made some light research and found out does the Private Relay is deeper implementet in the system as i first tought. It is not just the Safari which is affected it is also regular web traffic made by apps if implemented. So i will make some tests today to see if this is the case for apps. If so I probably need to deactivate the Private Relay in the future to keep that traffic sorted. As in our use case we will have pysical access to the device and we will be able to deactivate Private Relay.
 # Again i tested to get access after giving ip's for traffic free to sbb app or telegram. It worked after i restarted the firewall. Still not quite sure how i can cancel the connections so it needs to make a new connection with a pass firewall rule. I will make some tests today to see if i can find a solution for that.
+#
+################################
+## 20.03.2025
+################################
+# I have now the option how to set the firewall rules and add it right away.
+apply_url = f'{OPNSENSE_IP}/api/firewall/filter/apply'
+# This API Endpoint gives the opportunity to add the filters right away.
+# First tests looked good! Some times i just had to wait in the app sometimes i had to restart the app and it worked.
+
+# Today i want to make two test runs:
+# -> Close all apps on my iphone
+# -> Bluetooth off
+# -> WLAN off
+# -> Reboot the device
+# -> Connect the device to the WLAN
+# -> Wait 10 minutes and collect all requested ip addresses
+#
+# Once with activated Private Relay and once with deactivated Private Relay
+# 
+# RUN 1: Private Relay activated
+
+# RUN 2: Private Relay deactivated

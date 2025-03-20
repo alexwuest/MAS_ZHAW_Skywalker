@@ -28,48 +28,6 @@ OPNSENSE_IP = os.getenv("OPNSENSE_IP")
 # API Endpoints
 ADD_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/addRule"
 
-def kill_states(ip_source):
-    """Kills firewall states for a specific source IP."""
-    url = f"{OPNSENSE_IP}/api/diagnostics/firewall/killstates"
-    payload = {"source": ip_source}
-    
-    response = requests.post(url, json=payload, auth=HTTPBasicAuth(API_KEY, API_SECRET), verify="certificate_crt.pem")
-
-    if response.status_code == 200:
-        print(f"Successfully killed states for {ip_source}")
-    else:
-        print(f"Error {response.status_code}: {response.text}")
-
-
-def send_opnsense_command(endpoint):
-    """Send an API call to OPNsense."""
-    url = f"{OPNSENSE_IP}{endpoint}"
-    try:
-        response = requests.post(
-            url,
-            auth=HTTPBasicAuth(API_KEY, API_SECRET),
-            headers={"Content-Type": "application/json"},
-            verify="certificate_crt.pem"
-        )
-        if response.status_code == 200:
-            print(f"✅ Command executed successfully: {endpoint}")
-        else:
-            print(f"❌ Error executing {endpoint}: {response.status_code} - {response.text}")
-    except requests.RequestException as e:
-        print(f"⚠️ Network error: {e}")
-
-def apply_firewall_changes():
-    """Automate firewall rules reload, state flush, and service restart."""
-    print("🧹 Flushing old sources...")
-    send_opnsense_command("/api/diagnostics/firewall/flushSources")
-
-    print("🧹 Flushing old connection states...")
-    send_opnsense_command("/api/diagnostics/firewall/flushStates")
-
-    print("🚀 Restarting firewall service...")
-    send_opnsense_command("/api/service/restart?service=pf")
-
-
 def add_firewall_rule(ip_source, ip_destination):
     """Send API request to add a firewall rule allowing traffic from the given IP."""
     
@@ -82,7 +40,7 @@ def add_firewall_rule(ip_source, ip_destination):
             "protocol": "any",
             "source_net": ip_source,
             "destination_net": ip_destination,
-            "description": ip_source + " automatically added rule" # If change made here, also change in api_del_rule.py
+            "description": ip_source + " automatically added rule to " + ip_destination # If change made here, also change in api_del_rule.py
         }
     }
 
@@ -103,17 +61,53 @@ def add_firewall_rule(ip_source, ip_destination):
     except requests.RequestException as e:
         print(f"⚠️ Network error: {e}")
 
+
+def check_rule_exists(ip_source, ip_destination):
+    """Check if a firewall rule exists for the given IP."""
+    apply_url = f'{OPNSENSE_IP}/api/firewall/filter/searchRule'
+    response = requests.post(apply_url, auth=(API_KEY, API_SECRET), verify="certificate_crt.pem")
+
+    if response.status_code == 200:
+        rules = response.json().get("rule", [])
+    
+        for rule in rules:
+            uuid = rule.get("uuid")
+            description = rule.get("description", "")
+            if ip_destination in description:
+                if ip_source in description:
+                    print(f"IP Address already exists in the firewall rules: {uuid}")       
+                    return True
+                
+        return False # If no IP address found
+
+    else:
+        print(f"ERROR fetching rules: {response.status_code} - {response.text}")
+        return None
+
+
+def apply_firewall_changes():
+    apply_url = f'{OPNSENSE_IP}/api/firewall/filter/apply'
+    response = requests.post(apply_url, auth=(API_KEY, API_SECRET), verify="certificate_crt.pem")
+
+    if response.status_code == 200:
+        print('Firewall rules applied.')
+    else:
+        print(f'Error applying firewall rules: {response.text}')
+
 if __name__ == "__main__":
 
     ip_source = input("Enter the source IP address: ")
+    while True:
+        ip_destination_input = input("Enter the destination IP addresses (separate multiple with commas): ")
+        ip_destinations = [ip.strip() for ip in ip_destination_input.split(",")]
 
-    ip_destination_input = input("Enter the destination IP addresses (separate multiple with commas): ")
-    ip_destinations = [ip.strip() for ip in ip_destination_input.split(",")]
-
-    for ip in ip_destinations:
-        add_firewall_rule(ip_source, ip)
-    
-    time.sleep(5)
-    print(f"Killing states for the source IP {ip_source}")
-    kill_states(ip_source)
-    apply_firewall_changes()
+        for ip in ip_destinations:
+            if check_rule_exists(ip_source, ip):
+                continue
+            else:
+                add_firewall_rule(ip_source, ip)
+        
+        time.sleep(5)
+        #kill_states(ip_source)
+        #print(f"Killing states for the source IP {ip_source}")
+        apply_firewall_changes()
