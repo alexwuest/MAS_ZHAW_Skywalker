@@ -60,21 +60,102 @@ def reverse_dns_lookup(ip):
         return None  # No DNS record found
     
 
-def get_ip_api(ip):
+def get_ip_api(ip, retry=False):
     url = f"http://ip-api.com/json/{ip}"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        country = data.get("country", "N/A")
-        city = data.get("city", "N/A")
-        zip = data.get("zip", "N/A")
-        isp = data.get("isp", "N/A")
+
         org = data.get("org", "N/A")
         response_as = data.get("as", "N/A")
-        return org, response_as, isp, zip, city, country
+        isp = data.get("isp", "N/A")
+        zip_code = data.get("zip", "N/A")  # Renamed `zip` to `zip_code` to avoid conflicts
+        city = data.get("city", "N/A")
+        country = data.get("country", "N/A")
+
+        config.IP_TABLE[ip].update({
+            "org": org,
+            "response_as": response_as,
+            "isp": isp,
+            "zip": zip_code,
+            "city": city,
+            "country": country,
+            "console_first_output": False
+        })
+        return True
 
     else:
-        return False
+        if not retry:
+            print(f"❌ Failed to fetch data for {ip}. Retrying in 45 seconds...")
+            time.sleep(45)
+            return get_ip_api(ip, retry=True)
+        else:
+            print(f"❌ Failed again for {ip}. No more retries.")
+            return False
+
+
+def get_ips_company(value):
+    if value == "new":
+        unique_isps = set()
+        for ip, data in config.IP_TABLE.items():
+            console_first_output = data.get('console_first_output', False)
+            if not console_first_output:
+                isp = data.get('isp', 'N/A')
+                unique_isps.add(isp)
+
+        unique_isps = {isp for isp in unique_isps if isp is not None}
+
+        for isp in sorted(unique_isps):  
+            print_overview_new(isp)  
+
+    elif value == "all":
+        unique_isps = set()
+        for ip, data in config.IP_TABLE.items():
+            isp = data.get('isp', 'N/A')
+            unique_isps.add(isp)
+
+        unique_isps = {isp for isp in unique_isps if isp is not None}
+
+        for isp in sorted(unique_isps):  
+            print_overview(isp)  
+
+
+def print_overview_new(company):
+    timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
+    unique_ip_list = []
+    print(f"\n{timestamp} NEW unique ip addresses by company:")
+    for ip, data in config.IP_TABLE.items():
+        isp = data.get('isp')
+        console_first_output = data.get('console_first_output')
+        if isp == company and console_first_output == False:
+            print(f"🌐 {ip}".ljust(20) +
+                    f"{data.get('response_as', 'N/A'):<55} " +
+                    f"{data.get('isp', 'N/A'):<45} " +
+                    f"{data.get('zip', 'N/A'):<5} {data.get('city', 'N/A'):<20}{data.get('country', 'N/A'):<15} " +
+                    f"{data.get('dns_name', 'N/A')}")
+            data.update({"console_first_output": True})
+            unique_ip_list.append(ip)
+    
+    if unique_ip_list:
+        print(",".join(unique_ip_list))
+
+
+def print_overview(company):
+    timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
+    unique_ip_list = []
+    print(f"\n{timestamp} OVERVIEW unique ip addresses by company:")
+    for ip, data in config.IP_TABLE.items():
+        isp = data.get('isp')
+        if isp == company:
+            print(f"🌐 {ip}".ljust(20) +
+                    f"{data.get('response_as', 'N/A'):<55} " +
+                    f"{data.get('isp', 'N/A'):<45} " +
+                    f"{data.get('zip', 'N/A'):<5} {data.get('city', 'N/A'):<20}{data.get('country', 'N/A'):<15} " +
+                    f"{data.get('dns_name', 'N/A')}")
+            unique_ip_list.append(ip)
+    
+    if unique_ip_list:
+        print(",".join(unique_ip_list))
 
 
 def parse_logs(search_address=None):
@@ -94,51 +175,28 @@ def parse_logs(search_address=None):
                 seen_logs.add(log_entry)
 
             destination = log.get('dst')
-            if destination and destination not in config.UNIQUE_IPS:
+            if destination and destination not in config.IP_TABLE:
                 new_ips.add(destination)
 
         # Resolve DNS for new IPs
         if new_ips:
-            config.UNIQUE_IPS.update(new_ips)
-            resolved_ips = {}
-
-            for ip in new_ips:
-                dns_name = reverse_dns_lookup(ip)
-
-                # DNS Entry to IP
-                resolved_ips[ip] = {"dns_name": dns_name if dns_name else "No DNS found"}
-
-                ip_api_data = get_ip_api(ip)
-                
-                if ip_api_data is False:
-                    resolved_ips[ip]["org"] = "❌ Error fetching ip-api.com - too many requests? Max 45 per 60 seconds"
-                else:
-                    org, response_as, isp, zip, city, country = ip_api_data
-                    resolved_ips[ip].update({
-                        "org": org,
-                        "response_as": response_as,
-                        "isp": isp,
-                        "zip": zip,
-                        "city": city,
-                        "country": country
-                    })
+            config.IP_TABLE.update({ip: {} for ip in new_ips})
             
-            timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
-                     
-            print(f"\n{timestamp} New Unique IP with Lookups:")
-            for ip, data in resolved_ips.items():
-                print(f"🌐 {ip}".ljust(20) +
-                      f"{data.get('org', 'N/A'):<35} " +
-                      f"{data.get('response_as', 'N/A'):<55} " +
-                      f"{data.get('isp', 'N/A'):<45} " +
-                      f"{data.get('zip', 'N/A'):<5} {data.get('city', 'N/A'):<20}{data.get('country', 'N/A'):<15} " +
-                      f"{data.get('dns_name', 'N/A')}")
+        for ip in new_ips:
+            if ip not in config.IP_TABLE:
+                config.IP_TABLE[ip] = {}
 
-            # Print all IPs in a single line, comma-separated
-            ip_list = ",".join(resolved_ips.keys())
-            print(f"\nNew ip addresses:\n{ip_list}")
+            dns_name = reverse_dns_lookup(ip)
+            dns_name = dns_name if dns_name else "N/A"
+
+            config.IP_TABLE[ip].update({"dns_name": dns_name})
+
+            ip_api_data = get_ip_api(ip)
+                            
+            if ip_api_data is False:
+                config.IP_TABLE[ip]["org"] = "❌ Error fetching ip-api.com - too many requests? Max 45 per 60 seconds"
         
-        time.sleep(5)  # Wait for the next batch
+        time.sleep(5)
 
 
 def start_log_parser(search_address=None):
@@ -153,7 +211,30 @@ if __name__ == "__main__":
     start_log_parser(search_address) if search_address else start_log_parser()
 
     while True:
-        time.sleep(60)
-        timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
-        print(f"\n{timestamp} Already seen:")
-        print(",".join(config.UNIQUE_IPS))
+        for iteration in range(0, 6):
+            get_ips_company("new")
+            time.sleep(10)
+        print("")
+        print(100*"#")
+        print(40*" " + "OVERVIEW ABOUT ALL IPS")
+        print(100*"#")
+        get_ips_company("all")
+        print("")
+        print(100*"#")
+        time.sleep(10)
+
+        #time.sleep(60)
+        #timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
+        #print(f"\n{timestamp} Already seen:")
+        #print(",".join(config.IP_TABLE))
+
+        time.sleep(10)
+        #print(50*"#")
+        #print("Print the global variable:")
+        #for ip, data in config.IP_TABLE.items():
+        #    print(f"🌐 {ip}".ljust(20) +
+        #        f"{data.get('org', 'N/A'):<40} " +
+        #        f"{data.get('response_as', 'N/A'):<55} " +
+        #        f"{data.get('isp', 'N/A'):<45} " +
+        #        f"{data.get('zip', 'N/A'):<5} {data.get('city', 'N/A'):<20}{data.get('country', 'N/A'):<15} " +
+        #        f"{data.get('dns_name', 'N/A')}")

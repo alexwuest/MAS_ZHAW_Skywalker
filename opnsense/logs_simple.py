@@ -7,7 +7,7 @@ search_address = input("Enter IP address to filter logs (optional): ")
 
 while True:
     # Clear the set to avoid accumulating old results
-    config.UNIQUE_IPS.clear()
+    config.IP_TABLE.clear()
 
     # Run the log parsing function
     if search_address:
@@ -19,5 +19,5 @@ while True:
     time.sleep(10)
 
     # Print unique IPs after each cycle
-    print(config.UNIQUE_IPS)
+    print(config.IP_TABLE)
 

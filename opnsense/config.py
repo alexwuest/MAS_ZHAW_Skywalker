@@ -1,1 +1,1 @@
-UNIQUE_IPS = set()
+IP_TABLE = {}

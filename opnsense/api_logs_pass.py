@@ -78,12 +78,12 @@ def parse_logs(search_address=None):
                 seen_logs.add(log_entry)
 
             destination = log.get('dst')
-            if destination and destination not in config.UNIQUE_IPS:
+            if destination and destination not in config.IP_TABLE:
                 new_ips.add(destination)
 
         # Resolve DNS for new IPs
         if new_ips:
-            config.UNIQUE_IPS.update(new_ips)
+            config.IP_TABLE.update(new_ips)
             resolved_ips = {}
 
             for ip in new_ips:
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         time.sleep(60)
         timestamp = datetime.now().strftime("%H:%M:%S %d.%m.%Y")
         print(f"\n{timestamp} Already seen:")
-        print(config.UNIQUE_IPS)
+        print(config.IP_TABLE)
 
 
 
