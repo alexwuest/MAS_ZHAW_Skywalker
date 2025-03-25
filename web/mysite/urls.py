@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rules.views import view_firewall_logs
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("logs/", view_firewall_logs, name="view_logs"),
 ]

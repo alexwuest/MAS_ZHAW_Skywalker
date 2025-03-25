@@ -3,19 +3,29 @@ import os
 import time
 import threading
 import socket
-from datetime import datetime
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
+from pathlib import Path
+from django.utils import timezone
 
-import config
+from .models import FirewallLog, DestinationMetadata
+from django.utils.dateparse import parse_datetime
+from . import config
 
-# .env file with API_KEY, API_SECRET, and OPNSENSE_IP
+# Load .env file
 load_dotenv()
+
+# Get the absolute path to this script's directory
+BASE_DIR = Path(__file__).resolve().parent
+
+CERT_PATH = BASE_DIR / "certificate_crt.pem"
 
 # Store the variable from the .env file in the script
 API_KEY = os.getenv("API_KEY")
 API_SECRET = os.getenv("API_SECRET")
 OPNSENSE_IP = os.getenv("OPNSENSE_IP")
+
+print("Loaded OPNSENSE_IP:", OPNSENSE_IP)
 
 # API Endpoints
 LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
@@ -23,7 +33,7 @@ LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
 def get_firewall_logs():
     """Fetch firewall logs from OPNsense API."""
     try:
-        response = requests.get(LOGS_ENDPOINT, auth=HTTPBasicAuth(API_KEY, API_SECRET), verify="certificate_crt.pem")
+        response = requests.get(LOGS_ENDPOINT, auth=HTTPBasicAuth(API_KEY, API_SECRET), verify=CERT_PATH)
 
         if response.status_code == 200:
             logs = response.json()
@@ -62,36 +72,53 @@ def reverse_dns_lookup(ip):
 
 def get_ip_api(ip, retry=False):
     url = f"http://ip-api.com/json/{ip}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("status") != "success":
+                print(f"⚠️ IP lookup failed: {data}")
+                return None
 
-        org = data.get("org", "N/A")
-        response_as = data.get("as", "N/A")
-        isp = data.get("isp", "N/A")
-        zip_code = data.get("zip", "N/A")  # Renamed `zip` to `zip_code` to avoid conflicts
-        city = data.get("city", "N/A")
-        country = data.get("country", "N/A")
-
-        config.IP_TABLE[ip].update({
-            "org": org,
-            "response_as": response_as,
-            "isp": isp,
-            "zip": zip_code,
-            "city": city,
-            "country": country,
-            "console_first_output": False
-        })
-        return True
-
-    else:
-        if not retry:
-            print(f"❌ Failed to fetch data for {ip}. Retrying in 45 seconds...")
-            time.sleep(45)
-            return get_ip_api(ip, retry=True)
+            config.IP_TABLE[ip].update({
+                "dns_name": reverse_dns_lookup(ip) or "N/A",
+                "status": data.get("status"),
+                "continent": data.get("continent"),
+                "continent_code": data.get("continentCode"),
+                "country": data.get("country"),
+                "country_code": data.get("countryCode"),
+                "region": data.get("region"),
+                "region_name": data.get("regionName"),
+                "city": data.get("city"),
+                "district": data.get("district"),
+                "zip_code": data.get("zip"),
+                "lat": data.get("lat"),
+                "lon": data.get("lon"),
+                "timezone": data.get("timezone"),
+                "offset": data.get("offset"),
+                "currency": data.get("currency"),
+                "isp": data.get("isp"),
+                "org": data.get("org"),
+                "as_number": data.get("as"),
+                "as_name": data.get("asname"),
+                "mobile": data.get("mobile"),
+                "proxy": data.get("proxy"),
+                "hosting": data.get("hosting"),
+            })
+            return data  # return the whole payload if needed
         else:
-            print(f"❌ Failed again for {ip}. No more retries.")
-            return False
+            print(f"❌ Failed request: {response.status_code}")
+    except requests.RequestException as e:
+        print(f"⚠️ Network error: {e}")
+
+    if not retry:
+        print(f"🔁 Retrying in 45 seconds...")
+        time.sleep(45)
+        return get_ip_api(ip, retry=True)
+    else:
+        print("❌ Permanent failure.")
+        return None
+
 
 
 def get_ips_company(value):
@@ -198,27 +225,69 @@ def parse_logs(search_address=None):
         
         time.sleep(5)
 
+def run_log_parser_once(search_address=None):
+    logs = get_firewall_logs()
+    blocked_logs = filter_blocked_logs(logs, search_address)
 
-def start_log_parser(search_address=None):
-    """Start the log parser in a separate background thread."""
-    thread = threading.Thread(target=parse_logs, args=(search_address,))
-    thread.daemon = True  # Ensures the thread stops when the program exits
-    thread.start()
+    new_ips = set()
+    output = []
 
-# Start log parsing loop
-if __name__ == "__main__":
-    search_address = input("Enter IP address to filter logs (optional): ")
-    start_log_parser(search_address) if search_address else start_log_parser()
+    for log in blocked_logs:
+        try:
+            timestamp_str = log.get('__timestamp__')
 
-    while True:
-        for iteration in range(0, 6):
-            get_ips_company("new")
-            time.sleep(10)
-        print("")
-        print(100*"#")
-        print(40*" " + "OVERVIEW ABOUT ALL IPS")
-        print(100*"#")
-        get_ips_company("all")
-        print("")
-        print(100*"#")
-        time.sleep(10)
+            timestamp = parse_datetime(timestamp_str)
+            if timestamp and timezone.is_naive(timestamp):
+                timestamp = timezone.make_aware(timestamp)
+            elif not timestamp:
+                timestamp = timezone.now()
+
+            src = log.get("src")
+            dst = log.get("dst")
+
+            log_entry = f"{timestamp_str} - {log.get('action')} - {log.get('interface')} - {src}:{log.get('srcport')} -> {dst}:{log.get('dstport')}"
+            output.append(log_entry)
+
+            # Reverse DNS and metadata
+            if dst not in config.IP_TABLE:
+                config.IP_TABLE[dst] = {}
+
+                dns_name = reverse_dns_lookup(dst) or "N/A"
+                config.IP_TABLE[dst]["dns_name"] = dns_name
+
+                ip_api_data = get_ip_api(dst)
+                if not ip_api_data:
+                    config.IP_TABLE[dst]["org"] = "❌ Error fetching ip-api.com"
+
+            meta_data = config.IP_TABLE.get(dst, {})
+            # Get the most recent (non-expired) metadata if it exists
+            metadata_obj = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
+
+            if not metadata_obj:
+                # Create new record if none exists
+                metadata_obj = DestinationMetadata.objects.create(
+                    ip=dst,
+                    dns_name=meta_data.get("dns_name", "N/A"),
+                    isp=meta_data.get("isp", "N/A"),
+                    city=meta_data.get("city", "N/A"),
+                    country=meta_data.get("country", "N/A"),
+                    # ...add other fields as needed
+                )
+
+
+            # Save to DB if not already present
+            FirewallLog.objects.get_or_create(
+                timestamp=timestamp,
+                action=log.get("action", ""),
+                interface=log.get("interface", ""),
+                source_ip=src,
+                source_port=log.get("srcport"),
+                destination_ip=dst,
+                destination_port=log.get("dstport"),
+                protocol=log.get("proto", ""),
+                destination_metadata=metadata_obj
+            )
+        except Exception as e:
+            print(f"⚠️ Error processing log entry: {e}")
+
+    return output

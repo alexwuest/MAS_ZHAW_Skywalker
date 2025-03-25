@@ -196,4 +196,28 @@ apply_url = f'{OPNSENSE_IP}/api/firewall/filter/apply'
 # Actually i would say the minimal product i want to implement is done. I can see to which ip's the mobile wants to connect. I can lookup the needed information for the ips and i group them by company.
 # When opening a new application after some time i can clearly see to where the communication goes and i can easely open it for communication. So i have the opportunity to go into a specific app and lookup the needed stuff without any other connections.
 # Could connect by VPN to Zurich City. Websites trough safari like 20min.ch or blick.ch can be quite a pain as many cdn ips need too be switched to pass. Not yet sure if that is really a problem.
-
+#
+# DJANGO Project
+# I added first the models to have a clean data base structure to work with. After the first tests with the console i think i have already a great overview which fields will be needed.
+# I created tree models 
+# 
+# FirewallLog           ->    Parsed logfiles stored into the database
+# DestinationMetadata   ->    For each destination ip addresss some metadata stored once. Regularly check all used ips if already known and compare meta data. If changed add an end date to the old entry and make a new entry. This is especially important if an ip changed the owner.
+# FirewallRule          ->    OPNSense Firewall rules if changed with history for logging purpose...
+#
+# Ok i always see the usecase -> i just add shortly a device and it's done... How if a device is for longer period attached and if we don't want to get that deep into the system. So a mac address could once switch by default not as know just deactivate with one click...
+# So i need first to identify the device. All our devices have a forensic tracking number with barcode on it. So each device can be identified all time for sure. So this number needs to be the id number for each device connected to the forensic wlan / lan.
+# This number wont change unless there is a new case for the same device. But then the logging would really needed to be separated. So all set.
+# But as i have seen the mac address can change today. So i need to keep track. The IP address can switch also especially if there can not be a fixed ip address given as mac can swap. Of course later i will try to keep devices on the same ip but i will not be safe it that will definitely work.
+# So i need another models
+#
+#
+# Device                ->    Asservaten Nummer (device_id) and a description. Can easy be more detailed if for reporting the name, case number and others needed.
+# DeviceMac             ->    Linked to the device_id with MAC address and its start / end timestamps
+# DeviceIP              ->    Linked to the DeviceMac with the MAC address and a ip address and start / end timestamp for the ip address
+#
+# So i have now 6 models probably more will follow. I checked against the LLM and it seems to be a working way. Probably i need also to implement a kind of login method in the wlan.
+# Like surfing with the device on a local page where i have to enter Asservaten Number and the page gets the actual ip and mac of the device and stores that into the db. New rules can just be added after that made. Of course there should be a manual way (device partially damaged). But with this also some examiner details could be grabed.
+# After having the idea how it works again pushed it into LLM and got some great feedback about setting always timestamps auto when handling start time. Always use DateTime instead Date to have a precise timestamp.
+# Not yet important but probably later, indexing the right fields for quicker searches. 
+# Adding now the idea to link Firewall rules directly to the device. Of course it needs the ip address still but if this changes i would like to have the option to swap all rules which are related to A010101010 to the new associeted IP address so the work can go forward 

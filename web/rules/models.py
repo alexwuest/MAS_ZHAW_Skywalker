@@ -1,29 +1,117 @@
 from django.db import models
 
+class Device(models.Model):
+    device_id = models.CharField(max_length=20, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.device_id
+
+
+class DeviceMac(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="mac_addresses")
+    mac_address = models.CharField(max_length=17)           # 00:1A:2B:3C:4D:5E
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        unique_together = ['mac_address', 'start_date']
+        indexes = [
+            models.Index(fields=['mac_address']),
+            models.Index(fields=['mac_address', 'start_date', 'end_date']),
+        ]
+
+
+    def __str__(self):
+        return f"{self.mac_address} ({self.device.device_id})"
+
+
+class DeviceIp(models.Model):
+    mac = models.ForeignKey(DeviceMac, on_delete=models.CASCADE, related_name="ip_assignments")
+    ip_address = models.GenericIPAddressField()
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ['mac', 'ip_address', 'start_date']
+        indexes = [
+            models.Index(fields=['ip_address']),
+            models.Index(fields=['mac', 'start_date', 'end_date']),
+        ]
+
+
+    def __str__(self):
+        return f"{self.ip_address} via {self.mac.mac_address}"
+
+
+###################################################################################################
+
+
+class FirewallLog(models.Model):
+    timestamp = models.DateTimeField()
+    action = models.CharField(max_length=10)
+    interface = models.CharField(max_length=50, blank=True)
+    source_ip = models.GenericIPAddressField()
+    source_port = models.IntegerField(null=True, blank=True)
+    destination_ip = models.GenericIPAddressField()
+    destination_port = models.IntegerField(null=True, blank=True)
+    protocol = models.CharField(max_length=10, blank=True)
+
+    destination_metadata = models.ForeignKey(
+        "DestinationMetadata",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="logs"
+    )
+    class Meta:
+        unique_together = ['timestamp', 'source_ip', 'destination_ip', 'source_port', 'destination_port']
+
+    def __str__(self):
+        return f"{self.timestamp} {self.source_ip}:{self.source_port} → {self.destination_ip}:{self.destination_port}"
+
+
 class DestinationMetadata(models.Model):
-    ip = models.GenericIPAddressField(unique=True)
-    status = models.CharField(max_length=20)
-    continent = models.CharField(max_length=50)
-    continent_code = models.CharField(max_length=5)
-    country = models.CharField(max_length=50)
-    country_code = models.CharField(max_length=5)
-    region = models.CharField(max_length=50)
-    region_name = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
+
+    # Models for ip-api.com
+    ip = models.GenericIPAddressField()
+    status = models.CharField(max_length=20, null=True, blank=True)
+    continent = models.CharField(max_length=50, null=True, blank=True)
+    continent_code = models.CharField(max_length=5, null=True, blank=True)
+    country = models.CharField(max_length=50, null=True, blank=True)
+    country_code = models.CharField(max_length=5, null=True, blank=True)
+    region = models.CharField(max_length=50, null=True, blank=True)
+    region_name = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
     district = models.CharField(max_length=100, blank=True)
-    zip_code = models.CharField(max_length=20)
-    lat = models.FloatField()
-    lon = models.FloatField()
-    timezone = models.CharField(max_length=100)
-    offset = models.IntegerField()
-    currency = models.CharField(max_length=10)
-    isp = models.CharField(max_length=100)
-    org = models.CharField(max_length=100)
-    as_number = models.CharField(max_length=50)
-    as_name = models.CharField(max_length=100)
-    mobile = models.BooleanField()
-    proxy = models.BooleanField()
-    hosting = models.BooleanField()
+    zip_code = models.CharField(max_length=20, null=True, blank=True)
+    lat = models.FloatField(null=True, blank=True)
+    lon = models.FloatField(null=True, blank=True)
+    timezone = models.CharField(max_length=100, null=True, blank=True)
+    offset = models.IntegerField(null=True, blank=True)
+    currency = models.CharField(max_length=10, null=True, blank=True)
+    isp = models.CharField(max_length=100, null=True, blank=True)
+    org = models.CharField(max_length=100, null=True, blank=True)
+    as_number = models.CharField(max_length=50, null=True, blank=True)
+    as_name = models.CharField(max_length=100, null=True, blank=True)
+    mobile = models.BooleanField(null=True, blank=True)
+    proxy = models.BooleanField(null=True, blank=True)
+    hosting = models.BooleanField(null=True, blank=True)
+
+    # Model for reverse dns
+    dns_name = models.CharField(max_length=60, null=True, blank=True)
+
+
+    # Make sure to keep track if a IP address ownership changes...
+    start_date = models.DateTimeField(auto_now_add=True)        # when adding
+    end_date = models.DateTimeField(null=True, blank=True)      # when it was replaced
+
+    class Meta:
+        unique_together = ['ip', 'start_date']
+        indexes = [
+            models.Index(fields=['ip']),
+            models.Index(fields=['ip', 'end_date']),
+        ]
 
     def __str__(self):
         return f"{self.ip} ({self.city}, {self.country})"
@@ -47,7 +135,15 @@ class FirewallRule(models.Model):
     port = models.IntegerField()
     protocol = models.CharField(max_length=10, choices=[('TCP', 'TCP'), ('UDP', 'UDP')])
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(auto_now_add=True)        # when adding
+    end_date = models.DateTimeField(null=True, blank=True)      # when it was replaced
+
+    class Meta:
+        unique_together = ['destination_ip', 'start_date']
+        indexes = [
+            models.Index(fields=['destination_ip']),
+            models.Index(fields=['destination_ip', 'start_date', 'end_date']),
+        ]
 
     def __str__(self):
         return f"{self.action} {self.protocol} {self.source_ip}:{self.port} -> {self.destination_ip}"
