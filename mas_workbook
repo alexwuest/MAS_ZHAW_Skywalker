@@ -248,3 +248,8 @@ python manage.py createsuperuser
 # Found an API /api/diagnostics/interface/get_arp to get the active MAC / IP pairs with expiring time. This is the ARP table which keeps details for a specific time.
 # Also changed the lease time so a device gets more likely again the same ip. Actually i give a range from 0.0.0.10 - 0.0.0.245 so 235 IP's together. I set the new lease time to 1209600 what means a leastime of 14 days. Getting down the ip changes for the same mac.
 # Even if investigation time is longer. 
+
+################################
+## 28.03.2025
+################################
+# Still working on getting the matching between evidence_id and mac / ip... not yet happy.
