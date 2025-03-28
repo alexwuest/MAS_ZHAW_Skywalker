@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rules.views import view_firewall_logs
+from rules.views import view_firewall_logs, add_device_view, assign_lease_device_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("logs/", view_firewall_logs, name="view_logs"),
+    path('add-device/', add_device_view, name='add-device'),
+    path('lease/', assign_lease_device_view, name='assign-lease-device')
 ]

@@ -1,0 +1,16 @@
+<h2>Assign Leases to Devices</h2>
+{% for lease, form in entries %}
+  <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 1em;">
+    <p>
+      <strong>{{ lease.mac_address }}</strong> @ {{ lease.ip_address }} <br>
+      Hostname: ({{ lease.hostname }})<br>
+      Manufacturer: ({{ lease.manufacturer }})<br>
+      Lease time: {{ lease.lease_start }} → {{ lease.lease_end }}
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Assign</button>
+    </form>
+  </div>
+{% endfor %}

@@ -221,3 +221,30 @@ apply_url = f'{OPNSENSE_IP}/api/firewall/filter/apply'
 # After having the idea how it works again pushed it into LLM and got some great feedback about setting always timestamps auto when handling start time. Always use DateTime instead Date to have a precise timestamp.
 # Not yet important but probably later, indexing the right fields for quicker searches. 
 # Adding now the idea to link Firewall rules directly to the device. Of course it needs the ip address still but if this changes i would like to have the option to swap all rules which are related to A010101010 to the new associeted IP address so the work can go forward 
+
+################################
+## 25.03.2025
+################################
+# Started with some testing with the work yet.
+# I have over 27k entries for ip addresses any many duplicates... i need to change the api_logs_parser.py to make sure the entry is not already there and if yes if it changed...
+# Delete all entries from sql database
+python manage.py flush
+
+# Afterwards a new user needs to be added again
+python manage.py createsuperuser
+
+# Made some changes to the dashboard to make it more nicely to look at. Added some radio buttons before the ISP name. 
+# Now i need to implement a class which holds the details about if an isp is activated with the device. I want to map that to the device id not mac or ip.
+# If device moves the map should stay and i need to make sure to update rules so if communication with device A00000001 with IP 192.168.5.161 and MAC 11:11:11:11.. was allowed
+# It should stay if device A00000001 with IP 192.168.5.164 and MAC 22:22:22:22..
+
+################################
+## 26.03.2025
+################################
+# Updating the models with a new one to assign isp names to device ids.
+# First i implemented now a self register site where the device can go on add the device name, mac and ip. The ip is directly added but the mac isn't as easy so actually copying this data just from the settings into the form
+# Problem now is does the macs / ips which where before in the form not automaticly get an end date. That needs to be fixed. First i wanted to remove also duplicate entries for mac and ip but it maces sense to keep that to have a nice history possibility 
+
+# Found an API /api/diagnostics/interface/get_arp to get the active MAC / IP pairs with expiring time. This is the ARP table which keeps details for a specific time.
+# Also changed the lease time so a device gets more likely again the same ip. Actually i give a range from 0.0.0.10 - 0.0.0.245 so 235 IP's together. I set the new lease time to 1209600 what means a leastime of 14 days. Getting down the ip changes for the same mac.
+# Even if investigation time is longer. 

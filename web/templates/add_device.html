@@ -1,0 +1,6 @@
+<h2>Add new device</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Approve Device</button>
+</form>

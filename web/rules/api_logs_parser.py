@@ -3,6 +3,7 @@ import os
 import time
 import threading
 import socket
+import datetime
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
@@ -10,7 +11,7 @@ from django.utils import timezone
 
 from .models import FirewallLog, DestinationMetadata
 from django.utils.dateparse import parse_datetime
-from . import config
+from . import api_dhcp_parser, config
 
 # Load .env file
 load_dotenv()
@@ -32,6 +33,7 @@ LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
 
 def get_firewall_logs():
     """Fetch firewall logs from OPNsense API."""
+    #api_dhcp_parser.parse_opnsense_leases()  # Get the DHCP leases from the firewall
     try:
         response = requests.get(LOGS_ENDPOINT, auth=HTTPBasicAuth(API_KEY, API_SECRET), verify=CERT_PATH)
 
@@ -235,7 +237,6 @@ def run_log_parser_once(search_address=None):
     for log in blocked_logs:
         try:
             timestamp_str = log.get('__timestamp__')
-
             timestamp = parse_datetime(timestamp_str)
             if timestamp and timezone.is_naive(timestamp):
                 timestamp = timezone.make_aware(timestamp)
@@ -251,32 +252,63 @@ def run_log_parser_once(search_address=None):
             # Reverse DNS and metadata
             if dst not in config.IP_TABLE:
                 config.IP_TABLE[dst] = {}
-
-                dns_name = reverse_dns_lookup(dst) or "N/A"
-                config.IP_TABLE[dst]["dns_name"] = dns_name
-
+                config.IP_TABLE[dst]["dns_name"] = reverse_dns_lookup(dst) or "N/A"
                 ip_api_data = get_ip_api(dst)
+
                 if not ip_api_data:
                     config.IP_TABLE[dst]["org"] = "❌ Error fetching ip-api.com"
+                else:
+                    config.IP_TABLE[dst].update(ip_api_data)
 
             meta_data = config.IP_TABLE.get(dst, {})
             # Get the most recent (non-expired) metadata if it exists
             metadata_obj = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
 
+            metadata_changed = False
+            # Check if entry has changed with the fields bellow
+            if metadata_obj:
+                if (
+                    metadata_obj.dns_name != meta_data.get("dns_name", "N/A") or
+                    metadata_obj.isp != meta_data.get("isp", "N/A") or
+                    metadata_obj.city != meta_data.get("city", "N/A") or
+                    metadata_obj.country != meta_data.get("country", "N/A")
+                ):
+                    # Change the entry if the meta data has changed
+                    metadata_changed = True
+                    metadata_obj.end_date = timezone.now()
+                    metadata_obj.save()
+                    metadata_obj = None
+
+            # If no entry found make a new entry
             if not metadata_obj:
-                # Create new record if none exists
                 metadata_obj = DestinationMetadata.objects.create(
-                    ip=dst,
-                    dns_name=meta_data.get("dns_name", "N/A"),
-                    isp=meta_data.get("isp", "N/A"),
-                    city=meta_data.get("city", "N/A"),
-                    country=meta_data.get("country", "N/A"),
-                    # ...add other fields as needed
-                )
+                ip=dst,
+                dns_name=meta_data.get("dns_name") or "N/A",
+                isp=meta_data.get("isp") or "N/A",
+                city=meta_data.get("city") or "N/A",
+                country=meta_data.get("country") or "N/A",
+                continent=meta_data.get("continent") or "N/A",
+                continent_code=meta_data.get("continent_code") or "N/A",
+                region=meta_data.get("region") or "N/A",
+                region_name=meta_data.get("region_name") or "N/A",
+                district=meta_data.get("district") or "N/A",  # 🛠️ critical line
+                zip_code=meta_data.get("zip_code") or "N/A",
+                lat=meta_data.get("lat") or 0.0,
+                lon=meta_data.get("lon") or 0.0,
+                timezone=meta_data.get("timezone") or "N/A",
+                offset=meta_data.get("offset") or 0,
+                currency=meta_data.get("currency") or "N/A",
+                org=meta_data.get("org") or "N/A",
+                as_number=meta_data.get("as_number") or "N/A",
+                as_name=meta_data.get("as_name") or "N/A",
+                mobile=meta_data.get("mobile") or False,
+                proxy=meta_data.get("proxy") or False,
+                hosting=meta_data.get("hosting") or False,
+            )
 
 
-            # Save to DB if not already present
-            FirewallLog.objects.get_or_create(
+            # If the entry already exists skip
+            exists = FirewallLog.objects.filter(
                 timestamp=timestamp,
                 action=log.get("action", ""),
                 interface=log.get("interface", ""),
@@ -284,9 +316,24 @@ def run_log_parser_once(search_address=None):
                 source_port=log.get("srcport"),
                 destination_ip=dst,
                 destination_port=log.get("dstport"),
-                protocol=log.get("proto", ""),
-                destination_metadata=metadata_obj
-            )
+                protocol=log.get("proto", "")
+            ).exists()
+
+            # If there was no entry before... make a new entry now
+            if not exists:
+                # Save to DB if not already present
+                FirewallLog.objects.create(
+                    timestamp=timestamp,
+                    action=log.get("action", ""),
+                    interface=log.get("interface", ""),
+                    source_ip=src,
+                    source_port=log.get("srcport"),
+                    destination_ip=dst,
+                    destination_port=log.get("dstport"),
+                    protocol=log.get("proto", ""),
+                    destination_metadata=metadata_obj
+                )
+
         except Exception as e:
             print(f"⚠️ Error processing log entry: {e}")
 

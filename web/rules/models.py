@@ -44,6 +44,22 @@ class DeviceIp(models.Model):
         return f"{self.ip_address} via {self.mac.mac_address}"
 
 
+class DeviceAllowedISP(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="allowed_isps")
+    isp_name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ['device', 'isp_name']
+        indexes = [
+            models.Index(fields=['isp_name']),
+            models.Index(fields=['device', 'isp_name']),
+        ]
+
+    def __str__(self):
+        return f"{self.device.device_id} → {self.isp_name}"
+
+
+
 ###################################################################################################
 
 
@@ -147,3 +163,25 @@ class FirewallRule(models.Model):
 
     def __str__(self):
         return f"{self.action} {self.protocol} {self.source_ip}:{self.port} -> {self.destination_ip}"
+    
+
+class DeviceLease(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='leases', null=True, blank=True)
+    ip_address = models.GenericIPAddressField()
+    mac_address = models.CharField(max_length=17)
+    lease_start = models.DateTimeField()
+    lease_end = models.DateTimeField()
+    hostname = models.CharField(max_length=100, blank=True, null=True)
+    manufacturer = models.CharField(max_length=100, blank=True, null=True)
+    interface = models.CharField(max_length=50, blank=True, null=True)
+
+    last_seen = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['ip_address', 'mac_address', 'lease_start']
+        indexes = [
+            models.Index(fields=['mac_address', 'ip_address']),
+        ]
+
+    def __str__(self):
+        return f"{self.device.device_id if self.device else '?'} - {self.mac_address} @ {self.ip_address}"
