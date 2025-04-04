@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Firewall Logs</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            height: 100vh; /* Ensure full viewport height */
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        td {
+            vertical-align: top;
+            padding: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .header {
+            height: 80px;
+            background-color: lightgray;
+        }
+
+        .header {
+            height: 20px;
+            background-color: lightgray;
+        }
+
+        .middle-row {
+            height: calc(100vh - 100px);
+        }
+
+        .log_output {
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 0;
+        }
+ 
+
+    </style>
+    <script>
+        let refreshTimeout = null;
+
+        function setRefreshRate() {
+            const rate = parseInt(document.getElementById('refreshRate').value);
+            localStorage.setItem("refreshRate", rate);
+            if (refreshTimeout) clearTimeout(refreshTimeout);
+            if (rate > 0) {
+                refreshTimeout = setTimeout(() => {
+                    window.location.reload();
+                }, rate);
+            }
+        }
+
+        window.onload = function() {
+            const savedRate = localStorage.getItem("refreshRate") || "5000";
+            document.getElementById('refreshRate').value = savedRate;
+            if (parseInt(savedRate) > 0) {
+                setRefreshRate();
+            }
+        };
+    </script>
+</head>
+<body>
+    <table>
+        <tr>
+            <td class="header" colspan="2">
+                <form method="get">
+                    <input type="text" name="ip" value="{{ request.GET.ip }}" placeholder="Filter by IP">
+                    <button type="submit">Filter</button>
+                </form>
+
+                <button onclick="window.location.href='{% url 'view_logs' %}'">Logs</button>
+                <button onclick="window.location.href='{% url 'add-device' %}'">Add Device</button>
+                <button onclick="window.location.href='{% url 'assign-lease-device' %}'">Lease</button>
+                
+
+            </td>
+        </tr>

@@ -1,6 +1,18 @@
-<h2>Add new device</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Approve Device</button>
-</form>
+{% include "header.html" %}
+
+        <tr class="middle-row">
+          <td colspan="2" style="background-color: #e0f7fa;">
+              <h2>Add new device</h2>
+              <form method="post">
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  <button type="submit">Approve Device</button>
+              </form>
+          </td>
+      </tr>
+
+{% include "footer.html" %}
+
+
+
+

@@ -1,86 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Firewall Logs</title>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        table {
-            width: 100%;
-            height: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-        td {
-            border: 1px solid #ccc;
-            vertical-align: top;
-            padding: 4px;
-        }
-        .banner {
-            height: 40px;
-            background-color: lightgray;
-        }
-        .middle-row {
-            height: calc(100% - 40px);
-        }
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-size: 12px;
-        }
-    </style>
-    <script>
-        let refreshTimeout = null;
-
-        function setRefreshRate() {
-            const rate = parseInt(document.getElementById('refreshRate').value);
-            localStorage.setItem("refreshRate", rate);
-            if (refreshTimeout) clearTimeout(refreshTimeout);
-            if (rate > 0) {
-                refreshTimeout = setTimeout(() => {
-                    window.location.reload();
-                }, rate);
-            }
-        }
-
-        window.onload = function() {
-            const savedRate = localStorage.getItem("refreshRate") || "5000";
-            document.getElementById('refreshRate').value = savedRate;
-            if (parseInt(savedRate) > 0) {
-                setRefreshRate();
-            }
-        };
-    </script>
-</head>
-<body>
-    <table>
-        <tr>
-            <td class="banner" colspan="2">Banner (20px)
-                <form method="get">
-                    <input type="text" name="ip" value="{{ request.GET.ip }}" placeholder="Filter by IP">
-                    <button type="submit">Filter</button>
-                </form>
-                
-
-            </td>
-        </tr>
+{% include "header.html" %}        
         <tr class="middle-row">
             <td style="width: 80%; background-color: #e0f7fa;">
-                <h2>Firewall Logs :-)</h2>
-                <pre>{{ logs }}</pre>
+                <h2>Blocked Connections</h2>
+                <pre class="log_output">
+{{ logs }}
+                </pre>
             </td>
             <td style="width: 20%; background-color: #ffe0b2;">
-                <label for="refreshRate"><strong>Auto-Refresh:</strong></label><br/>
+                <label for="refreshRate"><strong>Refresh page:</strong></label><br/>
                 <select id="refreshRate" onchange="setRefreshRate()">
                     <option value="0">Off</option>
                     <option value="5000">Every 5s</option>
                     <option value="10000">Every 10s</option>
                     <option value="30000">Every 30s</option>
                 </select>
+                
+                <button onclick="location.reload();">Refresh Now</button>
 
                 <h3>Listed organisations (ISP)</h3>
                 <div style="font-family: monospace; font-size: 12px;">
@@ -93,18 +28,11 @@
                     <p><em>No ISPs found.</em></p>
                     {% endfor %}
                 </div>
-
-
-
-                <h3>Enriched IP Info</h3>
-                <pre>
-{% for ip, data in ip_data.items %}
-🌐 {{ ip }} | {{ data.dns_name|default:"N/A" }} | {{ data.dns_name|default:"N/A" }}
-   {{ data.isp|default:"N/A" }} | {{ data.city|default:"N/A" }}, {{ data.country|default:"N/A" }}
+                <h3>Enriched IP Info</h3><pre class="log_output">{% for ip, data in ip_data.items %}
+🌐 {{ ip }} | {{ data.dns_name|default:"N/A" }} | {{ data.isp|default:"N/A" }}
+{{ data.city|default:"N/A" }}, {{ data.country|default:"N/A" }}
 {% endfor %}
                 </pre>
             </td>
         </tr>
-    </table>
-</body>
-</html>
+{% include "footer.html" %}

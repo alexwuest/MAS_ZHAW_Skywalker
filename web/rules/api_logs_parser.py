@@ -246,7 +246,11 @@ def run_log_parser_once(search_address=None):
             src = log.get("src")
             dst = log.get("dst")
 
-            log_entry = f"{timestamp_str} - {log.get('action')} - {log.get('interface')} - {src}:{log.get('srcport')} -> {dst}:{log.get('dstport')}"
+            src_combined = f"{src}:{log.get('srcport')}".ljust(20)
+            dst_combined = f"{dst}:{log.get('dstport')}".ljust(20)
+
+            log_entry = f"{timestamp_str} - {src_combined} ->  {dst_combined}"
+            #log_entry = f"{timestamp_str} - {log.get('action')} - {log.get('interface')} - {src_combined} -> {dst_combined}" #more detailed...
             output.append(log_entry)
 
             # Reverse DNS and metadata
