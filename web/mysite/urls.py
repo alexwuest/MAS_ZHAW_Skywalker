@@ -16,11 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rules.views import view_firewall_logs, add_device_view, assign_lease_device_view
+from rules.views import view_firewall_logs, manage_devices_view, get_linked_isps_view, toggle_isp_link_view, update_firewall_rules_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", manage_devices_view, name='manage-devices'),
     path("logs/", view_firewall_logs, name="view_logs"),
-    path('add-device/', add_device_view, name='add-device'),
-    path('lease/', assign_lease_device_view, name='assign-lease-device')
+    path('manage-devices/', manage_devices_view, name='manage-devices'),
+    path("update-firewall/", update_firewall_rules_view, name="update_firewall_rules"),
+
+    path('api/device/<int:device_id>/linked-isps/', get_linked_isps_view, name='get_linked_isps'),
+    path('api/toggle-isp/', toggle_isp_link_view, name='toggle_isp_link'),
 ]

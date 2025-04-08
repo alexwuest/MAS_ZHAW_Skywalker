@@ -17,22 +17,122 @@
                 
                 <button onclick="location.reload();">Refresh Now</button>
 
-                <h3>Listed organisations (ISP)</h3>
-                <div style="font-family: monospace; font-size: 12px;">
+                <h3>Organisations (ISP)</h3>
+                <div id="ispList" style="font-family: monospace; font-size: 12px;">
                     {% for isp in isp_list %}
                     <label style="display: block; margin-bottom: 4px;">
-                        <input type="checkbox" {% if isp.evidence_id %}checked{% endif %}>
+                        <input type="checkbox"
+                            data-isp-name="{{ isp.name }}"
+                            onchange="toggleISPLink(this)">
                         {{ isp.name }}
                     </label>
                     {% empty %}
                     <p><em>No ISPs found.</em></p>
                     {% endfor %}
                 </div>
-                <h3>Enriched IP Info</h3><pre class="log_output">{% for ip, data in ip_data.items %}
+                <button onclick="updateFirewallRules()">Update Firewall Rules</button>
+                <h3>IP Info</h3><pre class="log_output">{% for ip, data in ip_data.items %}
 🌐 {{ ip }} | {{ data.dns_name|default:"N/A" }} | {{ data.isp|default:"N/A" }}
 {{ data.city|default:"N/A" }}, {{ data.country|default:"N/A" }}
 {% endfor %}
                 </pre>
             </td>
         </tr>
+
+<script>
+    function getCookie(name) {
+        const cookie = document.cookie.split(';').find(c => c.trim().startsWith(name + '='));
+        return cookie ? decodeURIComponent(cookie.trim().split('=')[1]) : null;
+    }
+
+    function loadDeviceISPLinks() {
+        const params = new URLSearchParams(window.location.search);
+        const deviceId = params.get("device") || document.getElementById('deviceSelect').value;
+
+        if (deviceId) {
+            document.getElementById('deviceSelect').value = deviceId;
+        }
+
+        fetch(`/api/device/${deviceId}/linked-isps/`)
+            .then(response => response.json())
+            .then(data => {
+                const linkedIsps = data.linked_isps;
+                document.querySelectorAll('#ispList input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = linkedIsps.includes(checkbox.dataset.ispName);
+                });
+            });
+    }
+
+    function toggleISPLink(checkbox) {
+        const deviceId = document.getElementById('deviceSelect').value;
+        const ispName = checkbox.dataset.ispName;
+        const link = checkbox.checked;
+
+        fetch('/api/toggle-isp/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: `device_id=${deviceId}&isp_name=${encodeURIComponent(ispName)}&link=${link}`
+        });
+    }
+
+    function onDeviceSelectChange(select) {
+        const deviceId = select.value;
+        const params = new URLSearchParams(window.location.search);
+        params.set("device", deviceId);
+        window.location.search = params.toString();
+    }
+
+    function setRefreshRate() {
+        const rate = parseInt(document.getElementById('refreshRate').value);
+        localStorage.setItem("refreshRate", rate);
+        if (refreshTimeout) clearTimeout(refreshTimeout);
+        if (rate > 0) {
+            refreshTimeout = setTimeout(() => {
+                window.location.reload();
+            }, rate);
+        }
+    }
+
+    let refreshTimeout = null;
+
+    window.onload = function () {
+        const savedRate = localStorage.getItem("refreshRate") || "5000";
+        const refreshSelect = document.getElementById('refreshRate');
+        if (refreshSelect) {
+            refreshSelect.value = savedRate;
+        }
+        if (parseInt(savedRate) > 0) {
+            setRefreshRate();
+        }
+        loadDeviceISPLinks();
+
+    }
+
+       
+    function updateFirewallRules() {
+        const deviceId = document.getElementById('deviceSelect').value;
+    
+        fetch("/update-firewall/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `device_id=${encodeURIComponent(deviceId)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "ok") {
+                alert(`✅ Firewall updated! Rules added: ${data.rules_added}`);
+            } else {
+                alert(`❌ Error: ${data.message}`);
+            }
+        });
+    }
+
+
+</script>
 {% include "footer.html" %}

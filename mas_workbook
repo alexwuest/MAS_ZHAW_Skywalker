@@ -253,3 +253,11 @@ python manage.py createsuperuser
 ## 28.03.2025
 ################################
 # Still working on getting the matching between evidence_id and mac / ip... not yet happy.
+
+################################
+## 04.04.2025
+################################
+# Made design changes
+# Added possibility to have rules linked to the device and show it in the frontend
+# Run server not just local also in the network
+python manage.py runserver 0.0.0.0:8000

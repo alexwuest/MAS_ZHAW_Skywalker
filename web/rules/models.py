@@ -151,8 +151,11 @@ class FirewallRule(models.Model):
     port = models.IntegerField()
     protocol = models.CharField(max_length=10, choices=[('TCP', 'TCP'), ('UDP', 'UDP')])
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
-    start_date = models.DateTimeField(auto_now_add=True)        # when adding
-    end_date = models.DateTimeField(null=True, blank=True)      # when it was replaced
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    isp_name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    pushed_to_opnsense = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ['destination_ip', 'start_date']
