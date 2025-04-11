@@ -261,3 +261,27 @@ python manage.py createsuperuser
 # Added possibility to have rules linked to the device and show it in the frontend
 # Run server not just local also in the network
 python manage.py runserver 0.0.0.0:8000
+
+################################
+## 08.04.2025
+################################
+# In the past days i did some design changes. All rules are first stored in the db of django and afterwards added to the firewall. They are linked with the isp choice in the frontend.
+# So if there is a isp marked as X in the checkbox it will add the relevant ip addresses from the isp to the db and afterwards push the rules to the firewall.
+# Now i need to implement a rule which does the same but when unchecking. So go to the db look if rules are on the firewall and take them out. I don't want to delete the entry in the db to keep track...
+
+# That seems to work now... but i have the problem if allowing a CDN does the rules can be more than 100 to add or remove... so the API is not done for adding just 100 rules and deleting them again. Need to see if there is a better approach.
+
+################################
+## 09.04.2025
+################################
+# Invested today pretty much the whole day in getting the DNS rule applied to the correct device and remove old rules based on the lease... that was quite a pain...
+# signals.py fired several times when storing data sometimes got twice the same rule even rules for devices i did not even touch. However it seems to work now... Quite slow but it works.
+# Always the newest lease which is applied to a device will be used and the DNS server which was set when adding the device will be added.
+
+################################
+## 10.04.2025
+################################
+# Discussed in the office the specific needs and usecases as the setting now can be used on most usescases now. It is important to have the opportunity to add specific rules to the firewall and to have an overview about added rules for each device what pretty much is just a database view
+# Things to make research is to find out if there is a possibility to block the wipe and sound notification of an iOS device. I think that is not possible. Especially if we want to access the icloud data photos and stuff, we need to give access to the icloud network which is also combined to the find my network.
+# Actually we do have a case were the phone is full and relevant movies are in the cloud. That because the preview is showing relevant movies which are not stored on the device. Now we should open the device to the icloud but we need to make sure it wont be wiped. As the suspect is no longer in "untersuchungshaft" it is likely he did access his account and added a remote wipe to his old devices.
+

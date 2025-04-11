@@ -3,7 +3,7 @@
             <td style="width: 80%; background-color: #e0f7fa;">
                 <h2>Blocked Connections</h2>
                 <pre class="log_output">
-{{ logs }}
+{{ logs|safe }}
                 </pre>
             </td>
             <td style="width: 20%; background-color: #ffe0b2;">
@@ -30,7 +30,7 @@
                     <p><em>No ISPs found.</em></p>
                     {% endfor %}
                 </div>
-                <button onclick="updateFirewallRules()">Update Firewall Rules</button>
+                <button id="updateButton" onclick="updateFirewallRules()">Update Firewall Rules</button>
                 <h3>IP Info</h3><pre class="log_output">{% for ip, data in ip_data.items %}
 🌐 {{ ip }} | {{ data.dns_name|default:"N/A" }} | {{ data.isp|default:"N/A" }}
 {{ data.city|default:"N/A" }}, {{ data.country|default:"N/A" }}
@@ -112,9 +112,23 @@
     }
 
        
+    let lastRefreshRate = null;
+
     function updateFirewallRules() {
         const deviceId = document.getElementById('deviceSelect').value;
-    
+        const button = document.getElementById('updateButton');
+
+        // Disable button and show loading text
+        button.disabled = true;
+        const originalText = button.textContent;
+        button.textContent = "Updating... can take a while!!!";
+
+        // Save current refresh rate and stop auto-refresh
+        const refreshSelect = document.getElementById('refreshRate');
+        lastRefreshRate = refreshSelect.value;
+        refreshSelect.value = "0";
+        if (refreshTimeout) clearTimeout(refreshTimeout);
+
         fetch("/update-firewall/", {
             method: "POST",
             headers: {
@@ -126,10 +140,27 @@
         .then(response => response.json())
         .then(data => {
             if (data.status === "ok") {
-                alert(`✅ Firewall updated! Rules added: ${data.rules_added}`);
+                const added = data.rules_added ?? 0;
+                const removed = data.rules_removed ?? 0;
+
+                alert(`+ Rules added: ${added}\n- Rules removed: ${removed}`);
             } else {
-                alert(`❌ Error: ${data.message}`);
+                alert(`Error: ${data.message}`);
             }
+        })
+
+        .catch(error => {
+            console.error("Update error:", error);
+            alert("Something went wrong.");
+        })
+        .finally(() => {
+            // Re-enable button
+            button.disabled = false;
+            button.textContent = originalText;
+
+            // Restore refresh rate
+            refreshSelect.value = lastRefreshRate;
+            setRefreshRate();
         });
     }
 

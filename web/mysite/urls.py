@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rules.views import view_firewall_logs, manage_devices_view, get_linked_isps_view, toggle_isp_link_view, update_firewall_rules_view
+from rules.views import view_firewall_logs, manage_devices_view, get_linked_isps_view, toggle_isp_link_view, update_firewall_rules_view, domain_lookup_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,4 +27,8 @@ urlpatterns = [
 
     path('api/device/<int:device_id>/linked-isps/', get_linked_isps_view, name='get_linked_isps'),
     path('api/toggle-isp/', toggle_isp_link_view, name='toggle_isp_link'),
+
+
+    path('domain-lookup/', domain_lookup_view, name='domain-lookup'),
+
 ]

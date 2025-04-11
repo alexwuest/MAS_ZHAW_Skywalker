@@ -249,9 +249,9 @@ def run_log_parser_once(search_address=None):
             src_combined = f"{src}:{log.get('srcport')}".ljust(20)
             dst_combined = f"{dst}:{log.get('dstport')}".ljust(20)
 
-            log_entry = f"{timestamp_str} - {src_combined} ->  {dst_combined}"
+            #log_entry = f"{timestamp_str} - {src_combined} ->  {dst_combined}"
             #log_entry = f"{timestamp_str} - {log.get('action')} - {log.get('interface')} - {src_combined} -> {dst_combined}" #more detailed...
-            output.append(log_entry)
+            #output.append(log_entry)
 
             # Reverse DNS and metadata
             if dst not in config.IP_TABLE:
@@ -265,11 +265,13 @@ def run_log_parser_once(search_address=None):
                     config.IP_TABLE[dst].update(ip_api_data)
 
             meta_data = config.IP_TABLE.get(dst, {})
-            # Get the most recent (non-expired) metadata if it exists
-            metadata_obj = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
 
-            metadata_changed = False
-            # Check if entry has changed with the fields bellow
+            # Check if metadata already exists
+            existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
+            was_known = bool(existing_metadata)
+
+            # Compare for changes
+            metadata_obj = existing_metadata
             if metadata_obj:
                 if (
                     metadata_obj.dns_name != meta_data.get("dns_name", "N/A") or
@@ -277,38 +279,49 @@ def run_log_parser_once(search_address=None):
                     metadata_obj.city != meta_data.get("city", "N/A") or
                     metadata_obj.country != meta_data.get("country", "N/A")
                 ):
-                    # Change the entry if the meta data has changed
-                    metadata_changed = True
                     metadata_obj.end_date = timezone.now()
                     metadata_obj.save()
+                    was_known = False  # because it's now closed
                     metadata_obj = None
 
-            # If no entry found make a new entry
+            # Create new metadata entry if needed
             if not metadata_obj:
                 metadata_obj = DestinationMetadata.objects.create(
-                ip=dst,
-                dns_name=meta_data.get("dns_name") or "N/A",
-                isp=meta_data.get("isp") or "N/A",
-                city=meta_data.get("city") or "N/A",
-                country=meta_data.get("country") or "N/A",
-                continent=meta_data.get("continent") or "N/A",
-                continent_code=meta_data.get("continent_code") or "N/A",
-                region=meta_data.get("region") or "N/A",
-                region_name=meta_data.get("region_name") or "N/A",
-                district=meta_data.get("district") or "N/A",  # 🛠️ critical line
-                zip_code=meta_data.get("zip_code") or "N/A",
-                lat=meta_data.get("lat") or 0.0,
-                lon=meta_data.get("lon") or 0.0,
-                timezone=meta_data.get("timezone") or "N/A",
-                offset=meta_data.get("offset") or 0,
-                currency=meta_data.get("currency") or "N/A",
-                org=meta_data.get("org") or "N/A",
-                as_number=meta_data.get("as_number") or "N/A",
-                as_name=meta_data.get("as_name") or "N/A",
-                mobile=meta_data.get("mobile") or False,
-                proxy=meta_data.get("proxy") or False,
-                hosting=meta_data.get("hosting") or False,
-            )
+                    ip=dst,
+                    dns_name=meta_data.get("dns_name") or "N/A",
+                    isp=meta_data.get("isp") or "N/A",
+                    city=meta_data.get("city") or "N/A",
+                    country=meta_data.get("country") or "N/A",
+                    continent=meta_data.get("continent") or "N/A",
+                    continent_code=meta_data.get("continent_code") or "N/A",
+                    region=meta_data.get("region") or "N/A",
+                    region_name=meta_data.get("region_name") or "N/A",
+                    district=meta_data.get("district") or "N/A",
+                    zip_code=meta_data.get("zip_code") or "N/A",
+                    lat=meta_data.get("lat") or 0.0,
+                    lon=meta_data.get("lon") or 0.0,
+                    timezone=meta_data.get("timezone") or "N/A",
+                    offset=meta_data.get("offset") or 0,
+                    currency=meta_data.get("currency") or "N/A",
+                    org=meta_data.get("org") or "N/A",
+                    as_number=meta_data.get("as_number") or "N/A",
+                    as_name=meta_data.get("as_name") or "N/A",
+                    mobile=meta_data.get("mobile") or False,
+                    proxy=meta_data.get("proxy") or False,
+                    hosting=meta_data.get("hosting") or False,
+                )
+
+            status = "✅" if was_known else "🆕"
+            isp_display = meta_data.get("isp", "N/A")
+
+            tags = []
+            if meta_data.get("proxy"): tags.append("🔒proxy")
+            if meta_data.get("hosting"): tags.append("🏢hosting")
+            if meta_data.get("mobile"): tags.append("📱mobile")
+            tags_display = " ".join(tags)
+
+            log_entry = f"{timestamp_str} - {src_combined} → {dst_combined} [{status}] ({isp_display}) {tags_display}"
+            output.append(log_entry)
 
 
             # If the entry already exists skip

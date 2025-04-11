@@ -1,0 +1,31 @@
+{% include "header.html" %}
+
+      <tr class="middle-row">
+        <td style="background-color: #e0f7fa;">
+          <h2>Domain to ISP Lookup</h2>
+          Initialy add a device and afterwards add leases to the device. So it will be visible under the device in the frontend "Show Logs"</br></br>
+          <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Check</button>
+        </form>
+    
+        {% if results %}
+            <h2>Results</h2>
+            <table border="1">
+                <tr>
+                    <th>IP Address</th>
+                    <th>ISP</th>
+                </tr>
+                {% for entry in results %}
+                    <tr>
+                        <td>{{ entry.ip }}</td>
+                        <td>{{ entry.isp }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        </td>
+      </tr>
+
+{% include "footer.html" %}

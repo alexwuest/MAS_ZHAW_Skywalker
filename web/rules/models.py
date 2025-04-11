@@ -1,11 +1,18 @@
 from django.db import models
+from .constants import get_dns_choices
 
 class Device(models.Model):
     device_id = models.CharField(max_length=20, unique=True)
     description = models.TextField(blank=True)
+    dns_server = models.CharField(
+        max_length=20,
+        choices=get_dns_choices(),
+        default="cloudflare"
+    )
 
     def __str__(self):
         return self.device_id
+
 
 
 class DeviceMac(models.Model):
@@ -20,7 +27,6 @@ class DeviceMac(models.Model):
             models.Index(fields=['mac_address']),
             models.Index(fields=['mac_address', 'start_date', 'end_date']),
         ]
-
 
     def __str__(self):
         return f"{self.mac_address} ({self.device.device_id})"
@@ -38,7 +44,6 @@ class DeviceIp(models.Model):
             models.Index(fields=['ip_address']),
             models.Index(fields=['mac', 'start_date', 'end_date']),
         ]
-
 
     def __str__(self):
         return f"{self.ip_address} via {self.mac.mac_address}"
@@ -155,8 +160,7 @@ class FirewallRule(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     isp_name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
-    pushed_to_opnsense = models.BooleanField(default=False)
-
+   
     class Meta:
         unique_together = ['destination_ip', 'start_date']
         indexes = [

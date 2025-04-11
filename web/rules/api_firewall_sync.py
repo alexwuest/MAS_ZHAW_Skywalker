@@ -1,11 +1,26 @@
 from django.utils import timezone
 from .models import DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata
-from .api_firewall import check_rule_exists, add_firewall_rule, apply_firewall_changes
+from .api_firewall import check_rule_exists, add_firewall_rule, apply_firewall_changes, delete_rule_by_source_and_destination
 
-def get_active_ip(device_id):
+def get_active_ip(device_id_str):
+    from .models import Device  # or wherever your Device model lives
     now = timezone.now()
-    lease = DeviceLease.objects.filter(device__device_id=device_id, lease_end__gt=now).first()
+
+    try:
+        device = Device.objects.get(device_id=device_id_str)
+    except Device.DoesNotExist:
+        return None
+
+    lease = (
+        DeviceLease.objects
+        .filter(device_id=device.id, lease_end__gt=now)
+        .order_by('-lease_start')
+        .first()
+    )
+
     return lease.ip_address if lease else None
+
+
 
 def get_allowed_isps(device_id):
     return list(DeviceAllowedISP.objects.filter(device__device_id=device_id).values_list('isp_name', flat=True))
@@ -14,22 +29,23 @@ def get_blocked_ips_by_isp(isp_list):
     logs = FirewallLog.objects.filter(action='block', destination_metadata__isp__in=isp_list)
     return set(logs.values_list('destination_ip', flat=True))
 
-def allow_blocked_ips_for_device(device_id):
+def allow_blocked_ips_for_device(device_id, return_removed=False):
     ip_source = get_active_ip(device_id)
     if not ip_source:
         return 0
 
-    isps = get_allowed_isps(device_id)
-    if not isps:
-        return 0
-
-    dest_ips = get_blocked_ips_by_isp(isps)
+    allowed_isps = get_allowed_isps(device_id)
+    dest_ips = get_blocked_ips_by_isp(allowed_isps)
     added = 0
+    now = timezone.now()
+
+    # Track all destination IPs that should remain
+    valid_dest_ips = set()
 
     for ip_dest in dest_ips:
-        # Get metadata
         metadata = DestinationMetadata.objects.filter(ip=ip_dest, end_date__isnull=True).first()
         isp_name = metadata.isp if metadata else "Unknown"
+        valid_dest_ips.add(ip_dest)
 
         rule_obj, created = FirewallRule.objects.get_or_create(
             source_ip=ip_source,
@@ -37,19 +53,38 @@ def allow_blocked_ips_for_device(device_id):
             protocol="any",
             port=0,
             action="PASS",
-            isp_name=isp_name,
-            destination_info=metadata,
-            defaults={"pushed_to_opnsense": False}
+            end_date=None,
+            defaults={
+                "isp_name": isp_name,
+                "destination_info": metadata
+            }
         )
 
-        if not rule_obj.pushed_to_opnsense:
+        if created:
             if not check_rule_exists(ip_source, ip_dest):
                 if add_firewall_rule(ip_source, ip_dest):
-                    rule_obj.pushed_to_opnsense = True
-                    rule_obj.save()
                     added += 1
+                else:
+                    rule_obj.delete()
 
-    if added > 0:
+    # Remove rules that no longer belong to allowed ISPs
+    existing_rules = FirewallRule.objects.filter(source_ip=ip_source, end_date__isnull=True)
+    removed = 0
+
+    for rule in existing_rules:
+        if rule.destination_ip not in valid_dest_ips or rule.isp_name not in allowed_isps:
+            print(f"Removing rule to {rule.destination_ip} (ISP no longer allowed: {rule.isp_name})")
+            deleted_count = delete_rule_by_source_and_destination(rule.source_ip, rule.destination_ip)
+            if deleted_count > 0:
+                rule.end_date = now
+                rule.save(update_fields=["end_date"])
+            removed += deleted_count
+
+    if added > 0 or removed > 0:
         apply_firewall_changes()
 
+    if return_removed:
+        return added, removed
     return added
+
+

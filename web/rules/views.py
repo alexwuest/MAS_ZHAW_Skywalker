@@ -43,7 +43,7 @@ def view_firewall_logs_all(request):
         "logs": logs,
         "ip_data": config.IP_TABLE,
         "isp_list": isp_list,
-        'devices': Device.objects.all(),
+        'devices': Device.objects.all().order_by('device_id'),
     })
 
 ###########################################################################
@@ -74,7 +74,21 @@ def view_firewall_logs(request):
             pass
 
     logs_queryset = logs_queryset.order_by('-timestamp')[:500] #Limit?
-    logs = "\n".join(str(log) for log in logs_queryset)
+    enriched_logs = []
+    for log in logs_queryset:
+        ip = log.destination_ip
+        meta_data = config.IP_TABLE.get(ip, {})
+        status = "✅" if log.destination_metadata else "🆕"
+        isp_display = meta_data.get("isp", "N/A")
+
+        src = f"{log.source_ip}:{log.source_port}".ljust(20)
+        dst = f"{log.destination_ip}:{log.destination_port}".ljust(20)
+        timestamp = log.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+
+        enriched_logs.append(f"{timestamp} - {src} → {dst} {status} {isp_display}")
+
+    logs = "\n".join(enriched_logs)
+
 
     isp_set = set()
 
@@ -104,7 +118,7 @@ def view_firewall_logs(request):
         "logs": logs,
         "ip_data": config.IP_TABLE,
         "isp_list": isp_list,
-        "devices": Device.objects.all(),
+        'devices': Device.objects.all().order_by('device_id'),
         "selected_device_id": device_id,
     })
 
@@ -114,9 +128,6 @@ def view_firewall_logs(request):
 ###########################################################################
 
 def manage_devices_view(request):
-    # refresh DHCP leases 
-    api_dhcp_parser.parse_opnsense_leases()
-
     client_ip = request.META.get('HTTP_X_FORWARDED_FOR') or request.META.get('REMOTE_ADDR')
     device_form = DeviceApprovalForm(initial={'ip_address': client_ip, 'mac_address': ''})
 
@@ -126,11 +137,13 @@ def manage_devices_view(request):
         if action == "add_device":
             device_form = DeviceApprovalForm(request.POST)
             if device_form.is_valid():
-                device_id = device_form.cleaned_data['device_id']
-                description = device_form.cleaned_data['description']
-                device, description = Device.objects.get_or_create(device_id=device_id, defaults={'description': description})
+                device = device_form.save(commit=False)
 
+                if not Device.objects.filter(device_id=device.device_id).exists():
+                    device.save()
+                
                 return redirect('manage-devices')
+
 
         elif action == "assign_lease":
             lease_form = AssignDeviceToLeaseForm(request.POST)
@@ -140,9 +153,13 @@ def manage_devices_view(request):
 
                 lease = get_object_or_404(DeviceLease, id=lease_id)
                 lease.device = device
+                print(f"Assigning lease {lease_id} to device {device.device_id}")
+                lease._dns_rule_applied = True  # to avoid re-adding the rule
                 lease.save()
 
                 return redirect('manage-devices')
+
+    api_dhcp_parser.parse_opnsense_leases()
 
     # Unassigned leases
     unlinked_leases = DeviceLease.objects.filter(device__isnull=True).order_by('-last_seen')
@@ -152,6 +169,7 @@ def manage_devices_view(request):
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
     })
+
 
 ###########################################################################
 # Update firewall rules
@@ -168,10 +186,12 @@ def update_firewall_rules_view(request):
         except Device.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Device not found"}, status=404)
 
-        count = allow_blocked_ips_for_device(device.device_id)
-        return JsonResponse({"status": "ok", "rules_added": count})
-    
-    return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)
+        count_added, count_removed = allow_blocked_ips_for_device(device.device_id, return_removed=True)
+        return JsonResponse({
+            "status": "ok",
+            "rules_added": count_added,
+            "rules_removed": count_removed
+        })
 
 
 
@@ -203,4 +223,32 @@ def toggle_isp_link_view(request):
 
 
 
+# views.py
+import socket
+import requests
+from django.shortcuts import render
+from .forms import DomainLookupForm
 
+def domain_lookup_view(request):
+    form = DomainLookupForm()
+    results = None
+
+    if request.method == 'POST':
+        form = DomainLookupForm(request.POST)
+        if form.is_valid():
+            domain = form.cleaned_data['domain']
+            try:
+                ip_list = list(set(info[4][0] for info in socket.getaddrinfo(domain, None)))
+            except socket.gaierror:
+                ip_list = []
+
+            results = []
+            for ip in ip_list:
+                try:
+                    res = requests.get(f"http://ip-api.com/json/{ip}", timeout=3).json()
+                    isp = res.get("isp", "Unknown")
+                except Exception:
+                    isp = "Unknown"
+                results.append({'ip': ip, 'isp': isp})
+
+    return render(request, 'domain_lookup.html', {'form': form, 'results': results})
