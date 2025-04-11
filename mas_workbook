@@ -285,3 +285,7 @@ python manage.py runserver 0.0.0.0:8000
 # Things to make research is to find out if there is a possibility to block the wipe and sound notification of an iOS device. I think that is not possible. Especially if we want to access the icloud data photos and stuff, we need to give access to the icloud network which is also combined to the find my network.
 # Actually we do have a case were the phone is full and relevant movies are in the cloud. That because the preview is showing relevant movies which are not stored on the device. Now we should open the device to the icloud but we need to make sure it wont be wiped. As the suspect is no longer in "untersuchungshaft" it is likely he did access his account and added a remote wipe to his old devices.
 
+################################
+## 11.04.2025
+################################
+# Removed the idea of signals.py as i could not manage to get it working as expected. I will just add the rules to the firewall and remove them if needed. Directly in the view if/else with check if rule exists or not.

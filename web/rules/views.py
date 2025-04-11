@@ -5,13 +5,16 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.http import JsonResponse
 
+import socket
+import requests
+
 from . import config
 from .api_logs_parser import run_log_parser_once, api_dhcp_parser
-from .models import DeviceLease, DeviceAllowedISP, FirewallLog
 
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog
 from .api_firewall_sync import allow_blocked_ips_for_device
-from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm
+from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm
+
 
 ###########################################################################
 # Show Output with logfile parser run
@@ -124,6 +127,13 @@ def view_firewall_logs(request):
 
 
 ###########################################################################
+# Show Output with logfile parser run and filtered output
+###########################################################################
+
+
+
+
+###########################################################################
 # Combined view for device management
 ###########################################################################
 
@@ -139,9 +149,16 @@ def manage_devices_view(request):
             if device_form.is_valid():
                 device = device_form.save(commit=False)
 
-                if not Device.objects.filter(device_id=device.device_id).exists():
+                existing = Device.objects.filter(device_id=device.device_id).first()
+                if existing:
+                    existing.description = device.description
+                    existing.dns_server = device.dns_server
+                    existing.save()
+                    print(f"Device {device.device_id} updated.")
+                else:
                     device.save()
-                
+                    print(f"Device {device.device_id} added.")
+
                 return redirect('manage-devices')
 
 
@@ -154,8 +171,51 @@ def manage_devices_view(request):
                 lease = get_object_or_404(DeviceLease, id=lease_id)
                 lease.device = device
                 print(f"Assigning lease {lease_id} to device {device.device_id}")
-                lease._dns_rule_applied = True  # to avoid re-adding the rule
                 lease.save()
+
+                # Determine the newest lease for this device based on lease_start
+                newest_lease = (
+                    DeviceLease.objects
+                    .filter(device=device)
+                    .order_by('-lease_start')
+                    .first()
+                )
+
+                dns = (device.dns_server or "").strip().lower()
+                dns_map = {
+                    "cloudflare": "1.1.1.1",
+                    "google": "8.8.8.8",
+                    "quad9": "9.9.9.9"
+                }
+                dns_ip = dns_map.get(dns)
+
+                if not dns_ip:
+                    print(f"ERROR: Unknown DNS server: '{dns}'")
+                    return redirect('manage-devices')
+
+                from .api_firewall import check_rule_exists, add_firewall_rule, delete_rule_by_source_and_destination, apply_firewall_changes
+
+                changes_made = False
+
+                # Remove rules from all other leases except the newest
+                other_leases = DeviceLease.objects.filter(device=device).exclude(id=newest_lease.id)
+                for old_lease in other_leases:
+                    if old_lease.ip_address:
+                        print(f"INFO: Removing old rule for {old_lease.ip_address}")
+                        removed = delete_rule_by_source_and_destination(old_lease.ip_address, dns_ip)
+                        if removed > 0:
+                            changes_made = True
+
+                # Add rule for the newest lease only if needed
+                if newest_lease.ip_address and not check_rule_exists(newest_lease.ip_address, dns_ip):
+                    if add_firewall_rule(newest_lease.ip_address, dns_ip):
+                        print(f"✅ Rule added for {newest_lease.ip_address} → {dns_ip}")
+                        changes_made = True
+                else:
+                    print(f"INFO: Rule already exists for {newest_lease.ip_address} → {dns_ip}")
+
+                if changes_made:
+                    apply_firewall_changes()
 
                 return redirect('manage-devices')
 
@@ -221,13 +281,10 @@ def toggle_isp_link_view(request):
         return JsonResponse({"status": "unlinked", "deleted": deleted})
 
 
+###########################################################################
+# Lookup page
+###########################################################################
 
-
-# views.py
-import socket
-import requests
-from django.shortcuts import render
-from .forms import DomainLookupForm
 
 def domain_lookup_view(request):
     form = DomainLookupForm()

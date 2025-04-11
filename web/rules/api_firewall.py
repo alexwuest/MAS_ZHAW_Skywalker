@@ -90,6 +90,22 @@ def delete_rule_by_source_and_destination(ip_source, ip_destination):
         return 0
 
 
+def get_all_rules():
+    try:
+        response = requests.post(
+            SEARCH_RULE_ENDPOINT,
+            auth=HTTPBasicAuth(API_KEY, API_SECRET),
+            verify=CERT_PATH
+        )
+        if response.status_code == 200:
+            return response.json().get("rows", [])
+        else:
+            print(f"Failed to get rules: {response.status_code} - {response.text}")
+            return []
+    except requests.RequestException as e:
+        print(f"Error fetching all rules: {e}")
+        return []
+
 
 
 def check_rule_exists(ip_source, ip_destination):

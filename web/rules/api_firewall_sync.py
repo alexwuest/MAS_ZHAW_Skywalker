@@ -1,6 +1,6 @@
 from django.utils import timezone
 from .models import DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata
-from .api_firewall import check_rule_exists, add_firewall_rule, apply_firewall_changes, delete_rule_by_source_and_destination
+from .api_firewall import check_rule_exists, add_firewall_rule, apply_firewall_changes, delete_rule_by_source_and_destination, get_all_rules
 
 def get_active_ip(device_id_str):
     from .models import Device  # or wherever your Device model lives
@@ -21,13 +21,13 @@ def get_active_ip(device_id_str):
     return lease.ip_address if lease else None
 
 
-
 def get_allowed_isps(device_id):
     return list(DeviceAllowedISP.objects.filter(device__device_id=device_id).values_list('isp_name', flat=True))
 
 def get_blocked_ips_by_isp(isp_list):
     logs = FirewallLog.objects.filter(action='block', destination_metadata__isp__in=isp_list)
     return set(logs.values_list('destination_ip', flat=True))
+
 
 def allow_blocked_ips_for_device(device_id, return_removed=False):
     ip_source = get_active_ip(device_id)
@@ -39,11 +39,23 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
     added = 0
     now = timezone.now()
 
+    # Cache destination metadata
+    metadata_lookup = {
+        m.ip: m for m in DestinationMetadata.objects.filter(ip__in=dest_ips, end_date__isnull=True)
+    }
+
+    # Get all current OPNsense rules once
+    all_rules = get_all_rules()
+    existing_descriptions = {rule.get("description", "") for rule in all_rules}
+
+    def rule_exists(ip_src, ip_dst):
+        return any(ip_src in desc and ip_dst in desc for desc in existing_descriptions)
+
     # Track all destination IPs that should remain
     valid_dest_ips = set()
 
     for ip_dest in dest_ips:
-        metadata = DestinationMetadata.objects.filter(ip=ip_dest, end_date__isnull=True).first()
+        metadata = metadata_lookup.get(ip_dest)
         isp_name = metadata.isp if metadata else "Unknown"
         valid_dest_ips.add(ip_dest)
 

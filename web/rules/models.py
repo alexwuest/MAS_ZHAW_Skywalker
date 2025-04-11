@@ -14,41 +14,6 @@ class Device(models.Model):
         return self.device_id
 
 
-
-class DeviceMac(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="mac_addresses")
-    mac_address = models.CharField(max_length=17)           # 00:1A:2B:3C:4D:5E
-    start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField(null=True, blank=True)
-    
-    class Meta:
-        unique_together = ['mac_address', 'start_date']
-        indexes = [
-            models.Index(fields=['mac_address']),
-            models.Index(fields=['mac_address', 'start_date', 'end_date']),
-        ]
-
-    def __str__(self):
-        return f"{self.mac_address} ({self.device.device_id})"
-
-
-class DeviceIp(models.Model):
-    mac = models.ForeignKey(DeviceMac, on_delete=models.CASCADE, related_name="ip_assignments")
-    ip_address = models.GenericIPAddressField()
-    start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField(null=True, blank=True)
-
-    class Meta:
-        unique_together = ['mac', 'ip_address', 'start_date']
-        indexes = [
-            models.Index(fields=['ip_address']),
-            models.Index(fields=['mac', 'start_date', 'end_date']),
-        ]
-
-    def __str__(self):
-        return f"{self.ip_address} via {self.mac.mac_address}"
-
-
 class DeviceAllowedISP(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="allowed_isps")
     isp_name = models.CharField(max_length=100)

@@ -1,10 +1,7 @@
 from django.contrib import admin
 
-from .models import Device, DeviceMac, DeviceIp, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP
+from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP
 
-
-admin.site.register(DeviceMac)
-admin.site.register(DeviceIp)
 admin.site.register(DeviceAllowedISP)
 
 @admin.register(FirewallRule)
