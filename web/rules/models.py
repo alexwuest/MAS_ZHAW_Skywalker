@@ -61,6 +61,7 @@ class DestinationMetadata(models.Model):
 
     # Models for ip-api.com
     ip = models.GenericIPAddressField()
+    console_first_output = models.BooleanField(default=False)
     status = models.CharField(max_length=20, null=True, blank=True)
     continent = models.CharField(max_length=50, null=True, blank=True)
     continent_code = models.CharField(max_length=5, null=True, blank=True)

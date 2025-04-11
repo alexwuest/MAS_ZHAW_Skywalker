@@ -289,3 +289,9 @@ python manage.py runserver 0.0.0.0:8000
 ## 11.04.2025
 ################################
 # Removed the idea of signals.py as i could not manage to get it working as expected. I will just add the rules to the firewall and remove them if needed. Directly in the view if/else with check if rule exists or not.
+# I did change quite much of the code and added a completly new view i used earlier as python script in the opnsense project. It works fine but now i have the problem when running both views does i miss entries...
+# I need to parse the logfiles centralized and access with the views just the db to get the app more responsive and to have a constitent data set...
+
+# I made some try and error tests trying to get apple cloud / videos without getting the ring from find my network. I figured out the content of icloud is directly delivered by apple no CDN. That makes sense as these content is rarly accessed and just from a really small user group. So i would also implement it to deliver it by my self.
+# The ring from the find my network was never triggered when opening all ips just without isp Apple. So i expect this is also just getting from apple directly and not over any other services. I tried to access just the ips with dns entries xx_aaplimg.com i was not able to access icloud photos or videos.
+# So right at the moment i expect i won't have the opportunity to get access to the icloud data without exposing the device to the find my network.

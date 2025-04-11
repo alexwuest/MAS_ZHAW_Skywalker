@@ -66,7 +66,7 @@ def view_firewall_logs(request):
         try:
             now = timezone.now()
             active_leases = DeviceLease.objects.filter(
-                device__id=device_id,
+                device__device_id=device_id,
                 lease_end__gt=now
             ).values_list('ip_address', flat=True)
 
@@ -105,7 +105,7 @@ def view_firewall_logs(request):
 
     # include allowed ISPs from DB
     if device_id:
-        allowed = DeviceAllowedISP.objects.filter(device_id=device_id).values_list("isp_name", flat=True)
+        allowed = DeviceAllowedISP.objects.filter(device__device_id=device_id).values_list("isp_name", flat=True)
         isp_set.update(allowed)
 
 
@@ -127,8 +127,62 @@ def view_firewall_logs(request):
 
 
 ###########################################################################
-# Show Output with logfile parser run and filtered output
+# Show Output 2
 ###########################################################################
+from django.shortcuts import render, get_object_or_404
+from .models import Device, FirewallLog
+from .api_logs_parser import run_log_parser_once
+
+def device_ip_overview_view(request, device_id=None):
+    run_log_parser_once()
+    devices = Device.objects.all().order_by("device_id")
+
+    # Allow GET param fallback if no URL param is given
+    device_id = device_id or request.GET.get("device_id")
+    if not device_id:
+        return render(request, "device_ip_overview.html", {
+            "devices": devices,
+            "device": None,
+            "new_ips": [],
+            "overview": {},
+        })
+
+    device = get_object_or_404(Device, device_id=device_id)
+    source_ips = device.leases.values_list("ip_address", flat=True)
+
+    logs = FirewallLog.objects.filter(
+        source_ip__in=source_ips
+    ).select_related("destination_metadata").order_by("-timestamp")
+
+    new_ips = []
+    known_ips = {}
+    seen_destinations = set()
+
+    for log in logs:
+        meta = log.destination_metadata
+        ip = log.destination_ip
+
+        if not meta or ip in seen_destinations:
+            continue
+
+        seen_destinations.add(ip)
+
+        if not meta.console_first_output:
+            new_ips.append((ip, meta))
+            meta.console_first_output = True
+            meta.save(update_fields=["console_first_output"])
+        else:
+            isp = meta.isp or "Unknown"
+            known_ips.setdefault(isp, []).append((ip, meta))
+
+    return render(request, "device_ip_overview.html", {
+        "devices": devices,
+        "device": device,
+        "new_ips": new_ips,
+        "overview": known_ips,
+    })
+
+
 
 
 

@@ -49,15 +49,18 @@
                     <tr>
                         <td>
                             <button onclick="window.location.href='{% url 'view_logs' %}'">Show Logs</button>
+                            <button onclick="window.location.href='{% url 'device-ip-overview' %}'">Show Logs2</button>
                             <button onclick="window.location.href='{% url 'manage-devices' %}'">Manage device</button>
                             <button onclick="window.location.href='{% url 'domain-lookup' %}'">Domain lookup</button>
                         </td>
-                        {% if request.path == '/logs/' %}
+                        {% if request.path == '/logs/' or request.path == '/overview/' %}
                         <td style="text-align: right;">
                             <select id="deviceSelect" onchange="onDeviceSelectChange(this)">
                                 <option value="" disabled selected>Select a device...</option>
                                 {% for device in devices %}
-                                <option value="{{ device.id }}"{% if request.GET.device == device.id|stringformat:"s" %} selected{% endif %}>
+
+                                <option value="{{ device.device_id }}"
+                                    {% if request.GET.device == device.device_id or request.GET.device_id == device.device_id %} selected{% endif %}>
                                     {{ device.device_id }} {{ device.description }}
                                 </option>
                                 {% endfor %}

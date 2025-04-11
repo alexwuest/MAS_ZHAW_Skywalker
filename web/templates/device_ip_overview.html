@@ -1,0 +1,47 @@
+{% include "header.html" %}
+
+<tr class="middle-row">
+  <td colspan="2">
+    {% if device %}
+      <h2>Device: {{ device.device_id }}</h2>
+
+      <h3>New IPs</h3>
+      {% if new_ips %}
+        <ul>
+          {% for ip, meta in new_ips %}
+          <li>{{ ip|stringformat:"-20s" }} ({{ meta.isp }} - {{ meta.city }}, {{ meta.country }})</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No new IPs.</p>
+      {% endif %}
+
+      <h3>Overview by ISP</h3>
+      {% for isp, entries in overview.items %}
+        <h4>{{ isp }}</h4>
+        <ul>
+          {% for ip, meta in entries %}
+            <li>{{ ip }} - {{ meta.city }}, {{ meta.country }}</li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    {% else %}
+      <p>Please select a device to see its IP overview.</p>
+    {% endif %}
+  </td>
+</tr>
+
+<script>
+  function onDeviceSelectChange(selectElement) {
+      const selectedId = selectElement.value;
+      const currentPath = window.location.pathname;
+
+      if (currentPath === "/logs/") {
+          window.location.href = `/logs/?device=${selectedId}`;
+      } else if (currentPath === "/overview/") {
+          window.location.href = `/overview/?device_id=${selectedId}`;
+      }
+  }
+</script>
+
+{% include "footer.html" %}
