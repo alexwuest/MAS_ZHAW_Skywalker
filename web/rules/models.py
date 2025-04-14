@@ -3,12 +3,17 @@ from .constants import get_dns_choices
 
 class Device(models.Model):
     device_id = models.CharField(max_length=20, unique=True)
+    creation_date = models.DateTimeField(auto_now_add=True)
+    last_active = models.DateTimeField(null=True, blank=True)
+
     description = models.TextField(blank=True)
     dns_server = models.CharField(
         max_length=20,
         choices=get_dns_choices(),
         default="cloudflare"
     )
+    examiner = models.CharField(max_length=20, blank=True)
+    archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.device_id
@@ -58,7 +63,6 @@ class FirewallLog(models.Model):
 
 
 class DestinationMetadata(models.Model):
-
     # Models for ip-api.com
     ip = models.GenericIPAddressField()
     console_first_output = models.BooleanField(default=False)
@@ -148,7 +152,7 @@ class DeviceLease(models.Model):
     manufacturer = models.CharField(max_length=100, blank=True, null=True)
     interface = models.CharField(max_length=50, blank=True, null=True)
 
-    last_seen = models.DateTimeField(auto_now=True)
+    last_active = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ['ip_address', 'mac_address', 'lease_start']

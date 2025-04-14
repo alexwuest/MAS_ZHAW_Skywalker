@@ -1,11 +1,11 @@
 from django import forms
-from .models import Device, DeviceLease
+from .models import Device
 from .constants import get_dns_choices
 
 class DeviceApprovalForm(forms.ModelForm):
     class Meta:
         model = Device
-        fields = ['device_id', 'description', 'dns_server']
+        fields = ['device_id', 'description', 'dns_server', 'examiner']
         widgets = {
             'dns_server': forms.Select(choices=get_dns_choices())
         }

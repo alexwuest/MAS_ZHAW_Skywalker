@@ -1,47 +1,79 @@
 {% include "header.html" %}
 
 <tr class="middle-row">
-  <td colspan="2">
+  <td colspan="2" style="background-color: #e0f7fa; padding: 16px; font-family: monospace; font-size: 13px;">
     {% if device %}
-      <h2>Device: {{ device.device_id }}</h2>
+      <h2>Grouped Overview for: {{ device.device_id }}</h2>
 
-      <h3>New IPs</h3>
+      <h3 style="margin-top: 24px;">New IPs</h3>
       {% if new_ips %}
-        <ul>
-          {% for ip, meta in new_ips %}
-          <li>{{ ip|stringformat:"-20s" }} ({{ meta.isp }} - {{ meta.city }}, {{ meta.country }})</li>
-          {% endfor %}
-        </ul>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color: #cceeff;">
+              <th style="text-align: left; padding: 6px;">IP</th>
+              <th style="text-align: left; padding: 6px;">ORG</th>
+              <th style="text-align: left; padding: 6px;">ISP</th>
+              <th style="text-align: left; padding: 6px;">DNS</th>
+              <th style="text-align: left; padding: 6px;">AS Number</th>
+              <th style="text-align: left; padding: 6px;">AS Name</th>
+              <th style="text-align: left; padding: 6px;">Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ip, meta in new_ips %}
+            <tr>
+              <td style="padding: 6px;">{{ ip }}</td>
+              <td style="padding: 6px;">{{ meta.org }}</td>
+              <td style="padding: 6px;">{{ meta.isp }}</td>
+              <td style="padding: 6px;">{{ meta.dns_name }}</td>
+              <td style="padding: 6px;">{{ meta.as_number }}</td>
+              <td style="padding: 6px;">{{ meta.as_name }}</td>
+              <td style="padding: 6px;">{{ meta.city }}, {{ meta.country }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       {% else %}
-        <p>No new IPs.</p>
+        <p><em>No new IPs.</em></p>
       {% endif %}
-
-      <h3>Overview by ISP</h3>
+      <br>
+      <hr>
+      <h3 style="margin-top: 24px;">Overview by ISP</h3>
       {% for isp, entries in overview.items %}
-        <h4>{{ isp }}</h4>
-        <ul>
-          {% for ip, meta in entries %}
-            <li>{{ ip }} - {{ meta.city }}, {{ meta.country }}</li>
-          {% endfor %}
-        </ul>
+        <details open style="margin-bottom: 10px;">
+          <summary style="font-weight: bold; cursor: pointer;">{{ isp }} ({{ entries|length }})</summary>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 6px;">
+            <thead>
+              <tr style="background-color: #ffdca8;">
+                <th style="text-align: left; padding: 6px;">IP</th>
+              <th style="text-align: left; padding: 6px;">ORG</th>
+              <th style="text-align: left; padding: 6px;">ISP</th>
+              <th style="text-align: left; padding: 6px;">DNS</th>
+              <th style="text-align: left; padding: 6px;">AS Number</th>
+              <th style="text-align: left; padding: 6px;">AS Name</th>
+              <th style="text-align: left; padding: 6px;">Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ip, meta in entries %}
+              <tr>
+                <td style="padding: 6px;">{{ ip }}</td>
+                <td style="padding: 6px;">{{ meta.org }}</td>
+                <td style="padding: 6px;">{{ meta.isp }}</td>
+                <td style="padding: 6px;">{{ meta.dns_name }}</td>
+                <td style="padding: 6px;">{{ meta.as_number }}</td>
+                <td style="padding: 6px;">{{ meta.as_name }}</td>
+                <td style="padding: 6px;">{{ meta.city }}, {{ meta.country }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </details>
       {% endfor %}
     {% else %}
       <p>Please select a device to see its IP overview.</p>
     {% endif %}
   </td>
 </tr>
-
-<script>
-  function onDeviceSelectChange(selectElement) {
-      const selectedId = selectElement.value;
-      const currentPath = window.location.pathname;
-
-      if (currentPath === "/logs/") {
-          window.location.href = `/logs/?device=${selectedId}`;
-      } else if (currentPath === "/overview/") {
-          window.location.href = `/overview/?device_id=${selectedId}`;
-      }
-  }
-</script>
 
 {% include "footer.html" %}

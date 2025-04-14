@@ -17,6 +17,10 @@
                     <td>{{ form.description }}</td>
                 </tr>
                 <tr>
+                  <td>{{ form.examiner.label_tag }}</td>
+                  <td>{{ form.examiner }}</td>
+              </tr>
+                <tr>
                   <td>{{ form.dns_server.label_tag }}</td>
                   <td>{{ form.dns_server }}</td>
               </tr>
@@ -24,7 +28,48 @@
             </br>- Please adjust DNS Settings on device to manual and use ip above. 
             </br>- Deactivate "Private WLAN-Addresse" on iOS devices.</br></br>
             <button type="submit">Approve Device</button>
-          </form>          
+          </form>
+
+          <br>
+          <hr>
+          
+          <h3>Devices Overview</h3>
+          <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="archive_devices">
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Select</th>
+                          <th>Device ID</th>
+                          <th>Description</th>
+                          <th>DNS</th>
+                          <th>Created</th>
+                          <th>Last active</th>
+                          <th>Archived</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for device in devices %}
+                      <tr>
+                        <td>
+                          <input type="checkbox" name="archived" value="{{ device.device_id }}"
+                              {% if device.archived %}checked{% endif %}>
+                        </td>
+                          <td>{{ device.device_id }}</td>
+                          <td>{{ device.description }}</td>
+                          <td>{{ device.dns_server }}</td>
+                          <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
+                          <td>{{ device.last_seen|date:"d.m.Y H:i" }}
+                          <td>{{ device.archived }}</td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+              <button type="submit">Archive Selected</button>
+          </form>
+
+
         </td>
         <td style="background-color: #e0f7fa;">
           <h2>Assign Leases to Devices</h2>

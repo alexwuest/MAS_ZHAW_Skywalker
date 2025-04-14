@@ -1,8 +1,43 @@
 from django.contrib import admin
 
-from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP
+from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP, FirewallLog
 
 admin.site.register(DeviceAllowedISP)
+
+@admin.register(FirewallLog)
+class FirewallLogAdmin(admin.ModelAdmin):
+    list_display = (
+        'timestamp',
+        'action',
+        'interface',
+        'source_ip',
+        'source_port',
+        'destination_ip',
+        'destination_port',
+        'protocol',
+        'destination_metadata',
+    )
+    list_filter = (
+        'action',
+        'interface',
+        'protocol',
+    )
+    search_fields = (
+        'source_ip',
+        'destination_ip',
+    )
+    date_hierarchy = 'timestamp'
+    ordering = ('-timestamp',)
+
+    # All fields read-only
+    readonly_fields = [field.name for field in FirewallLog._meta.fields]
+
+    # Prevent add and edit
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 @admin.register(FirewallRule)
 class FirewallRuleAdmin(admin.ModelAdmin):
@@ -38,17 +73,29 @@ class Device(admin.ModelAdmin):
         'device_id',
         'description',
         'dns_server',
+        'examiner',
+        'creation_date',
+        'last_active',
+        'archived',
         
     )
     list_filter = (
         'device_id',
         'description',
         'dns_server',
+        'examiner',
+        'creation_date',
+        'last_active',
+        'archived',
     )
     search_fields = (
         'device_id',
         'description',
         'dns_server',
+        'examiner',
+        'creation_date',
+        'last_active',
+        'archived',
     )
 
 
@@ -98,7 +145,7 @@ class DeviceLeaseAdmin(admin.ModelAdmin):
         'manufacturer',
         'lease_start',
         'lease_end',
-        'last_seen',
+        'last_active',
     )
     list_filter = (
         'manufacturer',

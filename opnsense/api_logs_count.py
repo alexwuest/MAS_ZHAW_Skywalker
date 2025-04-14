@@ -86,7 +86,7 @@ for ip in top_ips:
     if ip not in config.IP_TABLE:
         config.IP_TABLE[ip] = {}
         get_ip_api(ip)
-        time.sleep(0.5)  # Respect free-tier limits
+        time.sleep(1.5)  # to avoid getting into ip-api.com rate limit
 
 # Add enrichment columns
 df["Org"] = df["IP Address"].map(lambda ip: config.IP_TABLE.get(ip, {}).get("org", ""))

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.http import JsonResponse
 
 import socket
@@ -11,9 +11,59 @@ import requests
 from . import config
 from .api_logs_parser import run_log_parser_once, api_dhcp_parser
 
-from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog
+from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule
 from .api_firewall_sync import allow_blocked_ips_for_device
+from .api_firewall import delete_rule_by_source_and_destination
 from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm
+
+############################################################################
+# Emoji legend for code comments
+#   🔍	Search or lookup
+#   🔑	Authentication, key, or token
+#   🔒	Security, encryption, or protectio
+#   📜	Log or record
+#   📊	Data processing or analysis
+#   📈	Statistics or metrics
+#   📉	Decrease or reduction
+#   📅	Reminder or alert
+#   📧	Email or notification
+#   📱	Mobile or app
+#   📡	Network or connection
+#   📶	Signal strength or quality
+#   📡	Network or connection
+#   📅	Calendar or date
+#   📧	Email or notification
+#   🧠	Smart logic or algorithm
+#   🔄	Loop or recurring process
+#   ➕	Addition, appending
+#   ➖	Removal, deletion
+#   🧩	Modular or reusable component
+#   🪝	Hook or signal (Django, etc.)
+#   🧵	Thread or concurrency
+#   📦	Package or dependency
+#   🗂️	Data grouping (like folders/tables)
+#   📄	Single file or document
+#   📁	Directory
+#   🗃️	Database
+#   📝	Write operation
+#   🔍	Search/query/filter
+#   📌	Pinned or important config/key
+#   🧪	Unit test or experiment
+#   🐞	Bug or issue
+#   🔧	Fix or tweak
+#   🚧	In progress or under construction
+#   🧯	Hotfix/emergency
+#   🛑	Critical error
+#   ⚠️	Warning/edge case
+#   ✅	Success / passed test
+#   ❌	Failure / rejected case
+#   ❓	Question or unknown
+#   ❗	Important note or reminder
+#   🆕   New item
+#   💡	Idea or tip
+#   ⏱️	Timeout or long task
+#   💤	Sleep/delay
+#   🚀	Speed optimization
 
 
 ###########################################################################
@@ -55,9 +105,7 @@ def view_firewall_logs_all(request):
 
 def view_firewall_logs(request):
     ip_filter = request.GET.get("ip")
-    device_id = request.GET.get("device")
-
-    run_log_parser_once()
+    device_id = request.GET.get("device_id")
 
     logs_queryset = FirewallLog.objects.all()
 
@@ -66,7 +114,7 @@ def view_firewall_logs(request):
         try:
             now = timezone.now()
             active_leases = DeviceLease.objects.filter(
-                device__device_id=device_id,
+                device__id=device_id,
                 lease_end__gt=now
             ).values_list('ip_address', flat=True)
 
@@ -76,9 +124,11 @@ def view_firewall_logs(request):
         except Device.DoesNotExist:
             pass
 
-    logs_queryset = logs_queryset.order_by('-timestamp')[:500] #Limit?
+    recent_logs = logs_queryset.order_by('-timestamp')[:1000]
+
+    # Enrich log entries
     enriched_logs = []
-    for log in logs_queryset:
+    for log in recent_logs:
         ip = log.destination_ip
         meta_data = config.IP_TABLE.get(ip, {})
         status = "✅" if log.destination_metadata else "🆕"
@@ -92,53 +142,46 @@ def view_firewall_logs(request):
 
     logs = "\n".join(enriched_logs)
 
-
+    # Build ISP list only from logs related to selected device
     isp_set = set()
-
-    # From active logs (config.IP_TABLE)
-    for ip, v in config.IP_TABLE.items():
-        if ip_filter and ip_filter not in ip:
-            continue
-        isp = v.get("isp")
-        if isp:
-            isp_set.add(isp)
-
-    # include allowed ISPs from DB
     if device_id:
-        allowed = DeviceAllowedISP.objects.filter(device__device_id=device_id).values_list("isp_name", flat=True)
-        isp_set.update(allowed)
+        try:
+            # Pull metadata from enriched logs
+            for log in recent_logs:
+                dst_ip = log.destination_ip
+                meta = config.IP_TABLE.get(dst_ip)
+                if meta and meta.get("isp"):
+                    isp_set.add(meta.get("isp"))
 
+            # Include explicitly allowed ISPs
+            allowed = DeviceAllowedISP.objects.filter(device__id=device_id).values_list("isp_name", flat=True)
+            isp_set.update(allowed)
+        except Device.DoesNotExist:
+            pass
 
-    # Build isp_list
-    isp_list = []
-    for isp_name in sorted(isp_set):
-        isp_list.append({
-            "name": isp_name,
-            "evidence_id": config.IP_TABLE.get(isp_name, {}).get("evidence_id", False)
-        })
+    # Final ISP list for display
+    isp_list = [{
+        "name": isp,
+        "evidence_id": config.IP_TABLE.get(isp, {}).get("evidence_id", False)
+    } for isp in sorted(isp_set)]
 
     return render(request, "firewall_logs.html", {
         "logs": logs,
         "ip_data": config.IP_TABLE,
         "isp_list": isp_list,
         'devices': Device.objects.all().order_by('device_id'),
-        "selected_device_id": device_id,
+        "selected_device_id": int(device_id) if device_id else None,
     })
+
 
 
 ###########################################################################
 # Show Output 2
 ###########################################################################
-from django.shortcuts import render, get_object_or_404
-from .models import Device, FirewallLog
-from .api_logs_parser import run_log_parser_once
-
-def device_ip_overview_view(request, device_id=None):
-    run_log_parser_once()
+def device_ip_overview_view(request):
     devices = Device.objects.all().order_by("device_id")
+    device_id = request.GET.get("device_id")
 
-    # Allow GET param fallback if no URL param is given
-    device_id = device_id or request.GET.get("device_id")
     if not device_id:
         return render(request, "device_ip_overview.html", {
             "devices": devices,
@@ -147,7 +190,7 @@ def device_ip_overview_view(request, device_id=None):
             "overview": {},
         })
 
-    device = get_object_or_404(Device, device_id=device_id)
+    device = get_object_or_404(Device, id=device_id)
     source_ips = device.leases.values_list("ip_address", flat=True)
 
     logs = FirewallLog.objects.filter(
@@ -180,11 +223,69 @@ def device_ip_overview_view(request, device_id=None):
         "device": device,
         "new_ips": new_ips,
         "overview": known_ips,
+        "selected_device_id": device.id if device else None,
+    })
+
+###########################################################################
+# View firewall rules for a device
+###########################################################################
+
+
+def device_firewall_rules_view(request):
+    device_id = request.GET.get("device_id")
+    devices = Device.objects.filter(archived=False).order_by("device_id")
+
+    device = None
+    rules = []
+
+    if device_id:
+        device = get_object_or_404(Device, id=device_id)
+        active_ips = DeviceLease.objects.filter(
+            device=device,
+            lease_end__gt=timezone.now()
+        ).values_list('ip_address', flat=True)
+
+        rules = FirewallRule.objects.filter(
+            source_ip__in=active_ips,
+            end_date__isnull=True
+        ).order_by('-start_date')
+
+    return render(request, "device_firewall_rules.html", {
+        "device": device,
+        "rules": rules,
+        "devices": devices,
+        "selected_device_id": int(device_id) if device_id else None,
     })
 
 
+###########################################################################
+# Remove a firewall rule
+###########################################################################
 
+@csrf_exempt
+@require_POST
+def remove_firewall_rule_view(request):
+    rule_id = request.POST.get("rule_id")
+    if not rule_id:
+        return JsonResponse({"status": "error", "message": "Missing rule_id"}, status=400)
 
+    try:
+        rule = FirewallRule.objects.get(id=rule_id)
+        rule.end_date = timezone.now()
+        rule.save(update_fields=["end_date"])
+
+        # Call the API to remove the rule
+        result = delete_rule_by_source_and_destination(source_ip=rule.source_ip, destination_ip=rule.destination_ip)
+
+        if result:
+            print(f"Firewall rule removed: {rule}")
+        else:
+            print(f"⚠️ Firewall rule might not exist anymore: {rule}")
+
+        return JsonResponse({"status": "ok"})
+
+    except FirewallRule.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Rule not found"}, status=404)
 
 
 ###########################################################################
@@ -206,6 +307,7 @@ def manage_devices_view(request):
                 existing = Device.objects.filter(device_id=device.device_id).first()
                 if existing:
                     existing.description = device.description
+                    existing.examiner = device.examiner
                     existing.dns_server = device.dns_server
                     existing.save()
                     print(f"Device {device.device_id} updated.")
@@ -272,17 +374,38 @@ def manage_devices_view(request):
                     apply_firewall_changes()
 
                 return redirect('manage-devices')
+            
+        elif action == "archive_devices":
+            selected_ids = set(request.POST.getlist("archived"))
+
+            all_devices = Device.objects.all()
+            for device in all_devices:
+                # Update archive status
+                device.archived = device.device_id in selected_ids
+
+                # Get the most recent lease activity
+                latest_activity = device.leases.aggregate(max_active=Max("last_active"))["max_active"]
+                device.last_active = latest_activity
+
+                device.save(update_fields=["archived", "last_active"])
+
+            print(f"Updated archive status. Archived: {selected_ids}")
+            return redirect("manage-devices")
 
     api_dhcp_parser.parse_opnsense_leases()
 
     # Unassigned leases
-    unlinked_leases = DeviceLease.objects.filter(device__isnull=True).order_by('-last_seen')
+    unlinked_leases = DeviceLease.objects.filter(device__isnull=True).order_by('-last_active')
     lease_forms = [AssignDeviceToLeaseForm(initial={'lease_id': lease.id}) for lease in unlinked_leases]
+    selected_device_id = request.GET.get("device_id")
 
     return render(request, 'manage_devices.html', {
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
+        'devices': Device.objects.all().order_by("device_id"),
+        "selected_device_id": int(selected_device_id) if selected_device_id else None,
     })
+
 
 
 ###########################################################################
@@ -304,7 +427,8 @@ def update_firewall_rules_view(request):
         return JsonResponse({
             "status": "ok",
             "rules_added": count_added,
-            "rules_removed": count_removed
+            "rules_removed": count_removed,
+            "selected_device_id": device.id if device else None,
         })
 
 

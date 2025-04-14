@@ -6,5 +6,28 @@
             </td>
         </tr>
     </table>   
+    <script>
+        function onDeviceSelectChange(select) {
+            const deviceId = select.value;
+            const url = new URL(window.location.href);
+            url.searchParams.set("device_id", deviceId);
+            window.location.href = url.toString();
+        }
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".nav-button").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const baseUrl = this.getAttribute("data-url");
+                    const deviceId = document.getElementById("deviceSelect").value;
+                    if (deviceId) {
+                        window.location.href = `${baseUrl}?device_id=${encodeURIComponent(deviceId)}`;
+                    } else {
+                        window.location.href = baseUrl;
+                    }
+                });
+            });
+        });
+    </script>
+        
 </body>
 </html>

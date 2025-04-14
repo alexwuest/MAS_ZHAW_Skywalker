@@ -295,3 +295,13 @@ python manage.py runserver 0.0.0.0:8000
 # I made some try and error tests trying to get apple cloud / videos without getting the ring from find my network. I figured out the content of icloud is directly delivered by apple no CDN. That makes sense as these content is rarly accessed and just from a really small user group. So i would also implement it to deliver it by my self.
 # The ring from the find my network was never triggered when opening all ips just without isp Apple. So i expect this is also just getting from apple directly and not over any other services. I tried to access just the ips with dns entries xx_aaplimg.com i was not able to access icloud photos or videos.
 # So right at the moment i expect i won't have the opportunity to get access to the icloud data without exposing the device to the find my network.
+
+################################
+## 13.04.2025
+################################
+# The views do not longer parse the logfiles one view. So always accessing the db and not the logfiles. The logfiles are parsed when the webserver runs all 5 seconds.
+# it is defined in apps.py
+# Working on the firewall rule view. Want here to offer a delete function to remove the rules from the firewall. I'm not quite sure how it will react with the grouped view but we will see. I think it should work fine but i defintely need to test behavior.
+
+#TODO: Use same table design as grouped view... to keep it consistent
+#TODO: I want in the logfile view and grouped view the option to just add one specific IP, this will definitely impact the behavior of the grouped isps...

@@ -9,9 +9,10 @@ from requests.auth import HTTPBasicAuth
 from pathlib import Path
 from django.utils import timezone
 
-from .models import FirewallLog, DestinationMetadata
+from .models import FirewallLog, DestinationMetadata, DeviceLease
 from django.utils.dateparse import parse_datetime
 from . import api_dhcp_parser, config
+
 
 # Load .env file
 load_dotenv()
@@ -30,6 +31,17 @@ print("Loaded OPNSENSE_IP:", OPNSENSE_IP)
 
 # API Endpoints
 LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
+
+def start_log_parser():
+    """Run the log parser in a thread that loops forever."""
+    thread = threading.Thread(target=parse_logs_loop)
+    thread.daemon = True
+    thread.start()
+
+def parse_logs_loop():
+    while True:
+        run_log_parser_once()
+        time.sleep(5)
 
 def get_firewall_logs():
     """Fetch firewall logs from OPNsense API."""
@@ -120,7 +132,6 @@ def get_ip_api(ip, retry=False):
     else:
         print("❌ Permanent failure.")
         return None
-
 
 
 def get_ips_company(value):
@@ -243,6 +254,18 @@ def run_log_parser_once(search_address=None):
             elif not timestamp:
                 timestamp = timezone.now()
 
+                        
+            # Update last_active time for lease
+            src_ip = log.get('src')
+            if src_ip:
+                try:
+                    lease = DeviceLease.objects.filter(ip_address=src_ip).order_by('-lease_start').first()
+                    if lease:
+                        lease.last_active = timezone.now()
+                        lease.save(update_fields=["last_active"])
+                except Exception as e:
+                    print(f"Error updating last_active for {src_ip}: {e}")
+
             src = log.get("src")
             dst = log.get("dst")
 
@@ -270,6 +293,7 @@ def run_log_parser_once(search_address=None):
             existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
             was_known = bool(existing_metadata)
 
+
             # Compare for changes
             metadata_obj = existing_metadata
             if metadata_obj:
@@ -281,7 +305,7 @@ def run_log_parser_once(search_address=None):
                 ):
                     metadata_obj.end_date = timezone.now()
                     metadata_obj.save()
-                    was_known = False  # because it's now closed
+                    was_known = False
                     metadata_obj = None
 
             # Create new metadata entry if needed
