@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 from pathlib import Path
 from django.utils import timezone
+from django.utils.timezone import now as django_now
+from datetime import timedelta
 
 from .models import FirewallLog, DestinationMetadata, DeviceLease
 from django.utils.dateparse import parse_datetime
@@ -32,16 +34,142 @@ print("Loaded OPNSENSE_IP:", OPNSENSE_IP)
 # API Endpoints
 LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
 
+# Adding private IP check to avoid later IP lookup fails with ip-api.com and keep requests low...
+def is_private_ip(ip):
+    try:
+        first, second, third, *_ = map(int, ip.split('.'))
+
+        return (
+            # Private Networks A,B,C
+            first == 10 or
+            (first == 172 and 16 <= second <= 31) or
+            (first == 192 and second == 168) or
+
+            # Loopback and link-local
+            (first == 127 and second == 0) or
+            (first == 169 and second == 254) or
+
+            # Carrier-grade NAT
+            (first == 100 and second == 64) or
+
+            # Reserved / special-use
+            (first == 192 and second == 0 and third == 0) or
+            (first == 192 and second == 0 and third == 2) or
+            (first == 192 and second == 88 and third == 99) or
+            (first == 198 and second == 18) or
+            (first == 198 and second == 51 and third == 100) or
+            (first == 203 and second == 0 and third == 113) or
+
+            # Multicast and broadcast (maybe not necessary, but good for safety)
+            (first == 224 and second == 0) or
+            (first == 255 and second == 255)
+        )
+    except Exception:
+        return False
+
+# Make sure the enrichment was done just once and avoid unnecessary requests to ip-api.com like private IPs
+def enrich_ip(ip):
+    RECHECK_AFTER_HOURS = 48
+    now = datetime.datetime.now()
+
+    if ip not in config.IP_TABLE:
+        config.IP_TABLE[ip] = {}
+
+    memory_entry = config.IP_TABLE[ip]
+
+    # If entry already here and not old for recheck, skip it
+    if memory_entry.get("_lookup_done"):
+        try:
+            last_checked = datetime.datetime.strptime(memory_entry["last_checked"], "%Y-%m-%d %H:%M:%S.%f")
+            if (now - last_checked).total_seconds() < RECHECK_AFTER_HOURS * 3600:
+                if config.DEBUG_ALL:
+                    print(f"✅ Memory-enriched {ip} still fresh.")
+                return
+        except Exception:
+            pass
+
+    # DB check
+    
+    db_entry = DestinationMetadata.objects.filter(ip=ip, end_date__isnull=True).first()
+    if db_entry and django_now() - db_entry.last_checked < datetime.timedelta(hours=RECHECK_AFTER_HOURS):
+        config.IP_TABLE[ip]["_lookup_done"] = True
+        config.IP_TABLE[ip]["last_checked"] = db_entry.last_checked.strftime("%Y-%m-%d %H:%M:%S.%f")
+        config.IP_TABLE[ip]["dns_name"] = db_entry.dns_name or "N/A"
+        config.IP_TABLE[ip]["isp"] = db_entry.isp or "N/A"
+        return
+       
+    # Mark entry as not complete
+    config.IP_TABLE[ip] = {"_lookup_done": False}
+    dns_name = reverse_dns_lookup(ip) or "N/A"
+
+    config.IP_TABLE[ip].update({"dns_name": dns_name})
+
+    if not is_private_ip(ip):
+        if config.DEBUG_ALL:
+            print(f"🔄 Enriching IP {ip}...")  
+        ip_api_data = get_ip_api(ip)
+        if ip_api_data:
+            config.IP_TABLE[ip].update(ip_api_data)
+        else:
+            config.IP_TABLE[ip]["org"] = "Error fetching ip-api.com"
+
+    # Update the database with the new metadata
+    meta = config.IP_TABLE[ip]
+    required = ["isp", "country"]
+
+    if all(meta.get(field) and meta.get(field) != "N/A" for field in required):
+        DestinationMetadata.objects.update_or_create(
+            ip=ip,
+            end_date__isnull=True,
+            defaults={
+                "last_checked": django_now(),
+                "dns_name": meta.get("dns_name") or "N/A",
+                "city": meta.get("city") or "N/A",
+                "country": meta.get("country") or "N/A",
+                "continent": meta.get("continent") or "N/A",
+                "continent_code": meta.get("continent_code") or "N/A",
+                "region": meta.get("region") or "N/A",
+                "region_name": meta.get("region_name") or "N/A",
+                "district": meta.get("district") or "N/A",
+                "zip_code": meta.get("zip_code") or "N/A",
+                "lat": meta.get("lat") or 0.0,
+                "lon": meta.get("lon") or 0.0,
+                "timezone": meta.get("timezone") or "N/A",
+                "offset": meta.get("offset") or 0,
+                "currency": meta.get("currency") or "N/A",
+                "isp": meta.get("isp") or "N/A",
+                "org": meta.get("org") or "N/A",
+                "as_number": meta.get("as_number") or "N/A",
+                "as_name": meta.get("as_name") or "N/A",
+                "mobile": meta.get("mobile") or False,
+                "proxy": meta.get("proxy") or False,
+                "hosting": meta.get("hosting") or False,
+            }
+        )
+
+    # Mark it fully complete
+    config.IP_TABLE[ip]["_lookup_done"] = True
+    config.IP_TABLE[ip]["last_checked"] = now.strftime("%H:%M:%S.%f %d.%m.%Y")
+
+# Normalize values for consistent comparison
+def normalize(val):
+    if val in [None, "", "N/A"]:
+        return "N/A"
+    return str(val).strip().lower()
+
+# Start the log parser in a separate thread
 def start_log_parser():
     """Run the log parser in a thread that loops forever."""
     thread = threading.Thread(target=parse_logs_loop)
     thread.daemon = True
     thread.start()
 
+
 def parse_logs_loop():
     while True:
         run_log_parser_once()
         time.sleep(5)
+
 
 def get_firewall_logs():
     """Fetch firewall logs from OPNsense API."""
@@ -58,6 +186,7 @@ def get_firewall_logs():
     except requests.RequestException as e:
         print(f"⚠️ Network error: {e}")
         return []
+
 
 def filter_blocked_logs(logs, search_address=None):
     """Filter logs for blocked, rejected, or dropped connections, optionally filtering by IP."""
@@ -119,15 +248,31 @@ def get_ip_api(ip, retry=False):
                 "proxy": data.get("proxy"),
                 "hosting": data.get("hosting"),
             })
-            return data  # return the whole payload if needed
+            if config.DEBUG:
+                print(f"📦 Enriched data for {ip}: {data}")
+                print(f"✅ IP lookup successful: {ip} - {data.get('isp')}")
+            time.sleep(1.4)  # about 43 requests per minute
+            return data
+        
+        elif response.status_code == 429:
+            print(f"⚠️ Too many requests to ip-api.com. Retrying in 60 seconds...")
+            time.sleep(60)
+            return get_ip_api(ip, retry=True)
+        elif response.status_code == 403:
+            print(f"⚠️ Forbidden access to ip-api.com. Check your API key or endpoint.")
+            return None
+        elif response.status_code == 500:
+            print(f"⚠️ Server error from ip-api.com. Retrying in 60 seconds...")
+            time.sleep(60)
+            return get_ip_api(ip, retry=True)
         else:
             print(f"❌ Failed request: {response.status_code}")
     except requests.RequestException as e:
         print(f"⚠️ Network error: {e}")
 
     if not retry:
-        print(f"🔁 Retrying in 45 seconds...")
-        time.sleep(45)
+        print(f"🔁 Retrying in 60 seconds...")
+        time.sleep(60)
         return get_ip_api(ip, retry=True)
     else:
         print("❌ Permanent failure.")
@@ -207,42 +352,70 @@ def parse_logs(search_address=None):
         blocked_logs = filter_blocked_logs(logs, search_address)
 
         new_ips = set()
-        
+
         for log in blocked_logs:
             log_entry = f"{log.get('__timestamp__')} - {log.get('action')} - {log.get('interface')} - {log.get('src')}:{log.get('srcport')} -> {log.get('dst')}:{log.get('dstport')}"
+            if log_entry in seen_logs:
+                continue
+
+            seen_logs.add(log_entry)
+            dst = log.get("dst")
+            src = log.get("src")
+
+            if not dst or not src:
+                continue
+
+            timestamp_str = log.get('__timestamp__')
+            timestamp = parse_datetime(timestamp_str)
+            if timestamp and timezone.is_naive(timestamp):
+                timestamp = timezone.make_aware(timestamp)
+            elif not timestamp:
+                timestamp = timezone.now()
             
-            if log_entry not in seen_logs:
-                seen_logs.add(log_entry)
+            if dst and not is_private_ip(dst):
+                if config.DEBUG_ALL:
+                    print("🔄 New log entry:", log_entry)
+                new_ips.add(dst)
 
-            destination = log.get('dst')
-            if destination and destination not in config.IP_TABLE:
-                new_ips.add(destination)
+            # Enrich the IP address
+            enrich_ip(dst)
 
-        # Resolve DNS for new IPs
-        if new_ips:
-            config.IP_TABLE.update({ip: {} for ip in new_ips})
-            
-        for ip in new_ips:
-            if ip not in config.IP_TABLE:
-                config.IP_TABLE[ip] = {}
+            # Lookup existing metadata
+            existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
 
-            dns_name = reverse_dns_lookup(ip)
-            dns_name = dns_name if dns_name else "N/A"
+            # Avoid duplicate log entries
+            exists = FirewallLog.objects.filter(
+                timestamp=timestamp,
+                action=log.get("action", ""),
+                interface=log.get("interface", ""),
+                source_ip=src,
+                source_port=log.get("srcport"),
+                destination_ip=dst,
+                destination_port=log.get("dstport"),
+                protocol=log.get("proto", "")
+            ).exists()
 
-            config.IP_TABLE[ip].update({"dns_name": dns_name})
+            if not exists:
+                FirewallLog.objects.create(
+                    timestamp=timestamp,
+                    action=log.get("action", ""),
+                    interface=log.get("interface", ""),
+                    source_ip=src,
+                    source_port=log.get("srcport"),
+                    destination_ip=dst,
+                    destination_port=log.get("dstport"),
+                    protocol=log.get("proto", ""),
+                    destination_metadata=existing_metadata
+                )
 
-            ip_api_data = get_ip_api(ip)
-                            
-            if ip_api_data is False:
-                config.IP_TABLE[ip]["org"] = "❌ Error fetching ip-api.com - too many requests? Max 45 per 60 seconds"
-        
+        # Wait before starting the next run
         time.sleep(5)
+
 
 def run_log_parser_once(search_address=None):
     logs = get_firewall_logs()
     blocked_logs = filter_blocked_logs(logs, search_address)
 
-    new_ips = set()
     output = []
 
     for log in blocked_logs:
@@ -254,7 +427,6 @@ def run_log_parser_once(search_address=None):
             elif not timestamp:
                 timestamp = timezone.now()
 
-                        
             # Update last_active time for lease
             src_ip = log.get('src')
             if src_ip:
@@ -272,83 +444,18 @@ def run_log_parser_once(search_address=None):
             src_combined = f"{src}:{log.get('srcport')}".ljust(20)
             dst_combined = f"{dst}:{log.get('dstport')}".ljust(20)
 
-            #log_entry = f"{timestamp_str} - {src_combined} ->  {dst_combined}"
-            #log_entry = f"{timestamp_str} - {log.get('action')} - {log.get('interface')} - {src_combined} -> {dst_combined}" #more detailed...
-            #output.append(log_entry)
+            
 
-            # Reverse DNS and metadata
-            if dst not in config.IP_TABLE:
-                config.IP_TABLE[dst] = {}
-                config.IP_TABLE[dst]["dns_name"] = reverse_dns_lookup(dst) or "N/A"
-                ip_api_data = get_ip_api(dst)
+            if existing_metadata:
+                status = "✅"
+                isp_display = existing_metadata.isp or "Unknown"
+                log_entry = f"{timestamp_str} - {src_combined} → {dst_combined} [{status}] ({isp_display})"
+            else:
+                log_entry = f"{timestamp_str} - {src_combined} → {dst_combined} [🆕] (Unknown)"
 
-                if not ip_api_data:
-                    config.IP_TABLE[dst]["org"] = "❌ Error fetching ip-api.com"
-                else:
-                    config.IP_TABLE[dst].update(ip_api_data)
-
-            meta_data = config.IP_TABLE.get(dst, {})
-
-            # Check if metadata already exists
-            existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
-            was_known = bool(existing_metadata)
-
-
-            # Compare for changes
-            metadata_obj = existing_metadata
-            if metadata_obj:
-                if (
-                    metadata_obj.dns_name != meta_data.get("dns_name", "N/A") or
-                    metadata_obj.isp != meta_data.get("isp", "N/A") or
-                    metadata_obj.city != meta_data.get("city", "N/A") or
-                    metadata_obj.country != meta_data.get("country", "N/A")
-                ):
-                    metadata_obj.end_date = timezone.now()
-                    metadata_obj.save()
-                    was_known = False
-                    metadata_obj = None
-
-            # Create new metadata entry if needed
-            if not metadata_obj:
-                metadata_obj = DestinationMetadata.objects.create(
-                    ip=dst,
-                    dns_name=meta_data.get("dns_name") or "N/A",
-                    isp=meta_data.get("isp") or "N/A",
-                    city=meta_data.get("city") or "N/A",
-                    country=meta_data.get("country") or "N/A",
-                    continent=meta_data.get("continent") or "N/A",
-                    continent_code=meta_data.get("continent_code") or "N/A",
-                    region=meta_data.get("region") or "N/A",
-                    region_name=meta_data.get("region_name") or "N/A",
-                    district=meta_data.get("district") or "N/A",
-                    zip_code=meta_data.get("zip_code") or "N/A",
-                    lat=meta_data.get("lat") or 0.0,
-                    lon=meta_data.get("lon") or 0.0,
-                    timezone=meta_data.get("timezone") or "N/A",
-                    offset=meta_data.get("offset") or 0,
-                    currency=meta_data.get("currency") or "N/A",
-                    org=meta_data.get("org") or "N/A",
-                    as_number=meta_data.get("as_number") or "N/A",
-                    as_name=meta_data.get("as_name") or "N/A",
-                    mobile=meta_data.get("mobile") or False,
-                    proxy=meta_data.get("proxy") or False,
-                    hosting=meta_data.get("hosting") or False,
-                )
-
-            status = "✅" if was_known else "🆕"
-            isp_display = meta_data.get("isp", "N/A")
-
-            tags = []
-            if meta_data.get("proxy"): tags.append("🔒proxy")
-            if meta_data.get("hosting"): tags.append("🏢hosting")
-            if meta_data.get("mobile"): tags.append("📱mobile")
-            tags_display = " ".join(tags)
-
-            log_entry = f"{timestamp_str} - {src_combined} → {dst_combined} [{status}] ({isp_display}) {tags_display}"
             output.append(log_entry)
 
-
-            # If the entry already exists skip
+            # Avoid duplicate log entries
             exists = FirewallLog.objects.filter(
                 timestamp=timestamp,
                 action=log.get("action", ""),
@@ -360,9 +467,7 @@ def run_log_parser_once(search_address=None):
                 protocol=log.get("proto", "")
             ).exists()
 
-            # If there was no entry before... make a new entry now
             if not exists:
-                # Save to DB if not already present
                 FirewallLog.objects.create(
                     timestamp=timestamp,
                     action=log.get("action", ""),
@@ -372,10 +477,12 @@ def run_log_parser_once(search_address=None):
                     destination_ip=dst,
                     destination_port=log.get("dstport"),
                     protocol=log.get("proto", ""),
-                    destination_metadata=metadata_obj
+                    destination_metadata=existing_metadata
                 )
 
         except Exception as e:
             print(f"⚠️ Error processing log entry: {e}")
 
     return output
+
+

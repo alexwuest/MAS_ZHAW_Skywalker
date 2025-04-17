@@ -63,9 +63,8 @@ class FirewallLog(models.Model):
 
 
 class DestinationMetadata(models.Model):
-    # Models for ip-api.com
+    # ip-api.com
     ip = models.GenericIPAddressField()
-    console_first_output = models.BooleanField(default=False)
     status = models.CharField(max_length=20, null=True, blank=True)
     continent = models.CharField(max_length=50, null=True, blank=True)
     continent_code = models.CharField(max_length=5, null=True, blank=True)
@@ -89,12 +88,12 @@ class DestinationMetadata(models.Model):
     proxy = models.BooleanField(null=True, blank=True)
     hosting = models.BooleanField(null=True, blank=True)
 
-    # Model for reverse dns
+    # reverse dns
     dns_name = models.CharField(max_length=60, null=True, blank=True)
 
-
-    # Make sure to keep track if a IP address ownership changes...
+    # Keep track if a IP address ownership changes...
     start_date = models.DateTimeField(auto_now_add=True)        # when adding
+    last_checked = models.DateTimeField(auto_now=True)          # when last checked
     end_date = models.DateTimeField(null=True, blank=True)      # when it was replaced
 
     class Meta:
@@ -107,6 +106,20 @@ class DestinationMetadata(models.Model):
     def __str__(self):
         return f"{self.ip} ({self.city}, {self.country})"
 
+
+class MetadataSeenByDevice(models.Model):
+    """Keep track of which device has seen which metadata."""
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    metadata = models.ForeignKey(DestinationMetadata, on_delete=models.CASCADE)
+    first_seen_at = models.DateTimeField(auto_now_add=True)  # creation time
+    last_seen_at = models.DateTimeField(auto_now=True)       # updated all time
+
+
+    class Meta:
+        unique_together = ('device', 'metadata')
+        indexes = [
+            models.Index(fields=['device', 'metadata']),
+        ]
 
 class FirewallRule(models.Model):
     ACTION_CHOICES = [
@@ -126,6 +139,7 @@ class FirewallRule(models.Model):
     port = models.IntegerField()
     protocol = models.CharField(max_length=10, choices=[('TCP', 'TCP'), ('UDP', 'UDP')])
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
+    manual = models.BooleanField(default=False)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
     isp_name = models.CharField(max_length=100)

@@ -59,18 +59,30 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
         isp_name = metadata.isp if metadata else "Unknown"
         valid_dest_ips.add(ip_dest)
 
-        rule_obj, created = FirewallRule.objects.get_or_create(
+        rule_qs = FirewallRule.objects.filter(
             source_ip=ip_source,
             destination_ip=ip_dest,
-            protocol="any",
-            port=0,
-            action="PASS",
-            end_date=None,
-            defaults={
-                "isp_name": isp_name,
-                "destination_info": metadata
-            }
+            end_date__isnull=True,
+            manual=False
         )
+
+        if rule_qs.exists():
+            rule_obj = rule_qs.first()
+            created = False
+        else:
+            rule_obj = FirewallRule.objects.create(
+                source_ip=ip_source,
+                destination_ip=ip_dest,
+                protocol="any",
+                port=0,
+                action="PASS",
+                end_date=None,
+                manual=False,
+                isp_name=isp_name,
+                destination_info=metadata
+            )
+            created = True
+
 
         if created:
             if not check_rule_exists(ip_source, ip_dest):
@@ -80,16 +92,13 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
                     rule_obj.delete()
 
     # Remove rules that no longer belong to allowed ISPs
-    existing_rules = FirewallRule.objects.filter(source_ip=ip_source, end_date__isnull=True)
+    existing_rules = FirewallRule.objects.filter(source_ip=ip_source, end_date__isnull=True, manual=False)
     removed = 0
 
     for rule in existing_rules:
         if rule.destination_ip not in valid_dest_ips or rule.isp_name not in allowed_isps:
             print(f"Removing rule to {rule.destination_ip} (ISP no longer allowed: {rule.isp_name})")
             deleted_count = delete_rule_by_source_and_destination(rule.source_ip, rule.destination_ip)
-            if deleted_count > 0:
-                rule.end_date = now
-                rule.save(update_fields=["end_date"])
             removed += deleted_count
 
     if added > 0 or removed > 0:

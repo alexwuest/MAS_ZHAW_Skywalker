@@ -304,4 +304,28 @@ python manage.py runserver 0.0.0.0:8000
 # Working on the firewall rule view. Want here to offer a delete function to remove the rules from the firewall. I'm not quite sure how it will react with the grouped view but we will see. I think it should work fine but i defintely need to test behavior.
 
 #TODO: Use same table design as grouped view... to keep it consistent
-#TODO: I want in the logfile view and grouped view the option to just add one specific IP, this will definitely impact the behavior of the grouped isps...
+#DONE: I want in the logfile view and grouped view the option to just add one specific IP, this will definitely impact the behavior of the grouped isps...
+
+################################
+## 16.04.2025
+################################
+# Now working for over 6 hours. I found out does some metadata enrichment was done and just after it was marked as old / with end date. I tried to figure out the problem but it is quite tricky...
+# It seems i'm checking for data when just at the same moment the same data is stored... "Race conditions..."
+
+# Seems worked today the whole day without adding any new feature. Now the Destination metadata seems to work as expected. Handling now some parts directly from the db.
+# The only part which does ip enrichment is now the parser himself. No view or anything else. It seems to work as expected.
+
+################################
+## 17.04.2025
+################################
+# Finaly it works now smooth. Logs get parsed. The views get the data from the db.
+# On the grouped view it is possible now to add remove rules these are marked now as manual rules. Added this to the model.
+# The ISP Rule sets are just removing the rules which are not manual.
+
+# Working with the OPNSense API is getting bad as adding more than 100 rules is a pain as this can take up minutes. I'm looking for a possibility to work with batch steps.
+# Have not found any useful entry in the opnsense forum. Added now sessions to avoid the starting connection overhead. It is now between 0.1 - 0.5 seconds what feels now much quicker. It seems no batch processes possible.
+
+# Made changes to the design so it looks better and more consistent.
+
+########## I think this is quite a good state for the project at the moment. I will do some tests after easter and check in the team if anything is really needed.
+

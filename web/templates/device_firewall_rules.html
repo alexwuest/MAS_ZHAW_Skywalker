@@ -1,40 +1,45 @@
 {% include "header.html" %}
 
 <tr class="middle-row">
-  <td colspan="2" style="background-color: #e0f7fa; padding: 16px; font-family: monospace; font-size: 13px;">
+  <td colspan="2" style="background-color: #e0f7fa; padding: 16px; font-size: 13px;">
     {% if device %}
-      <h2>Firewall Rules for {{ device.device_id }}</h2>
+      <h2>Firewall Rules for {{ device.device_id }} - {{ device.description }}</h2>
 
       {% if rules %}
-      <table style="border: 1px solid black; border-collapse: collapse; font-family: monospace; font-size: 13px;">
+      <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
         <thead>
-          <tr>
-            <th style="border: 1px solid black;">Action</th>
-            <th style="border: 1px solid black;">Protocol</th>
-            <th style="border: 1px solid black;">Source IP</th>
-            <th style="border: 1px solid black;">Destination</th>
-            <th style="border: 1px solid black;">Port</th>
-            <th style="border: 1px solid black;">ISP</th>
-            <th style="border: 1px solid black;">Since</th>
-            <th style="border: 1px solid black;">Delte</th>
+          <tr style="background-color: #ffdca8;">
+            <th style="text-align: left; padding: 6px;">Action</th>
+            <th style="text-align: left; padding: 6px;">Protocol</th>
+            <th style="text-align: left; padding: 6px;">Source IP</th>
+            <th style="text-align: left; padding: 6px;">Destination</th>
+            <th style="text-align: left; padding: 6px;">Port</th>
+            <th style="text-align: left; padding: 6px;">ISP</th>
+            <th style="text-align: left; padding: 6px;">Since</th>
+            <th style="text-align: left; padding: 6px;">Manual</th>
+            <th style="text-align: left; padding: 6px;">Delete</th>
           </tr>
         </thead>
         <tbody>
           {% for rule in rules %}
             <tr>
-              <td style="border: 1px solid black;">{{ rule.action }}</td>
-              <td style="border: 1px solid black;">{{ rule.protocol }}</td>
-              <td style="border: 1px solid black;">{{ rule.source_ip }}</td>
-              <td style="border: 1px solid black;">
+              <td style="padding: 6px;">{{ rule.action }}</td>
+              <td style="padding: 6px;">{{ rule.protocol }}</td>
+              <td style="padding: 6px;">{{ rule.source_ip }}</td>
+              <td style="padding: 6px;">
                 {{ rule.destination_ip }}
                 {% if rule.destination_info %}
                   <br><small>{{ rule.destination_info.city }}, {{ rule.destination_info.country }}</small>
                 {% endif %}
               </td>
-              <td style="border: 1px solid black;">{{ rule.port }}</td>
-              <td style="border: 1px solid black;">{{ rule.isp_name }}</td>
-              <td style="border: 1px solid black;">{{ rule.start_date|date:"Y-m-d H:i" }}</td>
-              <td style="border: 1px solid black;"><button onclick="removeRule({{ rule.id }})">Remove</button></td>
+              <td style="padding: 6px;">{{ rule.port }}</td>
+              <td style="padding: 6px;">{{ rule.isp_name }}</td>
+              <td style="padding: 6px;">{{ rule.start_date|date:"Y-m-d H:i" }}</td>
+              <td style="padding: 6px;">{{ rule.manual }}</td>
+              <td style="padding: 6px;">
+                <button onclick="removeRule({{ rule.id }})">Remove</button>
+            </td>
+            
 
             </tr>
           {% endfor %}
@@ -55,29 +60,33 @@
     }
     
     function removeRule(ruleId) {
-        if (!confirm("Are you sure you want to remove this rule?")) return;
-    
+        if (!confirm("Are you sure you want to remove this rule?")) {
+            return;
+        }
+
         fetch("{% url 'remove-firewall-rule' %}", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-CSRFToken": getCookie("csrftoken")
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: `rule_id=${ruleId}`
+            body: new URLSearchParams({ rule_id: ruleId })
         })
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
             if (data.status === "ok") {
+                alert("✅ Rule removed!");
                 location.reload();
             } else {
-                alert("Error removing rule: " + data.message);
+                alert("❌ Failed to remove rule: " + data.message);
             }
         })
-        .catch(err => {
-            console.error("Error:", err);
-            alert("Something went wrong.");
+        .catch(error => {
+            console.error("Error removing rule:", error);
+            alert("⚠️ Error removing rule. See console for details.");
         });
     }
     </script>
+
     
 {% include "footer.html" %}

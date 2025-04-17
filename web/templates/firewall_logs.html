@@ -1,12 +1,12 @@
 {% include "header.html" %}        
         <tr class="middle-row">
-            <td style="width: 80%; background-color: #e0f7fa;">
+            <td style="width: 80%; background-color: #e0f7fa; padding: 16px; font-size: 13px;">
                 <h2>Blocked Connections</h2>
                 <pre class="log_output">
 {{ logs|safe }}
                 </pre>
             </td>
-            <td style="width: 20%; background-color: #ffe0b2;">
+            <td style="width: 20%; background-color: #ffe0b2; padding: 16px;">
                 <label for="refreshRate"><strong>Refresh page:</strong></label><br/>
                 <select id="refreshRate" onchange="setRefreshRate()">
                     <option value="0">Off</option>
@@ -17,8 +17,8 @@
                 
                 <button onclick="location.reload();">Refresh Now</button>
 
-                <h3>Organisations (ISP)</h3>
-                <div id="ispList" style="font-family: monospace; font-size: 12px;">
+                <h3 style="margin-top: 24px;">Organisations (ISP)</h3>
+                <div id="ispList" font-size: 12px;">
                     {% for isp in isp_list %}
                     <label style="display: block; margin-bottom: 4px;">
                         <input type="checkbox"
@@ -31,14 +31,13 @@
                     {% endfor %}
                 </div>
                 <button id="updateButton" onclick="updateFirewallRules()">Update Firewall Rules</button>
-                <h3>IP Info</h3><pre class="log_output">{% for ip, data in ip_data.items %}
+                <h3 style="margin-top: 24px;">IP Info</h3><pre class="log_output">{% for ip, data in ip_data.items %}
 🌐 {{ ip }} | {{ data.dns_name|default:"N/A" }} | {{ data.isp|default:"N/A" }}
 {{ data.city|default:"N/A" }}, {{ data.country|default:"N/A" }}
 {% endfor %}
                 </pre>
             </td>
         </tr>
-
 <script>
     function getCookie(name) {
         const cookie = document.cookie.split(';').find(c => c.trim().startsWith(name + '='));

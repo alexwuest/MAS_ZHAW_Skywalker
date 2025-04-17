@@ -1,10 +1,8 @@
 import os
 import json
 import requests
-import time
 
 from .models import FirewallRule
-from . import config
 from django.utils import timezone
 from django.utils.timezone import now
 
@@ -26,16 +24,8 @@ DEL_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/delRule"
 SEARCH_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/searchRule"
 APPLY_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/apply"
 
-# shared sessions
-session = requests.Session()
-session.auth = HTTPBasicAuth(API_KEY, API_SECRET)
-session.headers.update({"Content-Type": "application/json"})
-
-# sessions without header for get
-session_get = requests.Session()
-session_get.auth = HTTPBasicAuth(API_KEY, API_SECRET)
-
-def add_firewall_rule(ip_source, ip_destination, manual=False, session=session):
+def add_firewall_rule(ip_source, ip_destination, manual=False):
+    headers = {"Content-Type": "application/json"}
     payload = {
         "rule": {
             "action": "pass",
@@ -49,19 +39,16 @@ def add_firewall_rule(ip_source, ip_destination, manual=False, session=session):
     }
 
     try:
-        t0 = time.perf_counter()
-        response = session.post(
+        response = requests.post(
             ADD_RULE_ENDPOINT,
+            auth=HTTPBasicAuth(API_KEY, API_SECRET),
+            headers=headers,
             data=json.dumps(payload),
             verify=CERT_PATH
         )
 
-        t1 = time.perf_counter()
-
-        api_duration = t1 - t0
-
         if response.status_code == 200:
-            print(f"✅ Rule added for {ip_destination} (Req time: {api_duration:.2f}s)")
+            print(f"✅ Rule added for {ip_destination}")
 
             # Update the database with the new rule
             try:
@@ -90,22 +77,15 @@ def add_firewall_rule(ip_source, ip_destination, manual=False, session=session):
 
 def delete_rule_by_source_and_destination(ip_source, ip_destination):
     try:
-        t0 = time.perf_counter()
-        response = session_get.get(
+        response = requests.get(
             SEARCH_RULE_ENDPOINT,
+            auth=HTTPBasicAuth(API_KEY, API_SECRET),
             verify=CERT_PATH
         )
-
-        t1 = time.perf_counter()
-        api_duration = t1 - t0
 
         if response.status_code != 200:
             print(f"❌ Error searching rules: {response.status_code} - {response.text}")
             return 0
-        
-        if config.DEBUG_ALL:
-            if response.status_code == 200:
-                print(f"✅ Delete completed (Req time: {api_duration:.2f}s)")
 
         rules = response.json().get("rows", [])
         deleted_count = 0
@@ -116,16 +96,11 @@ def delete_rule_by_source_and_destination(ip_source, ip_destination):
             if ip_source in desc and ip_destination in desc:
                 rule_found = True
                 uuid = rule.get("uuid")
-                del_response = session.post(
+                del_response = requests.post(
                     f"{DEL_RULE_ENDPOINT}/{uuid}",
-                    json={
-                        "reason": "Auto-delete",
-                        "source_net": ip_source,
-                        "destination_net": ip_destination
-                    },
+                    auth=HTTPBasicAuth(API_KEY, API_SECRET),
                     verify=CERT_PATH
                 )
-
 
                 if del_response.status_code == 200:
                     FirewallRule.objects.filter(
@@ -145,7 +120,7 @@ def delete_rule_by_source_and_destination(ip_source, ip_destination):
                 source_ip=ip_source,
                 destination_ip=ip_destination,
                 end_date__isnull=True
-            ).update(end_date=timezone.now())
+            ).update(end_date=now())
 
             if db_update:
                 print(f"⚠️ Rule not in firewall but still activ in DB, cleaned up: {ip_source} → {ip_destination}")

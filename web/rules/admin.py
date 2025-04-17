@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP, FirewallLog
+from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP, FirewallLog, MetadataSeenByDevice
 
 admin.site.register(DeviceAllowedISP)
 
@@ -48,6 +48,7 @@ class FirewallRuleAdmin(admin.ModelAdmin):
         'port',
         'action',
         'isp_name',
+        'manual',
         'start_date',
         'end_date',
     )
@@ -110,6 +111,7 @@ class DestinationMetadataAdmin(admin.ModelAdmin):
         'isp',
         'as_number',
         'start_date',
+        'last_checked',
         'end_date',
     )
     list_filter = (
@@ -132,7 +134,26 @@ class DestinationMetadataAdmin(admin.ModelAdmin):
     date_hierarchy = 'start_date'
     ordering = ('-start_date',)
 
-    readonly_fields = ('start_date', 'end_date')
+    readonly_fields = ('start_date', 'last_checked', 'end_date')
+
+
+@admin.register(MetadataSeenByDevice)
+class MetadataSeenByDeviceAdmin(admin.ModelAdmin):
+    list_display = (
+        'device',
+        'metadata',
+        'last_seen_at',
+        'first_seen_at',
+    )
+    list_filter = (
+        'device',
+    )
+    search_fields = (
+        'device__device_id',
+        'metadata__ip',
+    )
+    date_hierarchy = 'last_seen_at'
+    ordering = ('-last_seen_at',)
 
 
 @admin.register(DeviceLease)
