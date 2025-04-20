@@ -20,8 +20,7 @@ class AssignDeviceToLeaseForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['device'].queryset = Device.objects.all().order_by('device_id')
-
+        self.fields['device'].queryset = Device.objects.filter(archived=False).order_by("device_id")
 
 class DomainLookupForm(forms.Form):
     domain = forms.CharField(label="Enter a domain", max_length=255)

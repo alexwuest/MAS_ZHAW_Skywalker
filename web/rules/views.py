@@ -375,6 +375,8 @@ def remove_firewall_rule_view(request):
         rule.save(update_fields=["end_date"])
 
         # Call the API to remove the rule
+        print(f"Removing rule: {rule}")
+        print(f"Removing rule: {rule.source_ip} → {rule.destination_ip}")
         result = delete_rule_by_source_and_destination(rule.source_ip, rule.destination_ip)
 
         if result:

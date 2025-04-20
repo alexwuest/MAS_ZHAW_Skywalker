@@ -36,7 +36,7 @@ urlpatterns = [
     path('domain-lookup/', domain_lookup_view, name='domain-lookup'),
 
     path("device-firewall", device_firewall_rules_view, name="device-firewall-rules"),
-    path("remove-rule/", remove_firewall_rule_view, name="remove-firewall-rule"),
+    path("remove-firewall-rule/", remove_firewall_rule_view, name="remove-firewall-rule"),
 
 
 ]
