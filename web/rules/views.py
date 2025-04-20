@@ -505,9 +505,8 @@ def manage_devices_view(request):
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
         'devices': Device.objects.all().order_by("device_id"),
-        "device_id": int(device_id) if device_id else None,
+        'selected_device_id': int(device_id) if device_id else None,
     })
-
 
 
 ###########################################################################
