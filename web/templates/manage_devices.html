@@ -1,98 +1,159 @@
 {% include "header.html" %}
 
-      <tr class="middle-row">
-        <td style="background-color: #e0f7fa; padding: 16px;">
-          <h2>Add new device</h2>
-          Initialy add a device and afterwards add leases to the device. So it will be visible under the device in the frontend "Show Logs"</br></br>
+<div class="content" style="display: flex; height: 100%; min-height: 500px;">
+
+  <!-- Manage section / LEFT -->
+  <div style="flex: 1 70%; background-color: #f9f9f9; font-size: 13px; padding: 16px; overflow-y: auto;">
+    <h2>Add new device</h2>
+    Initialy add a device and afterwards add leases to the device. So it will be visible under the device in the frontend "Show Logs"</br></br>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add_device">
+      <table>
+          <tr>
+              <td style="min-width: 160px;">{{ form.device_id.label_tag }}</td>
+              <td>{{ form.device_id }}</td>
+              {% if form.device_id.errors %}
+                <div style="color: red;">{{ form.device_id.errors.0 }}</div>
+              {% endif %}
+          </tr>
+          <tr>
+              <td>{{ form.description.label_tag }}</td>
+              <td>{{ form.description }}</td>
+          </tr>
+          <tr>
+            <td>{{ form.examiner.label_tag }}</td>
+            <td>{{ form.examiner }}</td>
+            {% if form.examiner.errors %}
+              <div style="color: red;">{{ form.examiner.errors.0 }}</div>
+            {% endif %}
+        </tr>
+          <tr>
+            <td>{{ form.dns_server.label_tag }}</td>
+            <td>{{ form.dns_server }}</td>
+        </tr>
+      </table>
+      </br>- Please adjust DNS Settings on device to manual and use ip above. 
+      </br>- Deactivate "Private WLAN-Addresse" on iOS devices.</br></br>
+      <button type="submit">Approve Device</button>
+    </form>
+
+    <br>
+    <hr>
+    
+    <h3>Active Devices</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="archive_devices">
+        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+          <thead>
+            <tr style="background-color: #ffdca8;">
+              <th style="text-align: left; padding: 6px; width: 20px"></th>
+              <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
+              <th style="text-align: left; padding: 6px;">Description</th>
+              <th style="text-align: left; padding: 6px;">DNS</th>
+              <th style="text-align: left; padding: 6px;">Created</th>
+              <th style="text-align: left; padding: 6px;">Last active</th>
+              <th style="text-align: left; padding: 6px;">Examiner</th>
+            </tr>
+          </thead>
+            <tbody>
+                {% for device in devices_active %}
+                <tr>
+                  <td>
+                    <input type="checkbox" name="archived" value="{{ device.device_id }}"
+                  </td>
+                    <td>{{ device.device_id }}</td>
+                    <td>{{ device.description }}</td>
+                    <td>{{ device.dns_server }}</td>
+                    <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
+                    <td>{{ device.last_seen|date:"d.m.Y H:i" }}
+                    <td>{{ device.examiner }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table></br>
+        <button type="submit">Archive Selected</button>
+    </form>
+
+    <br>
+    <hr>
+
+    <h3>Inactive Devices</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="unarchive_devices">
+        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+          <thead>
+            <tr style="background-color: #ffdca8;">
+              <th style="text-align: left; padding: 6px; width: 20px"></th>
+              <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
+              <th style="text-align: left; padding: 6px;">Description</th>
+              <th style="text-align: left; padding: 6px;">DNS</th>
+              <th style="text-align: left; padding: 6px;">Created</th>
+              <th style="text-align: left; padding: 6px;">Last active</th>
+              <th style="text-align: left; padding: 6px;">Examiner</th>
+            </tr>
+          </thead>
+            <tbody>
+                {% for device in devices_inactive %}
+                <tr>
+                  <td>
+                    <input type="checkbox" name="unarchived" value="{{ device.device_id }}"
+                  </td>
+                    <td>{{ device.device_id }}</td>
+                    <td>{{ device.description }}</td>
+                    <td>{{ device.dns_server }}</td>
+                    <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
+                    <td>{{ device.last_seen|date:"d.m.Y H:i" }}
+                    <td>{{ device.examiner }}</td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table></br>
+        <button type="submit">Unarchive Selected</button>
+    </form>
+
+
+  </div>
+
+  <!-- Manage section / LEFT -->
+  <div style="flex: 1 30%; background-color: #f9f9f9; padding: 16px; font-size: 13px; overflow-y: auto;">
+    <h2>Assign Leases to Devices</h2>
+    {% for lease, form in entries %}
+      <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 1em;">
+        <p>
+          <strong>{{ lease.mac_address }}</strong> @ {{ lease.ip_address }} <br>
+          Hostname: ({{ lease.hostname }})<br>
+          Manufacturer: ({{ lease.manufacturer }})<br>
+          Lease time: {{ lease.lease_start|date:"d.m.Y, H:i" }} → {{ lease.lease_end|date:"d.m.Y, H:i" }}
+        </p>
+        {{ form.as_p }}
+        <div style="display: flex; gap: 10px;">
+
           <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="action" value="add_device">
-            <table>
-                <tr>
-                    <td style="min-width: 160px;">{{ form.device_id.label_tag }}</td>
-                    <td>{{ form.device_id }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.description.label_tag }}</td>
-                    <td>{{ form.description }}</td>
-                </tr>
-                <tr>
-                  <td>{{ form.examiner.label_tag }}</td>
-                  <td>{{ form.examiner }}</td>
-              </tr>
-                <tr>
-                  <td>{{ form.dns_server.label_tag }}</td>
-                  <td>{{ form.dns_server }}</td>
-              </tr>
-            </table>
-            </br>- Please adjust DNS Settings on device to manual and use ip above. 
-            </br>- Deactivate "Private WLAN-Addresse" on iOS devices.</br></br>
-            <button type="submit">Approve Device</button>
+            <input type="hidden" name="action" value="assign_lease">
+            {{ form.lease_id }}
+            <input type="hidden" name="device" value="{{ form.device.value }}">
+            <button type="submit">Assign</button>
           </form>
 
-          <br>
-          <hr>
-          
-          <h3>Devices Overview</h3>
-          <form method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="archive_devices">
-              <table>
-                  <thead>
-                      <tr>
-                          <th>Select</th>
-                          <th>Device ID</th>
-                          <th>Description</th>
-                          <th>DNS</th>
-                          <th>Created</th>
-                          <th>Last active</th>
-                          <th>Archived</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {% for device in devices %}
-                      <tr>
-                        <td>
-                          <input type="checkbox" name="archived" value="{{ device.device_id }}"
-                              {% if device.archived %}checked{% endif %}>
-                        </td>
-                          <td>{{ device.device_id }}</td>
-                          <td>{{ device.description }}</td>
-                          <td>{{ device.dns_server }}</td>
-                          <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
-                          <td>{{ device.last_seen|date:"d.m.Y H:i" }}
-                          <td>{{ device.archived }}</td>
-                      </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-              <button type="submit">Archive Selected</button>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="hide_lease">
+            <input type="hidden" name="lease_id" value="{{ lease.id }}">
+            <button type="submit">Hide Lease</button>
           </form>
-
-
-        </td>
-        <td style="background-color: #e0f7fa;">
-          <h2>Assign Leases to Devices</h2>
-          {% for lease, form in entries %}
-            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 1em;">
-              <p>
-                <strong>{{ lease.mac_address }}</strong> @ {{ lease.ip_address }} <br>
-                Hostname: ({{ lease.hostname }})<br>
-                Manufacturer: ({{ lease.manufacturer }})<br>
-                Lease time: {{ lease.lease_start }} → {{ lease.lease_end }}
-              </p>
-              <form method="post">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="assign_lease">
-                {{ form.as_p }}
-                <button type="submit">Assign</button>
-              </form>
-            </div>
-          {% endfor %}
-          {% if not entries %}
-            <p><em>No new leases found.</em></p>
-          {% endif %}
-        </td>
-      </tr>
+        </div>
+  
+      </div>
+    {% endfor %}
+    {% if not entries %}
+      <p><em>No new leases found.</em></p>
+    {% endif %}
+  </div>
+</div>
 
 {% include "footer.html" %}

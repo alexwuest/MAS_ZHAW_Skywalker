@@ -3,6 +3,16 @@ from .models import Device
 from .constants import get_dns_choices
 
 class DeviceApprovalForm(forms.ModelForm):
+    device_id = forms.RegexField(
+        regex=r'^A\d{9}$',
+        error_messages={'invalid': 'Device ID must start with "A" followed by 9 digits.'}
+    )
+
+    examiner = forms.RegexField(
+        regex=r'^stp\w{3}$',
+        error_messages={'invalid': 'Examiner must start with stp and followed by 3 characters.'}
+    )
+
     class Meta:
         model = Device
         fields = ['device_id', 'description', 'dns_server', 'examiner']
@@ -21,6 +31,9 @@ class AssignDeviceToLeaseForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['device'].queryset = Device.objects.filter(archived=False).order_by("device_id")
+
+class HideLeaseForm(forms.Form):
+    lease_id = forms.IntegerField(widget=forms.HiddenInput)
 
 class DomainLookupForm(forms.Form):
     domain = forms.CharField(label="Enter a domain", max_length=255)

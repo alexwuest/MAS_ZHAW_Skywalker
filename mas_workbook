@@ -349,4 +349,7 @@ python manage.py runserver 0.0.0.0:8000
 # Even today there are no logs at all. Our approach needs to be a root user which has access to the system. All other users do just have restricted access. Read only in many cases. The frontend and also the database access on the django side should be read only for the regular forensic user.
 # There should never be a case where a log needs to be deleted or changed. So getting regular logs to an archive with hashing would be a first approach.
 
-
+################################
+## 25.04.2025
+################################
+# 

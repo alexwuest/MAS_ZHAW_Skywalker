@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Firewall Logs</title>
-    <style>
-        * {
-            font-family: monospace;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flexbox Layout with Footer</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+    .header {
+      background-color: #dcdcdc;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-        .page_table {
-            width: 100%;
-            height: 100vh; /* Ensure full viewport height */
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
+    .menu-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
 
-        td {
-            vertical-align: top;
-            padding: 4px;
-            border: 1px solid #ccc;
-        }
+    .nav-button {
+      background-color: #000000b9;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
 
-        .header {
-            height: 50px;
-            background-color: lightgray;
-        }
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
 
-
-        .middle-row {
-            height: calc(100vh - 100px);
-        }
-
-        .log_output {
-            font-size: 12px;
-            margin-top: 0;
-        }
-     </style>
-     <script>
+    .footer {
+      background-color: #efefef;
+      padding: 10px 20px;
+      font-size: 12px;
+      text-align: center;
+    }
+    </style>
+    <script>
         function goToUrl(baseUrl) {
             const params = new URLSearchParams(window.location.search);
             const deviceId = params.get("device_id");
@@ -57,34 +65,35 @@
     </script>
 </head>
 <body>
-    <table class="page_table">
-        <tr class="header">
-            <td colspan="2">
-                <table style="width: 100%;">
-                    <tr>
-                        <td>
-                            <button class="nav-button" data-url="{% url 'view-logs' %}">Blocked logs</button>
-                            <button class="nav-button" data-url="{% url 'view-logs-passed' %}">Passed logs</button>
-                            <button class="nav-button" data-url="{% url 'device-ip-overview' %}">Show grouped</button>
-                            <button class="nav-button" data-url="{% url 'manage-devices' %}">Manage device</button>
-                            <button class="nav-button" data-url="{% url 'domain-lookup' %}">Domain lookup</button>
-                            <button class="nav-button" data-url="{% url 'device-firewall-rules' %}">Firewall rules</button>
-                        </td>                        
-                        <td style="text-align: right;">
-                            <select id="deviceSelect" onchange="onDeviceSelectChange(this)">
-                                <option value="" disabled>Select a device...</option>
-                                {% for device in devices %}
-                                    {% if not device.archived %}
-                                        <option value="{{ device.id }}"
-                                            {% if selected_device_id == device.id %}selected{% endif %}>
-                                            {{ device.device_id }} — {{ device.description }}
-                                        </option>
-                                    {% endif %}
-                                {% endfor %}
-                              </select>                                           
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        
+
+    <div class="header">
+        <div class="menu-group">
+            <label>Views:</label>
+            <button class="nav-button" data-url="{% url 'view-logs' %}">Blocked logs</button>
+            <button class="nav-button" data-url="{% url 'view-logs-passed' %}">Passed logs</button>
+            <button class="nav-button" data-url="{% url 'device-ip-overview' %}">Grouped IPs</button>
+        </div>
+    
+        <div class="menu-group">
+            <label>Tools:</label>
+            <button class="nav-button" data-url="{% url 'manage-devices' %}">Manage Devices</button>
+            <button class="nav-button" data-url="{% url 'domain-lookup' %}">Domain Lookup</button>
+            <button class="nav-button" data-url="{% url 'device-firewall-rules' %}">Firewall Rules</button>
+            <button class="nav-button" data-url="{% url 'device-logs' %}">Device Logs</button>
+        </div>
+    
+        <div class="menu-group">
+          <label for="deviceSelect">Device:</label>
+          <select id="deviceSelect" onchange="onDeviceSelectChange(this)">
+            <option value="" disabled>Select a device...</option>
+            {% for device in devices %}
+                {% if not device.archived %}
+                    <option value="{{ device.id }}"
+                        {% if selected_device_id == device.id %}selected{% endif %}>
+                        {{ device.device_id }} — {{ device.description }}
+                    </option>
+                {% endif %}
+            {% endfor %}
+          </select> 
+        </div>
+      </div>

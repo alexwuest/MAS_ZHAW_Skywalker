@@ -37,7 +37,6 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
     allowed_isps = get_allowed_isps(device_id)
     dest_ips = get_blocked_ips_by_isp(allowed_isps)
     added = 0
-    now = timezone.now()
 
     # Cache destination metadata
     metadata_lookup = {

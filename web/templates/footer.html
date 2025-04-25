@@ -1,33 +1,29 @@
-       
-        <tr>
-            <td class="footer" colspan="2">
-                Dies ist ein Footer...
+<div class="footer">
+    2025 Firewall Dashboard · Erstellt anlässlich der MAS Arbeit an der ZHAW · Alexander Wüst
+  </div>
 
-            </td>
-        </tr>
-    </table>   
-    <script>
-        function onDeviceSelectChange(select) {
-            const deviceId = select.value;
-            const url = new URL(window.location.href);
-            url.searchParams.set("device_id", deviceId);
-            window.location.href = url.toString();
-        }
-    
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".nav-button").forEach(btn => {
-                btn.addEventListener("click", function () {
-                    const baseUrl = this.getAttribute("data-url");
-                    const deviceId = document.getElementById("deviceSelect").value;
-                    if (deviceId) {
-                        window.location.href = `${baseUrl}?device_id=${encodeURIComponent(deviceId)}`;
-                    } else {
-                        window.location.href = baseUrl;
-                    }
-                });
+<script>
+    function onDeviceSelectChange(select) {
+        const deviceId = select.value;
+        const url = new URL(window.location.href);
+        url.searchParams.set("device_id", deviceId);
+        window.location.href = url.toString();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".nav-button").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const baseUrl = this.getAttribute("data-url");
+                const deviceId = document.getElementById("deviceSelect").value;
+                if (deviceId) {
+                    window.location.href = `${baseUrl}?device_id=${encodeURIComponent(deviceId)}`;
+                } else {
+                    window.location.href = baseUrl;
+                }
             });
         });
-    </script>
-        
+    });
+</script>
+
 </body>
 </html>

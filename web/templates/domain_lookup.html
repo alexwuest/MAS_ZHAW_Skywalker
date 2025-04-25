@@ -1,6 +1,7 @@
 {% include "header.html" %}
-<tr class="middle-row">
-    <td colspan="2" style="background-color: #e0f7fa; padding: 16px;">
+
+<div class="content" style="height: 100%; min-height: 500px;">
+    <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
         <h2>Domain to ISP Lookup</h2>
         Lookup a specific domain</br></br>
         <form method="post">
@@ -24,7 +25,9 @@
                 {% endfor %}
             </table>
         {% endif %}
-    </td>
-</tr>
+    </div>
+
+</div>
+
 
 {% include "footer.html" %}

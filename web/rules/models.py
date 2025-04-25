@@ -12,7 +12,7 @@ class Device(models.Model):
         choices=get_dns_choices(),
         default="cloudflare"
     )
-    examiner = models.CharField(max_length=20, blank=True)
+    examiner = models.CharField(max_length=20, blank=False)
     archived = models.BooleanField(default=False)
 
     def __str__(self):
@@ -168,6 +168,7 @@ class DeviceLease(models.Model):
     interface = models.CharField(max_length=50, blank=True, null=True)
 
     last_active = models.DateTimeField(null=True, blank=True)
+    show = models.BooleanField(default=True)                                                # Show in the web interface or to hide older entries     
 
     class Meta:
         unique_together = ['ip_address', 'mac_address', 'lease_start']

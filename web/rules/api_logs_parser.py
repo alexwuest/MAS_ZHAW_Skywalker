@@ -250,8 +250,11 @@ def get_ip_api(ip, retry=False):
                 "hosting": data.get("hosting"),
             })
             if config.DEBUG:
-                print(f"📦 Enriched data for {ip}: {data}")
                 print(f"✅ IP lookup successful: {ip} - {data.get('isp')}")
+
+            if config.DEBUG_ALL:
+                print(f"📦 Enriched data for {ip}: {data}")
+                
             time.sleep(1.4)  # about 43 requests per minute
             return data
         

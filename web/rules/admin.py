@@ -170,6 +170,7 @@ class DeviceLeaseAdmin(admin.ModelAdmin):
         'lease_start',
         'lease_end',
         'last_active',
+        'show',
     )
     list_filter = (
         'manufacturer',

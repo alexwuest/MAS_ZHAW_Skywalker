@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.db.models import Q, Max
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 import socket
 import requests
@@ -14,7 +15,7 @@ from .api_logs_parser import api_dhcp_parser
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
 from .api_firewall_sync import allow_blocked_ips_for_device
 from .api_firewall import delete_rule_by_source_and_destination, add_firewall_rule, apply_firewall_changes, check_rule_exists
-from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm
+from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm, HideLeaseForm
 
 ############################################################################
 # Emoji legend for code comments
@@ -501,6 +502,46 @@ def manage_devices_view(request):
                     print(f"Device {device.device_id} added.")
 
                 return redirect('manage-devices')
+            
+
+        elif action == "archive_devices":
+            selected_ids = set(request.POST.getlist("archived"))
+
+            devices_active = Device.objects.filter(archived=False)
+            
+            for device in devices_active:
+                # Update archive status
+                device.archived = device.device_id in selected_ids
+                print(f"Device {device.device_id} archived status BEFORE: {device.archived}")
+
+                # Get the most recent lease activity
+                latest_activity = device.leases.aggregate(max_active=Max("last_active"))["max_active"]
+                device.last_active = latest_activity
+
+                device.save(update_fields=["archived", "last_active"])
+
+            print(f"Updated archive status. Archived: {selected_ids}")
+            return redirect("manage-devices")
+
+
+        elif action == "unarchive_devices":
+            selected_ids = set(request.POST.getlist("unarchived"))
+
+            devices_inactive = Device.objects.filter(archived=True)
+            for device in devices_inactive:
+                if device.device_id in selected_ids:
+                    # Remove the device from the list of archived devices
+                    device.archived = False
+
+                    # Get the most recent lease activity
+                    latest_activity = device.leases.aggregate(max_active=Max("last_active"))["max_active"]
+                    device.last_active = latest_activity
+                    print(f"Device {device.device_id} archived status BEFORE: {device.archived}")
+
+                    device.save(update_fields=["archived", "last_active"])
+
+            print(f"Updated archive status. Not archived anymore: {selected_ids}")
+            return redirect("manage-devices")
 
 
         elif action == "assign_lease":
@@ -559,28 +600,23 @@ def manage_devices_view(request):
                     apply_firewall_changes()
 
                 return redirect('manage-devices')
-            
-        elif action == "archive_devices":
-            selected_ids = set(request.POST.getlist("archived"))
 
-            all_devices = Device.objects.all()
-            for device in all_devices:
-                # Update archive status
-                device.archived = device.device_id in selected_ids
-
-                # Get the most recent lease activity
-                latest_activity = device.leases.aggregate(max_active=Max("last_active"))["max_active"]
-                device.last_active = latest_activity
-
-                device.save(update_fields=["archived", "last_active"])
-
-            print(f"Updated archive status. Archived: {selected_ids}")
-            return redirect("manage-devices")
+        elif action == "hide_lease":
+            lease_form = HideLeaseForm(request.POST)
+            if lease_form.is_valid():
+                lease_id = lease_form.cleaned_data['lease_id']
+                try:
+                    lease = DeviceLease.objects.get(id=lease_id)
+                    lease.show = False
+                    lease.save()
+                    print(f"Lease {lease.ip_address} hidden.")
+                except DeviceLease.DoesNotExist:
+                    print("Lease not found.")
 
     api_dhcp_parser.parse_opnsense_leases()
 
     # Unassigned leases
-    unlinked_leases = DeviceLease.objects.filter(device__isnull=True).order_by('-last_active')
+    unlinked_leases = DeviceLease.objects.filter(device__isnull=True, show=True).order_by('-last_active')
     lease_forms = [AssignDeviceToLeaseForm(initial={'lease_id': lease.id}) for lease in unlinked_leases]
     device_id = request.GET.get("device_id")
 
@@ -588,6 +624,8 @@ def manage_devices_view(request):
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
         'devices': Device.objects.all().order_by("device_id"),
+        'devices_active': Device.objects.filter(archived=False).order_by("device_id"),
+        'devices_inactive': Device.objects.filter(archived=True).order_by("device_id"),
         'selected_device_id': int(device_id) if device_id else None,
     })
 
@@ -686,4 +724,46 @@ def domain_lookup_view(request):
         "results": results,
         "devices": Device.objects.all().order_by('device_id'),
         "selected_device_id": int(device_id) if device_id else None,
+    })
+
+
+###########################################################################
+# View device logs
+###########################################################################
+
+
+def device_logs_view(request):
+    device_id = request.GET.get("device_id")
+    devices = Device.objects.filter(archived=False).order_by("device_id")
+
+    device = None
+    logs = []
+    page_obj = None
+
+    if device_id:
+        device = get_object_or_404(Device, id=device_id)
+        active_ips = DeviceLease.objects.filter(
+            device=device,
+            lease_end__gt=timezone.now()
+        ).values_list('ip_address', flat=True)
+
+        logs_qs = FirewallLog.objects.filter(
+            source_ip__in=active_ips,
+        ).select_related("destination_metadata").order_by("-timestamp")
+
+        limit = int(request.GET.get("limit", 100))              # Set default limit to 100
+        page_number = request.GET.get("page")
+
+        paginator = Paginator(logs_qs, limit)
+        page_obj = paginator.get_page(page_number)
+        logs = page_obj.object_list
+
+
+    return render(request, "device_logs.html", {
+        "device": device,
+        "logs": logs,
+        "devices": devices,
+        "selected_device_id": int(device_id) if device_id else None,
+        "page_obj": page_obj,
+        "limit": request.GET.get("limit", 100),
     })

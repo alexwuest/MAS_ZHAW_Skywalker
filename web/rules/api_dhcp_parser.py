@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from django.utils.timezone import now, make_aware
 from .models import Device, DeviceLease
 
+from . import config
+
 from rules.models import DeviceLease
 DeviceLease.objects.all().count()
 
@@ -42,7 +44,9 @@ def parse_opnsense_leases():
 
     for lease in leases:
         try:
-            pprint(lease)  # log full raw lease
+            
+            if config.DEBUG_ALL:
+                pprint(lease)  # log full raw lease
 
             ip = lease["address"]
             mac = lease["mac"].lower()
