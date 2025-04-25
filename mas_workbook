@@ -329,3 +329,24 @@ python manage.py runserver 0.0.0.0:8000
 
 ########## I think this is quite a good state for the project at the moment. I will do some tests after easter and check in the team if anything is really needed.
 
+################################
+## 18.04.2025
+################################
+# Some code adjustments.
+
+################################
+## 20.04.2025
+################################
+# Added all logs to the database also passed ones. That is important to have a complete log capture. Especially for the report.
+# Added a new field to keep dns ips safe and avoid to get removed by the cleanup process, when the isp '' is removed.
+
+################################
+## 24.04.2025
+################################
+# Discussed with our technical chief about the project and how he looks on data integrety. As the chief wanted to have everything not changeable in a forensic matter. So there should no logs be deleted or changed.
+# The technical chief told me does that is always a good approach but it should not take now the next months to just get that done.
+# Otherwise the logs would need to be written right away on another safe place with hashing all the time. WORM or anything into this direction. For a tool which is just used a few times a year that would be a complete overkill.
+# Even today there are no logs at all. Our approach needs to be a root user which has access to the system. All other users do just have restricted access. Read only in many cases. The frontend and also the database access on the django side should be read only for the regular forensic user.
+# There should never be a case where a log needs to be deleted or changed. So getting regular logs to an archive with hashing would be a first approach.
+
+

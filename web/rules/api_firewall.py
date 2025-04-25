@@ -35,7 +35,7 @@ session.headers.update({"Content-Type": "application/json"})
 session_get = requests.Session()
 session_get.auth = HTTPBasicAuth(API_KEY, API_SECRET)
 
-def add_firewall_rule(ip_source, ip_destination, manual=False, session=session):
+def add_firewall_rule(ip_source, ip_destination, manual=False, dns=False, session=session):
     payload = {
         "rule": {
             "action": "pass",
@@ -44,7 +44,8 @@ def add_firewall_rule(ip_source, ip_destination, manual=False, session=session):
             "protocol": "any",
             "source_net": ip_source,
             "destination_net": ip_destination,
-            "description": f"{ip_source} automatically added rule to {ip_destination}"
+            "log": "1",
+            "description": f"{ip_source} automated rule to {ip_destination}",
         }
     }
 
@@ -72,6 +73,7 @@ def add_firewall_rule(ip_source, ip_destination, manual=False, session=session):
                     port=0,
                     action="PASS",
                     manual=manual,
+                    dns=dns,
                     end_date=None,
                 )
 

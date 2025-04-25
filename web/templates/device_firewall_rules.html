@@ -17,6 +17,7 @@
             <th style="text-align: left; padding: 6px;">ISP</th>
             <th style="text-align: left; padding: 6px;">Since</th>
             <th style="text-align: left; padding: 6px;">Manual</th>
+            <th style="text-align: left; padding: 6px;">DNS</th>
             <th style="text-align: left; padding: 6px;">Delete</th>
           </tr>
         </thead>
@@ -36,6 +37,7 @@
               <td style="padding: 6px;">{{ rule.isp_name }}</td>
               <td style="padding: 6px;">{{ rule.start_date|date:"Y-m-d H:i" }}</td>
               <td style="padding: 6px;">{{ rule.manual }}</td>
+              <td style="padding: 6px;">{{ rule.dns }}</td>
               <td style="padding: 6px;">
                 <button onclick="removeRule({{ rule.id }})">Remove</button>
             </td>

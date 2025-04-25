@@ -1,7 +1,7 @@
 {% include "header.html" %}        
         <tr class="middle-row">
             <td style="width: 80%; background-color: #e0f7fa; padding: 16px; font-size: 13px;">
-                <h2>BLOCKED Connections</h2>
+                <h2>PASSED Connections</h2>
                 <pre class="log_output">
 {{ logs|safe }}
                 </pre>
@@ -103,9 +103,7 @@
 
     }
 
-       
     let lastRefreshRate = null;
-
     function updateFirewallRules() {
         const deviceId = document.getElementById('deviceSelect').value;
         const button = document.getElementById('updateButton');

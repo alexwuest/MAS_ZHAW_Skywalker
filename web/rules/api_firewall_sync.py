@@ -92,7 +92,7 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
                     rule_obj.delete()
 
     # Remove rules that no longer belong to allowed ISPs
-    existing_rules = FirewallRule.objects.filter(source_ip=ip_source, end_date__isnull=True, manual=False)
+    existing_rules = FirewallRule.objects.filter(source_ip=ip_source, end_date__isnull=True, manual=False, dns=False)
     removed = 0
 
     for rule in existing_rules:

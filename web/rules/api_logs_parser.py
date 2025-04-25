@@ -188,11 +188,12 @@ def get_firewall_logs():
         return []
 
 
-def filter_blocked_logs(logs, search_address=None):
+def filter_logs(logs, search_address=None):
+    # This function filtsers logs
     """Filter logs for blocked, rejected, or dropped connections, optionally filtering by IP."""
     filtered_logs = [
         log for log in logs 
-        if log.get("action", "").lower() in {"block", "reject", "drop"}
+        if log.get("action", "").lower() in {"block", "reject", "drop", "pass"}
     ]
 
     # Further filter by IP if provided
@@ -349,11 +350,11 @@ def parse_logs(search_address=None):
 
     while True:
         logs = get_firewall_logs()
-        blocked_logs = filter_blocked_logs(logs, search_address)
+        filtered_logs = filter_logs(logs, search_address)
 
         new_ips = set()
 
-        for log in blocked_logs:
+        for log in filtered_logs:
             log_entry = f"{log.get('__timestamp__')} - {log.get('action')} - {log.get('interface')} - {log.get('src')}:{log.get('srcport')} -> {log.get('dst')}:{log.get('dstport')}"
             if log_entry in seen_logs:
                 continue
@@ -414,11 +415,11 @@ def parse_logs(search_address=None):
 
 def run_log_parser_once(search_address=None):
     logs = get_firewall_logs()
-    blocked_logs = filter_blocked_logs(logs, search_address)
+    filtered_logs = filter_logs(logs, search_address)
 
     output = []
 
-    for log in blocked_logs:
+    for log in filtered_logs:
         try:
             timestamp_str = log.get('__timestamp__')
             timestamp = parse_datetime(timestamp_str)

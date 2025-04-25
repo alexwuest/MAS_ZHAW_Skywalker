@@ -29,15 +29,17 @@ class FirewallLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'timestamp'
     ordering = ('-timestamp',)
 
+    #TODO Uncomment following lines for live system
+
     # All fields read-only
-    readonly_fields = [field.name for field in FirewallLog._meta.fields]
+    #readonly_fields = [field.name for field in FirewallLog._meta.fields] 
 
     # Prevent add and edit
-    def has_add_permission(self, request):
-        return False
+    #def has_add_permission(self, request):
+    #    return False
 
-    def has_change_permission(self, request, obj=None):
-        return False
+    #def has_change_permission(self, request, obj=None):
+    #    return False
 
 @admin.register(FirewallRule)
 class FirewallRuleAdmin(admin.ModelAdmin):
@@ -49,6 +51,7 @@ class FirewallRuleAdmin(admin.ModelAdmin):
         'action',
         'isp_name',
         'manual',
+        'dns',
         'start_date',
         'end_date',
     )

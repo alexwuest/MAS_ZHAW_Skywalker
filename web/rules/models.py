@@ -139,7 +139,8 @@ class FirewallRule(models.Model):
     port = models.IntegerField()
     protocol = models.CharField(max_length=10, choices=[('TCP', 'TCP'), ('UDP', 'UDP')])
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
-    manual = models.BooleanField(default=False)
+    manual = models.BooleanField(default=False)                                             # Manual rules by user not by ISP con
+    dns = models.BooleanField(default=False)                                                # DNS rules should not be removed automatically  
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
     isp_name = models.CharField(max_length=100)

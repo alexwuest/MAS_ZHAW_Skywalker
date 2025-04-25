@@ -117,14 +117,14 @@ def view_firewall_logs_all(request):
 
 
 ###########################################################################
-# Show Output with logfile parser run and filtered output
+# BLOCKED / Logfile Parser / Filtered by Device
 ###########################################################################
 
 def view_firewall_logs(request):
     ip_filter = request.GET.get("ip")
     device_id = request.GET.get("device_id")
 
-    logs_queryset = FirewallLog.objects.select_related("destination_metadata").all()
+    logs_queryset = FirewallLog.objects.select_related("destination_metadata").filter(action="block")
 
     # Filter by device using active leases
     if device_id:
@@ -189,12 +189,90 @@ def view_firewall_logs(request):
 
     return render(request, "firewall_logs.html", {
         "logs": logs,
-        "ip_data": config.IP_TABLE,  # optional, for UI extras like hover
+        "ip_data": config.IP_TABLE,
         "isp_list": isp_list,
         "devices": Device.objects.all().order_by('device_id'),
         "selected_device_id": int(device_id) if device_id else None,
     })
 
+
+###########################################################################
+# PASSED / Logfile Parser / Filtered by Device
+###########################################################################
+
+def firewall_passed_logs_view(request):
+    device_id = request.GET.get("device_id")
+
+    logs_queryset = FirewallLog.objects.select_related("destination_metadata").filter(action="pass")
+
+    # Filter by device using active leases
+    if device_id:
+        now = timezone.now()
+        active_leases = DeviceLease.objects.filter(
+            device__id=device_id,
+            lease_end__gt=now
+        ).values_list('ip_address', flat=True)
+
+        logs_queryset = logs_queryset.filter(
+            Q(source_ip__in=active_leases) | Q(destination_ip__in=active_leases)
+        )
+
+    recent_logs = logs_queryset.order_by('-timestamp')[:2000]
+
+    # Build log lines from DB
+    enriched_logs = []
+    for log in recent_logs:
+        meta = log.destination_metadata
+        status = "✅" if meta else "🆕"
+        isp_display = meta.isp if meta and meta.isp else "Unknown, lookup pending"
+
+        src = f"{log.source_ip}:{log.source_port}".ljust(20)
+        dst = f"{log.destination_ip}:{log.destination_port}".ljust(20)
+        timestamp = log.timestamp.strftime("%H:%M:%S - %d.%m.%Y")
+
+        enriched_logs.append(f"{timestamp} - {src} → {dst} {status} {isp_display}")
+
+    logs = "\n".join(enriched_logs)
+
+    # Build ISP list only from logs related to selected device
+    isp_set = set()
+    if device_id:
+        try:
+            now = timezone.now()
+            active_leases = DeviceLease.objects.filter(
+                device__id=device_id,
+                lease_end__gt=now
+            ).values_list('ip_address', flat=True)
+
+            logs_queryset = FirewallLog.objects.filter(
+                Q(source_ip__in=active_leases) | Q(destination_ip__in=active_leases),
+                destination_metadata__isnull=False
+            ).select_related('destination_metadata')
+
+            isp_set.update(
+                logs_queryset.values_list('destination_metadata__isp', flat=True)
+            )
+
+            allowed = DeviceAllowedISP.objects.filter(
+                device__id=device_id
+            ).values_list("isp_name", flat=True)
+
+            isp_set.update(allowed)
+
+        except Device.DoesNotExist:
+            pass
+
+
+    # ISP list
+    isp_list = [{"name": isp, "evidence_id": None} for isp in sorted(filter(None, isp_set))]
+
+    return render(request, "firewall_logs_passed.html", {
+        "logs": logs,
+        "isp_list": isp_list,        
+        "ip_data": config.IP_TABLE,
+        "devices": Device.objects.all().order_by('device_id'),
+        "selected_device_id": int(device_id) if device_id else None,
+    })
 
 
 ###########################################################################
@@ -371,6 +449,11 @@ def remove_firewall_rule_view(request):
 
     try:
         rule = FirewallRule.objects.get(id=rule_id)
+
+        if rule.dns:  # Check the boolean field
+            return JsonResponse({"status": "error", "message": "Cannot remove DNS rule"}, status=400)
+
+        rule = FirewallRule.objects.get(id=rule_id)
         rule.end_date = timezone.now()
         rule.save(update_fields=["end_date"])
 
@@ -466,7 +549,7 @@ def manage_devices_view(request):
 
                 # Add rule for the newest lease only if needed
                 if newest_lease.ip_address and not check_rule_exists(newest_lease.ip_address, dns_ip):
-                    if add_firewall_rule(newest_lease.ip_address, dns_ip):
+                    if add_firewall_rule(newest_lease.ip_address, dns_ip, dns=True):
                         print(f"✅ Rule added for {newest_lease.ip_address} → {dns_ip}")
                         changes_made = True
                 else:
@@ -531,7 +614,6 @@ def update_firewall_rules_view(request):
             "rules_removed": count_removed,
             "device_id": device.id if device else None,
         })
-
 
 
 def get_linked_isps_view(request, device_id):

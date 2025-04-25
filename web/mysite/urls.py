@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from rules.views import (
     view_firewall_logs,
+    firewall_passed_logs_view,
     manage_devices_view,
     get_linked_isps_view,
     toggle_isp_link_view,
@@ -23,6 +24,8 @@ urlpatterns = [
     
     path('logs/', view_firewall_logs, name='view-logs'),
     path('update-firewall/', update_firewall_rules_view, name='update_firewall_rules'),
+
+    path('passed_logs/', firewall_passed_logs_view, name='view-logs-passed'),
     
     path('overview/', device_ip_overview_view, name='device-ip-overview'),
     path('flush-metadata/', flush_metadata_seen_view, name='flush-metadata'),

@@ -1,9 +1,8 @@
 {% include "header.html" %}
-
 <tr class="middle-row">
-    <td colspan="2" style="background-color: #e0f7fa; ">
+    <td colspan="2" style="background-color: #e0f7fa; padding: 16px;">
         <h2>Domain to ISP Lookup</h2>
-        Initialy add a device and afterwards add leases to the device. So it will be visible under the device in the frontend "Show Logs"</br></br>
+        Lookup a specific domain</br></br>
         <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
