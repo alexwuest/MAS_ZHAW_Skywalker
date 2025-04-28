@@ -352,4 +352,27 @@ python manage.py runserver 0.0.0.0:8000
 ################################
 ## 25.04.2025
 ################################
+# Design adjustments. 
+
+################################
+## 28.04.2025
+################################
+
+### Meeting with Peter Heinrich
+# State of the project is good. Next steps Bugfixing.
+# #TODO For DNS just allow port 53 instead of all ports.
+# #TODO MAC Address with 42 52 are random devices because of the second two. 
+# #TODO MX Record for lookup page needed?
+# #TODO UDP -> QUIC traffic L4 (Youtube) logging on firewall base?
+
+# #TODO valdiation: 
+# Define scenarios which will be needed in our case. These scenarios will be used to test the system. Will it work, will it fail? When will it fail? If it fail can it be fixed to work or is that a usecase we cannot solve?
+# Own ideas:
+# For all use cases we need to make sure the device is not wiped. No other apps get connections and messages are sent or received (Other not tested app!).
+# 1. Get access to the Apple Cloud, accessing pictures and videos from the icloud
+# 2. Get access to the telgram app, get old attachments and messages which are not stored on the device
+# ...
 # 
+# Let the system be tried out by a peer. Is the system working as expected? Is the UI good enough? Is the system easy to use?
+# 
+

@@ -9,10 +9,12 @@ from requests.auth import HTTPBasicAuth
 from pathlib import Path
 from django.utils import timezone
 from django.utils.timezone import now as django_now
+from django.utils.dateparse import parse_datetime
+from django.db import IntegrityError, OperationalError
 from datetime import timedelta
 
-from .models import FirewallLog, DestinationMetadata, DeviceLease
-from django.utils.dateparse import parse_datetime
+from .models import FirewallLog, DestinationMetadata, DeviceLease, MetadataSeenByDevice
+
 from . import api_dhcp_parser, config
 
 
@@ -89,7 +91,6 @@ def enrich_ip(ip):
             pass
 
     # DB check
-    
     db_entry = DestinationMetadata.objects.filter(ip=ip, end_date__isnull=True).first()
     if db_entry and django_now() - db_entry.last_checked < datetime.timedelta(hours=RECHECK_AFTER_HOURS):
         config.IP_TABLE[ip]["_lookup_done"] = True
@@ -118,34 +119,42 @@ def enrich_ip(ip):
     required = ["isp", "country"]
 
     if all(meta.get(field) and meta.get(field) != "N/A" for field in required):
-        DestinationMetadata.objects.update_or_create(
-            ip=ip,
-            end_date__isnull=True,
-            defaults={
-                "last_checked": django_now(),
-                "dns_name": meta.get("dns_name") or "N/A",
-                "city": meta.get("city") or "N/A",
-                "country": meta.get("country") or "N/A",
-                "continent": meta.get("continent") or "N/A",
-                "continent_code": meta.get("continent_code") or "N/A",
-                "region": meta.get("region") or "N/A",
-                "region_name": meta.get("region_name") or "N/A",
-                "district": meta.get("district") or "N/A",
-                "zip_code": meta.get("zip_code") or "N/A",
-                "lat": meta.get("lat") or 0.0,
-                "lon": meta.get("lon") or 0.0,
-                "timezone": meta.get("timezone") or "N/A",
-                "offset": meta.get("offset") or 0,
-                "currency": meta.get("currency") or "N/A",
-                "isp": meta.get("isp") or "N/A",
-                "org": meta.get("org") or "N/A",
-                "as_number": meta.get("as_number") or "N/A",
-                "as_name": meta.get("as_name") or "N/A",
-                "mobile": meta.get("mobile") or False,
-                "proxy": meta.get("proxy") or False,
-                "hosting": meta.get("hosting") or False,
-            }
-        )
+        for attempt in range(5):
+            try:
+                DestinationMetadata.objects.update_or_create(
+                    ip=ip,
+                    end_date__isnull=True,
+                    defaults={
+                        "last_checked": django_now(),
+                        "dns_name": meta.get("dns_name") or "N/A",
+                        "city": meta.get("city") or "N/A",
+                        "country": meta.get("country") or "N/A",
+                        "continent": meta.get("continent") or "N/A",
+                        "continent_code": meta.get("continent_code") or "N/A",
+                        "region": meta.get("region") or "N/A",
+                        "region_name": meta.get("region_name") or "N/A",
+                        "district": meta.get("district") or "N/A",
+                        "zip_code": meta.get("zip_code") or "N/A",
+                        "lat": meta.get("lat") or 0.0,
+                        "lon": meta.get("lon") or 0.0,
+                        "timezone": meta.get("timezone") or "N/A",
+                        "offset": meta.get("offset") or 0,
+                        "currency": meta.get("currency") or "N/A",
+                        "isp": meta.get("isp") or "N/A",
+                        "org": meta.get("org") or "N/A",
+                        "as_number": meta.get("as_number") or "N/A",
+                        "as_name": meta.get("as_name") or "N/A",
+                        "mobile": meta.get("mobile") or False,
+                        "proxy": meta.get("proxy") or False,
+                        "hosting": meta.get("hosting") or False,
+                    }
+                )
+                break
+            except OperationalError as e:
+                print(f"⚠️ Database locked while enriching {ip}, retrying ({attempt+1}/5)...")
+                time.sleep(0.5)
+        else:
+            print(f"❗ Failed to enrich {ip} after 5 retries due to DB lock.")
 
     # Mark it fully complete
     config.IP_TABLE[ip]["_lookup_done"] = True
@@ -156,20 +165,6 @@ def normalize(val):
     if val in [None, "", "N/A"]:
         return "N/A"
     return str(val).strip().lower()
-
-# Start the log parser in a separate thread
-def start_log_parser():
-    """Run the log parser in a thread that loops forever."""
-    thread = threading.Thread(target=parse_logs_loop)
-    thread.daemon = True
-    thread.start()
-
-
-def parse_logs_loop():
-    while True:
-        run_log_parser_once()
-        time.sleep(5)
-
 
 def get_firewall_logs():
     """Fetch firewall logs from OPNsense API."""
@@ -346,7 +341,7 @@ def print_overview(company):
     if unique_ip_list:
         print(",".join(unique_ip_list))
 
-
+# This is the background thread that runs from log_parser_service.py
 def parse_logs(search_address=None):
     """Continuously fetch and parse logs, updating unique IPs."""
     seen_logs = set()
@@ -387,6 +382,19 @@ def parse_logs(search_address=None):
             # Lookup existing metadata
             existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
 
+            # Update last_active time for lease
+            src_ip = log.get('src')
+            lease = None
+
+            if src_ip:
+                lease = DeviceLease.objects.filter(ip_address=src_ip).order_by('-lease_start').first()
+                if lease:
+                    try:
+                        lease.last_active = timezone.now()
+                        lease.save(update_fields=["last_active"])
+                    except Exception as e:
+                        print(f"Error updating last_active for {src_ip}: {e}")
+
             # Avoid duplicate log entries
             exists = FirewallLog.objects.filter(
                 timestamp=timestamp,
@@ -400,93 +408,37 @@ def parse_logs(search_address=None):
             ).exists()
 
             if not exists:
-                FirewallLog.objects.create(
-                    timestamp=timestamp,
-                    action=log.get("action", ""),
-                    interface=log.get("interface", ""),
-                    source_ip=src,
-                    source_port=log.get("srcport"),
-                    destination_ip=dst,
-                    destination_port=log.get("dstport"),
-                    protocol=log.get("proto", ""),
-                    destination_metadata=existing_metadata
+                try:
+                    FirewallLog.objects.create(
+                        timestamp=timestamp,
+                        action=log.get("action", ""),
+                        interface=log.get("interface", ""),
+                        source_ip=src,
+                        source_port=log.get("srcport"),
+                        destination_ip=dst,
+                        destination_port=log.get("dstport"),
+                        protocol=log.get("proto", ""),
+                        destination_metadata=existing_metadata
+                    )
+                except IntegrityError:
+                    print(f"⚠️ Duplicate firewall log skipped for {src} → {dst}")
+
+
+            if lease and lease.device and existing_metadata:
+                device = lease.device
+
+                metadata_seen, created = MetadataSeenByDevice.objects.get_or_create(
+                    device=device,
+                    metadata=existing_metadata,
+                    defaults={"last_seen_at": django_now()}
                 )
+
+                if not created:
+                    metadata_seen.last_seen_at = django_now()
+                    metadata_seen.save(update_fields=["last_seen_at"])
+                    
+                if config.DEBUG_ALL:
+                    print(f"🔄 MetadataSeenByDevice {('created' if created else 'updated')} for {device.device_id} {device.description}: {existing_metadata.ip} ({existing_metadata.isp})")
 
         # Wait before starting the next run
         time.sleep(5)
-
-
-def run_log_parser_once(search_address=None):
-    logs = get_firewall_logs()
-    filtered_logs = filter_logs(logs, search_address)
-
-    output = []
-
-    for log in filtered_logs:
-        try:
-            timestamp_str = log.get('__timestamp__')
-            timestamp = parse_datetime(timestamp_str)
-            if timestamp and timezone.is_naive(timestamp):
-                timestamp = timezone.make_aware(timestamp)
-            elif not timestamp:
-                timestamp = timezone.now()
-
-            # Update last_active time for lease
-            src_ip = log.get('src')
-            if src_ip:
-                try:
-                    lease = DeviceLease.objects.filter(ip_address=src_ip).order_by('-lease_start').first()
-                    if lease:
-                        lease.last_active = timezone.now()
-                        lease.save(update_fields=["last_active"])
-                except Exception as e:
-                    print(f"Error updating last_active for {src_ip}: {e}")
-
-            src = log.get("src")
-            dst = log.get("dst")
-
-            src_combined = f"{src}:{log.get('srcport')}".ljust(20)
-            dst_combined = f"{dst}:{log.get('dstport')}".ljust(20)
-
-            
-
-            if existing_metadata:
-                status = "✅"
-                isp_display = existing_metadata.isp or "Unknown"
-                log_entry = f"{timestamp_str} - {src_combined} → {dst_combined} [{status}] ({isp_display})"
-            else:
-                log_entry = f"{timestamp_str} - {src_combined} → {dst_combined} [🆕] (Unknown)"
-
-            output.append(log_entry)
-
-            # Avoid duplicate log entries
-            exists = FirewallLog.objects.filter(
-                timestamp=timestamp,
-                action=log.get("action", ""),
-                interface=log.get("interface", ""),
-                source_ip=src,
-                source_port=log.get("srcport"),
-                destination_ip=dst,
-                destination_port=log.get("dstport"),
-                protocol=log.get("proto", "")
-            ).exists()
-
-            if not exists:
-                FirewallLog.objects.create(
-                    timestamp=timestamp,
-                    action=log.get("action", ""),
-                    interface=log.get("interface", ""),
-                    source_ip=src,
-                    source_port=log.get("srcport"),
-                    destination_ip=dst,
-                    destination_port=log.get("dstport"),
-                    protocol=log.get("proto", ""),
-                    destination_metadata=existing_metadata
-                )
-
-        except Exception as e:
-            print(f"⚠️ Error processing log entry: {e}")
-
-    return output
-
-

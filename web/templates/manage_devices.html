@@ -45,10 +45,10 @@
     <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="action" value="archive_devices">
-        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+        <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
           <thead>
             <tr style="background-color: #ffdca8;">
-              <th style="text-align: left; padding: 6px; width: 20px"></th>
+              <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
               <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
               <th style="text-align: left; padding: 6px;">Description</th>
               <th style="text-align: left; padding: 6px;">DNS</th>
@@ -83,10 +83,10 @@
     <form method="POST">
         {% csrf_token %}
         <input type="hidden" name="action" value="unarchive_devices">
-        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+        <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
           <thead>
             <tr style="background-color: #ffdca8;">
-              <th style="text-align: left; padding: 6px; width: 20px"></th>
+              <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
               <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
               <th style="text-align: left; padding: 6px;">Description</th>
               <th style="text-align: left; padding: 6px;">DNS</th>
@@ -129,17 +129,14 @@
           Manufacturer: ({{ lease.manufacturer }})<br>
           Lease time: {{ lease.lease_start|date:"d.m.Y, H:i" }} → {{ lease.lease_end|date:"d.m.Y, H:i" }}
         </p>
-        {{ form.as_p }}
         <div style="display: flex; gap: 10px;">
-
           <form method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="assign_lease">
             {{ form.lease_id }}
-            <input type="hidden" name="device" value="{{ form.device.value }}">
+            {{ form.device }}
             <button type="submit">Assign</button>
           </form>
-
           <form method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="hide_lease">
@@ -147,7 +144,6 @@
             <button type="submit">Hide Lease</button>
           </form>
         </div>
-  
       </div>
     {% endfor %}
     {% if not entries %}

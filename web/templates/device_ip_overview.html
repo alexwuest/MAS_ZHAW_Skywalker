@@ -21,38 +21,39 @@
       <form method="post" action="{% url 'flush-metadata' %}" style="display: inline;">
         {% csrf_token %}
         <input type="hidden" name="device_id" value="{{ selected_device_id }}">
-        <button type="submit">Flush Seen Metadata</button> Mark all seen IPs as not seen anymore
+        <button type="submit">Flush Seen Metadata</button> Delete all seen IPs, so this overview will build from scratch.
       </form>
       <br><br>
       NOTE: Manual added IP's will not be managed with the ISP Rules. So make sure to check "Firewall rules" if all rules should be removed!
 
       <h3 style="margin-top: 24px;">New IPs</h3>
       {% if new_ips %}
-        <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+        <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
           <colgroup>
             <col style="width: 40px;">
             <col style="width: 150px;">
             <col style="width: 230px;">
             <col style="width: 230px;">
             <col style="width: 350px;">
-            <col style="width: 300px;">
-            <col style="width: 220px;">
+            <col style="width: 200px;">
+            <col style="width: 200px;">
             <col style="width: auto;">
           </colgroup>
           <thead>
             <tr style="background-color: #cceeff;">
-              <th style="text-align: left; padding: 6px;">Rule</th>
+              <th class="sorttable_nosort" style="text-align: left; padding: 6px;">Rule</th>
               <th style="text-align: left; padding: 6px;">IP</th>
               <th style="text-align: left; padding: 6px;">ORG</th>
               <th style="text-align: left; padding: 6px;">ISP</th>
               <th style="text-align: left; padding: 6px;">Location</th>
-              <th style="text-align: left; padding: 6px;">AS Number</th>
-              <th style="text-align: left; padding: 6px;">AS Name</th>
+              <th style="text-align: left; padding: 6px;">First seen</th>
+              <th style="text-align: left; padding: 6px;">Last seen</th>
               <th style="text-align: left; padding: 6px;">DNS</th>
+
             </tr>
           </thead>
           <tbody>
-            {% for ip, meta in new_ips %}
+            {% for ip, meta, seen in new_ips %}
             <tr>
               <td style="padding: 6px;">
                 {% with source_ip=device.leases.first.ip_address destination_ip=ip %}
@@ -79,9 +80,11 @@
               <td style="padding: 6px;">{{ meta.org }}</td>
               <td style="padding: 6px;">{{ meta.isp }}</td>
               <td style="padding: 6px;">{{ meta.zip_code }} {{ meta.city }}, {{ meta.country }}</td>
-              <td style="padding: 6px;">{{ meta.as_number }}</td>
-              <td style="padding: 6px;">{{ meta.as_name }}</td>
+              <td style="padding: 6px;">{{ seen.first_seen_at|date:"d.m.Y H:i:s" }}</td>
+              <td style="padding: 6px;">{{ seen.last_seen_at|date:"d.m.Y H:i:s" }}</td>
               <td style="padding: 6px;">{{ meta.dns_name }}</td>
+
+
             </tr>
             {% endfor %}
           </tbody>
@@ -97,31 +100,32 @@
         {% for isp, entries in overview.items %}
           <details open style="margin-bottom: 10px;">
             <summary style="font-weight: bold; cursor: pointer;">{{ isp }} ({{ entries|length }})</summary>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
+            <table class="sortable" style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
               <colgroup>
                 <col style="width: 40px;">
                 <col style="width: 150px;">
                 <col style="width: 230px;">
                 <col style="width: 230px;">
                 <col style="width: 350px;">
-                <col style="width: 300px;">
-                <col style="width: 220px;">
+                <col style="width: 200px;">
+                <col style="width: 200px;">
                 <col style="width: auto;">
               </colgroup>
               <thead>
                 <tr style="background-color: #ffdca8;">
-                  <th style="text-align: left; padding: 6px;">Rule</th>
+                  <th class="sorttable_nosort" style="text-align: left; padding: 6px;">Rule</th>
                   <th style="text-align: left; padding: 6px;">IP</th>
                   <th style="text-align: left; padding: 6px;">ORG</th>
                   <th style="text-align: left; padding: 6px;">ISP</th>
                   <th style="text-align: left; padding: 6px;">Location</th>
-                  <th style="text-align: left; padding: 6px;">AS Number</th>
-                  <th style="text-align: left; padding: 6px;">AS Name</th>
+                  <th style="text-align: left; padding: 6px;">First seen</th>
+                  <th style="text-align: left; padding: 6px;">Last seen</th>
                   <th style="text-align: left; padding: 6px;">DNS</th>
+
                 </tr>
               </thead>
               <tbody>
-                {% for ip, meta in entries %}
+                {% for ip, meta, seen in entries %}
                 <tr>
                   <td style="padding: 6px;">
                     {% with source_ip=device.leases.first.ip_address destination_ip=ip %}
@@ -148,9 +152,10 @@
                   <td style="padding: 6px;">{{ meta.org }}</td>
                   <td style="padding: 6px;">{{ meta.isp }}</td>
                   <td style="padding: 6px;">{{ meta.zip_code }} {{ meta.city }}, {{ meta.country }}</td>
-                  <td style="padding: 6px;">{{ meta.as_number }}</td>
-                  <td style="padding: 6px;">{{ meta.as_name }}</td>
+                  <td style="padding: 6px;">{{ seen.first_seen_at|date:"d.m.Y H:i:s" }}</td>
+                  <td style="padding: 6px;">{{ seen.last_seen_at|date:"d.m.Y H:i:s" }}</td>
                   <td style="padding: 6px;">{{ meta.dns_name }}</td>
+
                 </tr>
                 {% endfor %}
               </tbody>

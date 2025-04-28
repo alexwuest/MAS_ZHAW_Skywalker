@@ -4,7 +4,7 @@
     {% if device %}
       <h2>Firewall Rules for {{ device.device_id }} - {{ device.description }}</h2>
       {% if rules %}
-      <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+      <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
         <thead>
           <tr style="background-color: #ffdca8;">
             <th style="text-align: left; padding: 6px;">Action</th>

@@ -310,47 +310,23 @@ def device_ip_overview_view(request):
         ).values_list("source_ip", "destination_ip")
     }
 
-
-    logs = FirewallLog.objects.filter(
-        source_ip__in=source_ips
-    ).select_related("destination_metadata").order_by("-timestamp")
+    metadata_seen = MetadataSeenByDevice.objects.filter(device=device).select_related("metadata")
 
     new_ips = []
     known_ips = {}
-    seen_destinations = set()
 
-    for log in logs:
-        meta = log.destination_metadata
-        ip = log.destination_ip
+    now = timezone.now()
 
-        if not meta or ip in seen_destinations:
-            continue
+    for seen in metadata_seen:
+        meta = seen.metadata
+        ip = meta.ip
+        isp = meta.isp or "Unknown"
 
-        seen_destinations.add(ip)
-
-        # qs stands for QuerySet common naming in Django
-        qs = MetadataSeenByDevice.objects.filter(device=device, metadata=meta)
-
-        # Only proceed if never seen or within the last 60 seconds
-        is_recent = qs.filter(
-            last_seen_at__gte=timezone.now() - timezone.timedelta(seconds=seconds or 60)
-        ).exists()
-
-
-        if not qs.exists():
-            # create and show as new
-            MetadataSeenByDevice.objects.create(device=device, metadata=meta)
-            new_ips.append((ip, meta))
-
-        elif is_recent:
-            # Already seen recently — treat as "new"
-            new_ips.append((ip, meta))
-
+        # Check if the IP is recently seen
+        if seen.last_seen_at >= now - timedelta(seconds=seconds or 60):
+            new_ips.append((ip, meta, seen))
         else:
-            isp = meta.isp or "Unknown"
-            known_ips.setdefault(isp, []).append((ip, meta))
-
-    print("filter_recent is:", filter_recent)
+            known_ips.setdefault(isp, []).append((ip, meta, seen))
 
     return render(request, "device_ip_overview.html", {
     "devices": devices,
@@ -360,8 +336,8 @@ def device_ip_overview_view(request):
     "selected_device_id": device.id if device else None,
     "selected_filter": filter_recent,
     "active_rules_dict": active_rules_dict,
-
 })
+
 ###########################################################################
 
 @csrf_exempt
