@@ -54,6 +54,19 @@
       font-size: 12px;
       text-align: center;
     }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(220, 220, 220, 0.6); /* light grey transparent */
+      z-index: 9999;
+      display: none; /* hidden initially */
+      cursor: wait; /* show loading cursor */
+    }
+
     </style>
     <script>
         function goToUrl(baseUrl) {
@@ -69,7 +82,7 @@
     </script>
 </head>
 <body>
-
+  <div id="overlay"></div>
     <div class="header">
         <div class="menu-group">
             <label>Views:</label>

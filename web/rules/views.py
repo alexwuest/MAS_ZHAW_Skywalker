@@ -490,11 +490,7 @@ def manage_devices_view(request):
                 device.archived = device.device_id in selected_ids
                 print(f"Device {device.device_id} archived status BEFORE: {device.archived}")
 
-                # Get the most recent lease activity
-                latest_activity = device.leases.aggregate(max_active=Max("last_active"))["max_active"]
-                device.last_active = latest_activity
-
-                device.save(update_fields=["archived", "last_active"])
+                device.save(update_fields=["archived"])
 
             print(f"Updated archive status. Archived: {selected_ids}")
             return redirect("manage-devices")
@@ -509,12 +505,7 @@ def manage_devices_view(request):
                     # Remove the device from the list of archived devices
                     device.archived = False
 
-                    # Get the most recent lease activity
-                    latest_activity = device.leases.aggregate(max_active=Max("last_active"))["max_active"]
-                    device.last_active = latest_activity
-                    print(f"Device {device.device_id} archived status BEFORE: {device.archived}")
-
-                    device.save(update_fields=["archived", "last_active"])
+                    device.save(update_fields=["archived"])
 
             print(f"Updated archive status. Not archived anymore: {selected_ids}")
             return redirect("manage-devices")
@@ -591,6 +582,20 @@ def manage_devices_view(request):
 
     api_dhcp_parser.parse_opnsense_leases()
 
+    # Add logic for colored circles
+    now = timezone.now()
+    recent_threshold = now - timedelta(minutes=10)  # Less than 30 days but older than 10 minutes will be yellow
+    offline_threshold = now - timedelta(days=30)    # Older than 30 days will be red
+
+    devices_with_last_active = (
+        Device.objects
+        .annotate(last_active_from_leases=Max('leases__last_active'))
+        .order_by("device_id")
+    )
+
+    devices_active = devices_with_last_active.filter(archived=False)
+    devices_inactive = devices_with_last_active.filter(archived=True)
+
     # Unassigned leases
     unlinked_leases = DeviceLease.objects.filter(device__isnull=True, show=True).order_by('-last_active')
     lease_forms = [AssignDeviceToLeaseForm(initial={'lease_id': lease.id}) for lease in unlinked_leases]
@@ -599,10 +604,13 @@ def manage_devices_view(request):
     return render(request, 'manage_devices.html', {
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
-        'devices': Device.objects.all().order_by("device_id"),
-        'devices_active': Device.objects.filter(archived=False).order_by("device_id"),
-        'devices_inactive': Device.objects.filter(archived=True).order_by("device_id"),
+        'devices': devices_with_last_active,
+        'devices_active': devices_active,
+        'devices_inactive': devices_inactive,
         'selected_device_id': int(device_id) if device_id else None,
+        'now': now,
+        'recent_threshold': recent_threshold,
+        'offline_threshold': offline_threshold,
     })
 
 

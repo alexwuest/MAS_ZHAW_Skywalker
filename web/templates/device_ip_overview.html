@@ -21,13 +21,22 @@
       <form method="post" action="{% url 'flush-metadata' %}" style="display: inline;">
         {% csrf_token %}
         <input type="hidden" name="device_id" value="{{ selected_device_id }}">
-        <button type="submit">Flush Seen Metadata</button> Delete all seen IPs, so this overview will build from scratch.
+        <button type="submit">Delete Seen Metadata</button>  
+        <span style="margin-left: 8px;">Reset the overview by clearing all seen IPs.</span>
       </form>
+
       <br><br>
-      NOTE: Manual added IP's will not be managed with the ISP Rules. So make sure to check "Firewall rules" if all rules should be removed!
+      NOTE: Manually added IP addresses are <strong>not</strong> managed by the ISP rules.<br>
+      Be sure to review the <strong>Firewall Rules</strong> section if you want to ensure that all rules are properly removed.
 
       <h3 style="margin-top: 24px;">New IPs</h3>
       {% if new_ips %}
+      This overview displays the latest IP communications based on your selection above.</br>
+      Let the device run for a few minutes, then open a new app to trigger new traffic.</br>
+      </br>
+      First seen: -> Time of the first contact with this IP (including attempts)</br>
+      Last seen: &nbsp;-> Time of the most recent contact with this IP (including attempts)</br></br>
+
         <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
           <colgroup>
             <col style="width: 40px;">
@@ -93,9 +102,7 @@
       {% else %}
         <p><em>No new IPs.</em></p>
       {% endif %}
-
         <hr>
-
         <h3 style="margin-top: 24px;">Overview by ISP</h3>
         {% for isp, entries in overview.items %}
           <details open style="margin-bottom: 10px;">
@@ -121,7 +128,6 @@
                   <th style="text-align: left; padding: 6px;">First seen</th>
                   <th style="text-align: left; padding: 6px;">Last seen</th>
                   <th style="text-align: left; padding: 6px;">DNS</th>
-
                 </tr>
               </thead>
               <tbody>
@@ -155,12 +161,11 @@
                   <td style="padding: 6px;">{{ seen.first_seen_at|date:"d.m.Y H:i:s" }}</td>
                   <td style="padding: 6px;">{{ seen.last_seen_at|date:"d.m.Y H:i:s" }}</td>
                   <td style="padding: 6px;">{{ meta.dns_name }}</td>
-
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
-          </details>
+          </details></br>
         {% endfor %}
     {% else %}
       <p>Please select a device to see its IP overview.</p>

@@ -79,7 +79,6 @@ class Device(admin.ModelAdmin):
         'dns_server',
         'examiner',
         'creation_date',
-        'last_active',
         'archived',
         
     )
@@ -89,7 +88,6 @@ class Device(admin.ModelAdmin):
         'dns_server',
         'examiner',
         'creation_date',
-        'last_active',
         'archived',
     )
     search_fields = (
@@ -98,7 +96,6 @@ class Device(admin.ModelAdmin):
         'dns_server',
         'examiner',
         'creation_date',
-        'last_active',
         'archived',
     )
 
@@ -118,8 +115,6 @@ class DestinationMetadataAdmin(admin.ModelAdmin):
         'end_date',
     )
     list_filter = (
-        'country',
-        'region',
         'isp',
         'end_date',
     )

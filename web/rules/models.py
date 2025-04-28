@@ -4,7 +4,6 @@ from .constants import get_dns_choices
 class Device(models.Model):
     device_id = models.CharField(max_length=20, unique=True)
     creation_date = models.DateTimeField(auto_now_add=True)
-    last_active = models.DateTimeField(null=True, blank=True)
 
     description = models.TextField(blank=True)
     dns_server = models.CharField(

@@ -67,7 +67,20 @@
                     <td>{{ device.description }}</td>
                     <td>{{ device.dns_server }}</td>
                     <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
-                    <td>{{ device.last_seen|date:"d.m.Y H:i" }}
+                    <td>
+                      {% if device.last_active_from_leases %}
+                        {{ device.last_active_from_leases|date:"d.m.Y H:i" }}
+                        {% if device.last_active_from_leases >= recent_threshold %}
+                          <span style="color: green;">●</span>
+                        {% elif device.last_active_from_leases >= offline_threshold %}
+                          <span style="color: orange;">●</span>
+                        {% else %}
+                          <span style="color: red;">●</span>
+                        {% endif %}
+                      {% else %}
+                        <span style="color: grey;">●</span>
+                      {% endif %}
+                    </td>
                     <td>{{ device.examiner }}</td>
                 </tr>
                 {% endfor %}
@@ -105,7 +118,20 @@
                     <td>{{ device.description }}</td>
                     <td>{{ device.dns_server }}</td>
                     <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
-                    <td>{{ device.last_seen|date:"d.m.Y H:i" }}
+                    <td>
+                      {% if device.last_active_from_leases %}
+                        {{ device.last_active_from_leases|date:"d.m.Y H:i" }}
+                        {% if device.last_active_from_leases >= recent_threshold %}
+                          <span style="color: green;">●</span>
+                        {% elif device.last_active_from_leases >= offline_threshold %}
+                          <span style="color: orange;">●</span>
+                        {% else %}
+                          <span style="color: red;">●</span>
+                        {% endif %}
+                      {% else %}
+                        <span style="color: grey;">●</span>
+                      {% endif %}
+                    </td>
                     <td>{{ device.examiner }}</td>
                 </tr>
                 {% endfor %}
@@ -114,8 +140,6 @@
         </table></br>
         <button type="submit">Unarchive Selected</button>
     </form>
-
-
   </div>
 
   <!-- Manage section / LEFT -->
@@ -123,7 +147,17 @@
     <h2>Assign Leases to Devices</h2>
     {% for lease, form in entries %}
       <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 1em;">
-        <p>
+          {% if lease.last_active %}
+            {% if lease.last_active >= recent_threshold %}
+              <span style="color: green;" title="{{ lease.last_active|date:'d.m.Y H:i:s' }}">●</span>
+            {% elif lease.last_active >= offline_threshold %}
+              <span style="color: orange;" title="{{ lease.last_active|date:'d.m.Y H:i:s' }}">●</span>
+            {% else %}
+              <span style="color: red;" title="{{ lease.last_active|date:'d.m.Y H:i:s' }}">●</span>
+            {% endif %}
+          {% else %}
+            <span style="color: grey;" title="No activity recorded.">●</span>
+          {% endif %}
           <strong>{{ lease.mac_address }}</strong> @ {{ lease.ip_address }} <br>
           Hostname: ({{ lease.hostname }})<br>
           Manufacturer: ({{ lease.manufacturer }})<br>
@@ -140,8 +174,12 @@
           <form method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="hide_lease">
+            {% if lease.last_active >= recent_threshold %}
+              <button type="submit" disabled>Hide Lease</button>
+            {% else %}
+              <button type="submit">Hide Lease</button>
+            {% endif %}
             <input type="hidden" name="lease_id" value="{{ lease.id }}">
-            <button type="submit">Hide Lease</button>
           </form>
         </div>
       </div>
