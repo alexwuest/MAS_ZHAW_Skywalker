@@ -1,19 +1,19 @@
-•  Title Page
-•  Abstract
-•  Table of Contents
-•  List of Abbreviations
+#  Title Page
+#  Abstract
+#  Table of Contents
+#  List of Abbreviations
 
 
-1.	Introduction
+#1.	Introduction
     - Based on the "Disposition". Why is it neccessary to have the opportunity to get mobile / computer devices online with blocking everything by default and allowing just neccessary connections.
     - Explain the remote wipe problem. 
     - Goal of the work. Reference to use cases.
     - What the work contains and what it will not contain (scope)
 
 
-2.	Literature Review
+#2.	Literature Review
 
-    Firewalls
+    ##Firewalls
     - Evolution of Firewalls
     - Existing Firewalls
     - Comparison of firewalls like pfSense, OPNSense just iptables/nftables or also commercial ones like Fortinet or PaloAlto.
@@ -21,7 +21,7 @@
     Remote Wipe research (android / ios)
 
 
-3.	Methodology
+#3.	Methodology
 
     Software and Hardware evaluation
     - Software why OPNSense
@@ -56,7 +56,7 @@
     5.Get Chat Messages or attachments from Telegram which are not stored on the device. 
 
 
-4.	Analysis / Result (Not quite sure here. Should I use a chapter analysis or result or both?)
+#4.	Analysis / Result (Not quite sure here. Should I use a chapter analysis or result or both?)
 
     Test plan and evaluation
     - Remote wipe theme
@@ -68,7 +68,7 @@
     - Other observations
 
 
-5.	Discussion / Conclusion
+#5.	Discussion / Conclusion
 
     Discussion
     Reflect the results - is it like the expected outcome? If there is a difference, why is there a difference?
@@ -76,5 +76,5 @@
     Conclusion
     What did i achieve? Key learnings and insights? What will be possible in the future?
 
-•  References
-•  Declaration of Originality
+#  References
+#  Declaration of Originality
