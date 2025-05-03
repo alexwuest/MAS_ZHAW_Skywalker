@@ -32,8 +32,8 @@
 - Overview about models (Show some details under the hood like UML and ERD Diagrams)
 - Device and Lease Management (Why this is a great approach and why it makes management much easier)
 - Background Processes (automated all 5 seconds in the background)
--- Parsing (Parses the logfiles from the firewall and stores into the sql lite db)
--- IP Enrichment (From a single ip to much more information - this is the absolute core without that the project would not be possible)
+-     Parsing (Parses the logfiles from the firewall and stores into the sql lite db)
+-     IP Enrichment (From a single ip to much more information - this is the absolute core without that the project would not be possible)
 - Automatisation by API (API Calls, samples, ideas)
 
 ### Web UI
@@ -47,11 +47,12 @@ Most API calls always from background process. Views access just the db directly
 
 ## Use cases
 Here is a temporary list of use cases after some talks in our agency.
-1.Get videos or pictures directly out of the apple cloud.
-2.Get two factor authentication for Snapchat
-3.Get two factor authentication for Meta (like Facebook Code Generator)
-4.Get into a crypto wallet app (which one?)
-5.Get Chat Messages or attachments from Telegram which are not stored on the device. 
+
+- Get videos or pictures directly out of the apple cloud.
+- Get two factor authentication for Snapchat
+- Get two factor authentication for Meta (like Facebook Code Generator)
+- Get into a crypto wallet app (which one?)
+- Get Chat Messages or attachments from Telegram which are not stored on the device. 
 
 # 4. Analysis / Result (Not quite sure here. Should I use a chapter analysis or result or both?)
 
