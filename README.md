@@ -54,7 +54,8 @@ Here is a temporary list of use cases after some talks in our agency.
 - Get into a crypto wallet app (which one?)
 - Get Chat Messages or attachments from Telegram which are not stored on the device. 
 
-# 4. Analysis / Result (Not quite sure here. Should I use a chapter analysis or result or both?)
+# 4. Analysis / Result
+<!-- Not quite sure here. Should I use a chapter analysis or result or both? -->
 
 ## Test plan and evaluation
 - Remote wipe theme
