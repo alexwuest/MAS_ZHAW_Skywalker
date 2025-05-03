@@ -32,8 +32,8 @@
 - Overview about models (Show some details under the hood like UML and ERD Diagrams)
 - Device and Lease Management (Why this is a great approach and why it makes management much easier)
 - Background Processes (automated all 5 seconds in the background)
--     Parsing (Parses the logfiles from the firewall and stores into the sql lite db)
--     IP Enrichment (From a single ip to much more information - this is the absolute core without that the project would not be possible)
+ - Parsing (Parses the logfiles from the firewall and stores into the sql lite db)
+ - IP Enrichment (From a single ip to much more information - this is the absolute core without that the project would not be possible)
 - Automatisation by API (API Calls, samples, ideas)
 
 ### Web UI
