@@ -98,7 +98,7 @@ def enrich_ip(ip):
         config.IP_TABLE[ip]["dns_name"] = db_entry.dns_name or "N/A"
         config.IP_TABLE[ip]["isp"] = db_entry.isp or "N/A"
         return
-       
+    
     # Mark entry as not complete
     config.IP_TABLE[ip] = {"_lookup_done": False}
     dns_name = reverse_dns_lookup(ip) or "N/A"
@@ -376,9 +376,6 @@ def parse_logs(search_address=None):
                     print("🔄 New log entry:", log_entry)
                 new_ips.add(dst)
 
-            # Enrich the IP address
-            enrich_ip(dst)
-
             # Lookup existing metadata
             existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
 
@@ -436,9 +433,13 @@ def parse_logs(search_address=None):
                 if not created:
                     metadata_seen.last_seen_at = django_now()
                     metadata_seen.save(update_fields=["last_seen_at"])
-                    
+
                 if config.DEBUG_ALL:
                     print(f"🔄 MetadataSeenByDevice {('created' if created else 'updated')} for {device.device_id} {device.description}: {existing_metadata.ip} ({existing_metadata.isp})")
+
+        # Enrich IP's
+        for ip in new_ips:
+            enrich_ip(ip)
 
         # Wait before starting the next run
         time.sleep(5)

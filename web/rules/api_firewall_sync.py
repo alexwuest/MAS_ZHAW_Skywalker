@@ -94,11 +94,18 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
     existing_rules = FirewallRule.objects.filter(source_ip=ip_source, end_date__isnull=True, manual=False, dns=False)
     removed = 0
 
-    for rule in existing_rules:
-        if rule.destination_ip not in valid_dest_ips or rule.isp_name not in allowed_isps:
-            print(f"Removing rule to {rule.destination_ip} (ISP no longer allowed: {rule.isp_name})")
-            deleted_count = delete_rule_by_source_and_destination(rule.source_ip, rule.destination_ip)
-            removed += deleted_count
+    rules_to_remove = [
+        (rule.source_ip, rule.destination_ip)
+        for rule in existing_rules
+        if rule.destination_ip not in valid_dest_ips or rule.isp_name not in allowed_isps
+    ]
+
+    if rules_to_remove:
+        from .api_firewall import delete_multiple_rules
+        removed = delete_multiple_rules(rules_to_remove)
+    else:
+        removed = 0
+
 
     if added > 0 or removed > 0:
         apply_firewall_changes()

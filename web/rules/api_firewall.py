@@ -156,6 +156,67 @@ def delete_rule_by_source_and_destination(ip_source, ip_destination):
     except requests.RequestException as e:
         print(f"⚠️ Network error: {e}")
         return 0
+    
+
+def delete_multiple_rules(rules_to_remove):
+    """Delete multiple rules by source/destination, apply only once at the end."""
+    try:
+        # Load all firewall rules ONCE
+        t0 = time.perf_counter()
+        response = session_get.get(SEARCH_RULE_ENDPOINT, verify=CERT_PATH)
+        t1 = time.perf_counter()
+        print(f"✅ Loaded rules in {t1 - t0:.2f}s")
+
+        if response.status_code != 200:
+            print(f"❌ Error loading rules: {response.status_code} - {response.text}")
+            return 0
+
+        all_rules = response.json().get("rows", [])
+        deleted_count = 0
+
+        for ip_source, ip_destination in rules_to_remove:
+            t2 = time.perf_counter()
+            matching_rule = next(
+                (r for r in all_rules if ip_source in r.get("description", "") and ip_destination in r.get("description", "")),
+                None
+            )
+
+            if matching_rule:
+                uuid = matching_rule.get("uuid")
+                del_response = session.post(
+                    f"{DEL_RULE_ENDPOINT}/{uuid}",
+                    json={"reason": "Auto-delete"},
+                    verify=CERT_PATH
+                )
+
+                if del_response.status_code == 200:
+                    # Update DB with deleteted rules
+                    FirewallRule.objects.filter(
+                        source_ip=ip_source,
+                        destination_ip=ip_destination,
+                        end_date__isnull=True
+                    ).update(end_date=timezone.now())
+                    deleted_count += 1
+                    t3 = time.perf_counter()
+                    print(f"✅ Deleted rule: {ip_source} to {ip_destination} {t3 - t2:.2f}s")
+                else:
+                    print(f"❌ Failed to delete rule {uuid}: {del_response.status_code}")
+
+            else:
+                # Rule not found in firewall but still active in DB
+                updated = FirewallRule.objects.filter(
+                    source_ip=ip_source,
+                    destination_ip=ip_destination,
+                    end_date__isnull=True
+                ).update(end_date=timezone.now())
+                if updated:
+                    print(f"⚠️ Rule missing in firewall, cleaned up DB: {ip_source} → {ip_destination}")
+
+        return deleted_count
+
+    except requests.RequestException as e:
+        print(f"⚠️ Network error during deletion: {e}")
+        return 0
 
 
 def get_all_rules():
