@@ -11,7 +11,7 @@
 - What the work contains and what it will not contain (scope)
 
 
-# 2.Literature Review
+# 2.Background
 
 ## Firewalls
 - Evolution of Firewalls
@@ -21,7 +21,7 @@
 ## Remote Wipe research (android / ios)
 
 
-# 3.Methodology
+# 3.Methodology / Implementation??
 
 ## Software and Hardware evaluation
 - Software why OPNSense
@@ -40,11 +40,6 @@
 - Views
 - Admin DB view
 
-## Problems During developing the methodology
-In this chapter i want to outline some problems i had. Slow website loading. Duplicate entries from logs. 
-DNS IPs where removed when no ISP there. How I could solve that problems like mostly no API calls from views.
-Most API calls always from background process. Views access just the db directly. Makes page load quicker, less problems with more than one viewer etc.
-
 ## Use cases
 Here is a temporary list of use cases after some talks in our agency.
 
@@ -61,12 +56,17 @@ Here is a temporary list of use cases after some talks in our agency.
 - Remote wipe theme
 - Use cases
 
-## Plain results without intepretation
+## Results
 - Remote wipe
 - Use cases
 - Other observations
 
 # 5. Discussion / Conclusion
+## Problems During developing the methodology
+In this chapter i want to outline some problems i had. Slow website loading. Duplicate entries from logs. 
+DNS IPs where removed when no ISP there. How I could solve that problems like mostly no API calls from views.
+Most API calls always from background process. Views access just the db directly. Makes page load quicker, less problems with more than one viewer etc.
+
 ## Discussion
 Reflect the results - is it like the expected outcome? If there is a difference, why is there a difference?
 
