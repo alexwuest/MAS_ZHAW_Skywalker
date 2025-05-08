@@ -1,0 +1,77 @@
+#  Title Page
+#  Abstract
+#  Table of Contents
+#  List of Abbreviations
+
+
+# 1.Introduction
+- Based on the "Disposition". Why is it neccessary to have the opportunity to get mobile / computer devices online with blocking everything by default and allowing just neccessary connections.
+- Explain the remote wipe problem.
+- Goal of the work. Reference to use cases.
+- What the work contains and what it will not contain (scope)
+
+
+# 2.Background
+
+## Firewalls
+- Evolution of Firewalls
+- Existing Firewalls
+- Comparison of firewalls like pfSense, OPNSense just iptables/nftables or also commercial ones like Fortinet or PaloAlto.
+    
+## Remote Wipe research (android / ios)
+
+
+# 3.Methodology / Implementation??
+
+## Software and Hardware evaluation
+- Software why OPNSense
+- Hardware why Protectly
+
+## Program System Architecture and Software Design
+### Core Program
+- Overview about models (Show some details under the hood like UML and ERD Diagrams)
+- Device and Lease Management (Why this is a great approach and why it makes management much easier)
+- Background Processes (automated all 5 seconds in the background)
+    - Parsing (Parses the logfiles from the firewall and stores into the sql lite db)
+    - IP Enrichment (From a single ip to much more information - this is the absolute core without that the project would not be possible)
+- Automatisation by API (API Calls, samples, ideas)
+
+### Web UI
+- Views
+- Admin DB view
+
+## Use cases
+Here is a temporary list of use cases after some talks in our agency.
+
+- Get videos or pictures directly out of the apple cloud.
+- Get two factor authentication for Snapchat
+- Get two factor authentication for Meta (like Facebook Code Generator)
+- Get into a crypto wallet app (which one?)
+- Get Chat Messages or attachments from Telegram which are not stored on the device. 
+
+# 4. Analysis / Result
+> Not quite sure here. Should I use a chapter analysis or result or both?
+
+## Test plan and evaluation
+- Remote wipe theme
+- Use cases
+
+## Results
+- Remote wipe
+- Use cases
+- Other observations
+
+# 5. Discussion / Conclusion
+## Problems During developing the methodology
+In this chapter i want to outline some problems i had. Slow website loading. Duplicate entries from logs. 
+DNS IPs where removed when no ISP there. How I could solve that problems like mostly no API calls from views.
+Most API calls always from background process. Views access just the db directly. Makes page load quicker, less problems with more than one viewer etc.
+
+## Discussion
+Reflect the results - is it like the expected outcome? If there is a difference, why is there a difference?
+
+## Conclusion
+What did i achieve? Key learnings and insights? What will be possible in the future?
+
+#  References
+#  Declaration of Originality
