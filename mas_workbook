@@ -14,7 +14,7 @@
 ## Buying the hardware Firewall
 ################################
 # With Protectli i found a company located in Europe which offers hardware firewalls with ONSense installed. Ordered 09.02.2025 // 284.55€
-# V1410 - 32GB RAM, 250GB SSD, 4x Intel NICs, 2x USB 3.0, 1x HDMI, 1x COM, 1x VGA, 1x Power Supply
+# V1410 - 8GB RAM, 250GB SSD, 4x Intel NICs, 2x USB 3.0, 1x HDMI, 1x COM, 1x VGA, 1x Power Supply
 
 ################################
 ## Buying the Access Point
@@ -379,3 +379,31 @@ python manage.py runserver 0.0.0.0:8000
 
 # Changed MetadataSeenByDevice from view to the log parser. So it is always up to date. Field of first seen will now be time the parser checks logfile and sees a ip first time. If a ip is seen again it will update last_seen field. So there is the information about when a entry was added and when a entry was last seen.
 # Added sorting to all tables in the dashboard. I implemented it locally as I don't want to give in the future access to sources if not needed. Thanks to "Stuart Langridge" which gives the full use right of his sorttable.js (static/js/sorttable.js)
+
+
+
+{
+    "query": "52.97.201.242",
+    "status": "success",
+    "continent": "Europe",
+    "continentCode": "EU",
+    "country": "Switzerland",
+    "countryCode": "CH",
+    "region": "ZH",
+    "regionName": "Zurich",
+    "city": "Zurich",
+    "district": "",
+    "zip": "",
+    "lat": 47.3768,
+    "lon": 8.5416,
+    "timezone": "Europe/Zurich",
+    "offset": 7200,
+    "currency": "CHF",
+    "isp": "Microsoft Corporation",
+    "org": "Microsoft Corporation",
+    "as": "AS8075 Microsoft Corporation",
+    "asname": "MICROSOFT-CORP-MSN-AS-BLOCK",
+    "mobile": false,
+    "proxy": false,
+    "hosting": true
+}

@@ -442,4 +442,4 @@ def parse_logs(search_address=None):
             enrich_ip(ip)
 
         # Wait before starting the next run
-        time.sleep(5)
+        time.sleep(2)
