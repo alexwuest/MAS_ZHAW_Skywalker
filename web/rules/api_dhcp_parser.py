@@ -1,38 +1,20 @@
 import requests
-import os
 import datetime
-from pathlib import Path
-from dotenv import load_dotenv
+from pprint import pprint
 from django.utils.timezone import now, make_aware
-from .models import Device, DeviceLease
 
+from .models import DeviceLease
+from .config import API_KEY, API_SECRET, OPNSENSE_IP, CERT_PATH
 from . import config
 
-from rules.models import DeviceLease
-DeviceLease.objects.all().count()
-
-# Load .env file
-load_dotenv()
-
-# Get the absolute path to this script's directory
-BASE_DIR = Path(__file__).resolve().parent
-
-CERT_PATH = BASE_DIR / "certificate_crt.pem"
-
-# Store the variable from the .env file in the script
-API_KEY = os.getenv("API_KEY")
-API_SECRET = os.getenv("API_SECRET")
-OPNSENSE_IP = os.getenv("OPNSENSE_IP")
-
 DHCP_ENDPOINT = f"{OPNSENSE_IP}/api/dhcpv4/leases/searchLease"
-
-from pprint import pprint
 
 def parse_opnsense_leases():
     print("Fetching DHCP leases...")
     response = requests.get(DHCP_ENDPOINT, auth=(API_KEY, API_SECRET), verify=CERT_PATH)
 
     print(f"→ Status code: {response.status_code}")
+
     try:
         data = response.json()
     except Exception as e:
@@ -46,7 +28,7 @@ def parse_opnsense_leases():
         try:
             
             if config.DEBUG_ALL:
-                pprint(lease)  # log full raw lease
+                pprint(lease)  # log full raw lease for debugging
 
             ip = lease["address"]
             mac = lease["mac"].lower()

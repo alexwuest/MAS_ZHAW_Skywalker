@@ -1,9 +1,11 @@
+#TODO Longer inactive devices should be removed from the firewall list to keep it clean and API calls quicker
+
 from django.utils import timezone
 from .models import DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata
-from .api_firewall import check_rule_exists, add_firewall_rule, apply_firewall_changes, delete_rule_by_source_and_destination, get_all_rules
+from .api_firewall import check_rule_exists, add_firewall_rule, apply_firewall_changes, get_all_rules
 
 def get_active_ip(device_id_str):
-    from .models import Device  # or wherever your Device model lives
+    from .models import Device
     now = timezone.now()
 
     try:
@@ -113,5 +115,3 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
     if return_removed:
         return added, removed
     return added
-
-

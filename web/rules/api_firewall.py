@@ -1,24 +1,12 @@
-import os
 import json
 import requests
 import time
+from django.utils import timezone
+from requests.auth import HTTPBasicAuth
 
 from .models import FirewallRule
 from . import config
-from django.utils import timezone
-from django.utils.timezone import now
-
-from dotenv import load_dotenv
-from requests.auth import HTTPBasicAuth
-
-# Load API credentials
-load_dotenv()
-API_KEY = os.getenv("API_KEY")
-API_SECRET = os.getenv("API_SECRET")
-OPNSENSE_IP = os.getenv("OPNSENSE_IP")
-
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-CERT_PATH = os.path.join(CURRENT_DIR, "certificate_crt.pem")
+from .config import API_KEY, API_SECRET, OPNSENSE_IP, CERT_PATH
 
 # Endpoints
 ADD_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/addRule"
@@ -128,7 +116,6 @@ def delete_rule_by_source_and_destination(ip_source, ip_destination):
                     verify=CERT_PATH
                 )
 
-
                 if del_response.status_code == 200:
                     FirewallRule.objects.filter(
                         source_ip=ip_source,
@@ -234,7 +221,6 @@ def get_all_rules():
     except requests.RequestException as e:
         print(f"Error fetching all rules: {e}")
         return []
-
 
 
 def check_rule_exists(ip_source, ip_destination):

@@ -1,35 +1,16 @@
 import requests
-import os
 import time
-import threading
 import socket
 import datetime
-from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
-from pathlib import Path
 from django.utils import timezone
 from django.utils.timezone import now as django_now
 from django.utils.dateparse import parse_datetime
 from django.db import IntegrityError, OperationalError
-from datetime import timedelta
 
+from .config import API_KEY, API_SECRET, OPNSENSE_IP, CERT_PATH
 from .models import FirewallLog, DestinationMetadata, DeviceLease, MetadataSeenByDevice
-
-from . import api_dhcp_parser, config
-
-
-# Load .env file
-load_dotenv()
-
-# Get the absolute path to this script's directory
-BASE_DIR = Path(__file__).resolve().parent
-
-CERT_PATH = BASE_DIR / "certificate_crt.pem"
-
-# Store the variable from the .env file in the script
-API_KEY = os.getenv("API_KEY")
-API_SECRET = os.getenv("API_SECRET")
-OPNSENSE_IP = os.getenv("OPNSENSE_IP")
+from . import config 
 
 print("Loaded OPNSENSE_IP:", OPNSENSE_IP)
 
@@ -71,8 +52,8 @@ def is_private_ip(ip):
 
 # Make sure the enrichment was done just once and avoid unnecessary requests to ip-api.com like private IPs
 def enrich_ip(ip):
-    RECHECK_AFTER_HOURS = 48
-    now = datetime.datetime.now()
+    RECHECK_AFTER_HOURS = 96
+    now = timezone.now()
 
     if ip not in config.IP_TABLE:
         config.IP_TABLE[ip] = {}
@@ -250,7 +231,7 @@ def get_ip_api(ip, retry=False):
             if config.DEBUG_ALL:
                 print(f"📦 Enriched data for {ip}: {data}")
                 
-            time.sleep(1.4)  # about 43 requests per minute
+            time.sleep(0.5)  # about 43 requests per minute
             return data
         
         elif response.status_code == 429:
@@ -442,4 +423,4 @@ def parse_logs(search_address=None):
             enrich_ip(ip)
 
         # Wait before starting the next run
-        time.sleep(2)
+        time.sleep(3)

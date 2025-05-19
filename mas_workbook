@@ -380,8 +380,6 @@ python manage.py runserver 0.0.0.0:8000
 # Changed MetadataSeenByDevice from view to the log parser. So it is always up to date. Field of first seen will now be time the parser checks logfile and sees a ip first time. If a ip is seen again it will update last_seen field. So there is the information about when a entry was added and when a entry was last seen.
 # Added sorting to all tables in the dashboard. I implemented it locally as I don't want to give in the future access to sources if not needed. Thanks to "Stuart Langridge" which gives the full use right of his sorttable.js (static/js/sorttable.js)
 
-
-
 {
     "query": "52.97.201.242",
     "status": "success",

@@ -33,10 +33,6 @@ class DeviceAllowedISP(models.Model):
         return f"{self.device.device_id} → {self.isp_name}"
 
 
-
-###################################################################################################
-
-
 class FirewallLog(models.Model):
     timestamp = models.DateTimeField()
     action = models.CharField(max_length=10)
@@ -138,7 +134,7 @@ class FirewallRule(models.Model):
     port = models.IntegerField()
     protocol = models.CharField(max_length=10, choices=[('TCP', 'TCP'), ('UDP', 'UDP')])
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
-    manual = models.BooleanField(default=False)                                             # Manual rules by user not by ISP con
+    manual = models.BooleanField(default=False)                                             # Manual rules by user not by ISP button
     dns = models.BooleanField(default=False)                                                # DNS rules should not be removed automatically  
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
@@ -167,7 +163,7 @@ class DeviceLease(models.Model):
     interface = models.CharField(max_length=50, blank=True, null=True)
 
     last_active = models.DateTimeField(null=True, blank=True)
-    show = models.BooleanField(default=True)                                                # Show in the web interface or to hide older entries     
+    show = models.BooleanField(default=True)                                                # Show in the web interface or to archived leases   
 
     class Meta:
         unique_together = ['ip_address', 'mac_address', 'lease_start']
