@@ -405,3 +405,8 @@ python manage.py runserver 0.0.0.0:8000
     "proxy": false,
     "hosting": true
 }
+# 22.05.2025 - During writing the Frontend chapter, i found out does the logfile parser is sometimes for quite a long time blocked because of IP enrichment.
+# I need to separate these tasks so the frontend gets new data regularly without blocking...
+
+# Need to split up the ip_enrichment to a own file because of circular import.
+# ip_enrichment.py
