@@ -44,11 +44,9 @@ class FirewallLogAdmin(admin.ModelAdmin):
 @admin.register(FirewallRule)
 class FirewallRuleAdmin(admin.ModelAdmin):
     list_display = (
+        'device',
         'source_ip',
         'destination_ip',
-        'protocol',
-        'port',
-        'action',
         'isp_name',
         'manual',
         'dns',
@@ -56,6 +54,7 @@ class FirewallRuleAdmin(admin.ModelAdmin):
         'end_date',
     )
     list_filter = (
+        'device',
         'protocol',
         'action',
         'isp_name',
@@ -63,6 +62,7 @@ class FirewallRuleAdmin(admin.ModelAdmin):
         'end_date',
     )
     search_fields = (
+        'device',
         'source_ip',
         'destination_ip',
         'isp_name',

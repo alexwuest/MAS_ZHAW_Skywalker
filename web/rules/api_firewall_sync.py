@@ -80,7 +80,7 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
                 end_date=None,
                 manual=False,
                 isp_name=isp_name,
-                destination_info=metadata
+                destination_info=metadata,
             )
             created = True
 

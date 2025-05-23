@@ -281,7 +281,8 @@ def link_ip_to_devices(destination_ip, metadata_obj, source_ip):
         leases = DeviceLease.objects.filter(ip_address=source_ip).select_related("device")
 
         if not leases.exists():
-            print(f"⚠️ No leases found for IP: {source_ip}")
+            if config.DEBUG:
+                print(f"⚠️  No leases found for IP: {source_ip}")
         else:
             if config.DEBUG_ALL:
                 print(f"✅ Found leases for {source_ip}: {list(leases)}")

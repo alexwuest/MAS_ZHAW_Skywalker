@@ -4,7 +4,7 @@ import time
 from django.utils import timezone
 from requests.auth import HTTPBasicAuth
 
-from .models import FirewallRule
+from .models import DeviceLease, FirewallRule
 from . import config
 from .config import API_KEY, API_SECRET, OPNSENSE_IP, CERT_PATH
 
@@ -52,9 +52,18 @@ def add_firewall_rule(ip_source, ip_destination, manual=False, dns=False, sessio
         if response.status_code == 200:
             print(f"✅ Rule added for {ip_destination} (Req time: {api_duration:.2f}s)")
 
+            # Lookup Device from source_ip
+            lease = DeviceLease.objects.filter(
+                ip_address=ip_source,
+                lease_end__gt=timezone.now()
+            ).order_by('-lease_start').first()
+
+            device = lease.device if lease else None
+
             # Update the database with the new rule
             try:
                 FirewallRule.objects.get_or_create(
+                    device=device,
                     source_ip=ip_source,
                     destination_ip=ip_destination,
                     protocol="any",

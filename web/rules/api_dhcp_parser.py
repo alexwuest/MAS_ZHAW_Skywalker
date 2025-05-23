@@ -12,7 +12,6 @@ DHCP_ENDPOINT = f"{OPNSENSE_IP}/api/dhcpv4/leases/searchLease"
 def parse_opnsense_leases():
     print("Fetching DHCP leases...")
     response = requests.get(DHCP_ENDPOINT, auth=(API_KEY, API_SECRET), verify=CERT_PATH)
-
     print(f"→ Status code: {response.status_code}")
 
     try:
@@ -26,7 +25,6 @@ def parse_opnsense_leases():
 
     for lease in leases:
         try:
-            
             if config.DEBUG_ALL:
                 pprint(lease)  # log full raw lease for debugging
 
@@ -38,25 +36,36 @@ def parse_opnsense_leases():
             manufacturer = lease.get("man", "")
             interface = lease.get("if_descr", "")
 
-            obj, created = DeviceLease.objects.get_or_create(
+            # Find active lease for this IP and MAC
+            existing = DeviceLease.objects.filter(
                 ip_address=ip,
                 mac_address=mac,
-                lease_start=starts,
-                defaults={
-                    'lease_end': ends,
-                    'hostname': hostname,
-                    'manufacturer': manufacturer,
-                    'interface': interface,
-                    'device': None,
-                }
-            )
+                lease_end__gte=now()
+            ).order_by('-lease_start').first()
 
-            if created:
-                print(f" Created lease: {mac} @ {ip} ({hostname})")
-            else:
-                obj.lease_end = ends
-                obj.last_seen = now()
-                obj.save()
+            if existing:
+                existing.lease_start = starts
+                existing.lease_end = ends
+                existing.hostname = hostname
+                existing.manufacturer = manufacturer
+                existing.interface = interface
+                existing.last_active = now()
+                existing.save()
                 print(f"Updated lease: {mac} @ {ip}")
+            
+            else:
+                DeviceLease.objects.create(
+                    ip_address=ip,
+                    mac_address=mac,
+                    lease_start=starts,
+                    lease_end=ends,
+                    hostname=hostname,
+                    manufacturer=manufacturer,
+                    interface=interface,
+                    last_active=now(),
+                    device=None
+                )
+                print(f"Created lease: {mac} @ {ip} ({hostname})")
+
         except Exception as e:
             print(f"Error processing lease: {e}")

@@ -131,6 +131,13 @@ class FirewallRule(models.Model):
         blank=True,
         related_name='firewall_rules'
     )
+    device = models.ForeignKey(
+        Device,
+        on_delete=models.CASCADE,                                                           # Delete all rules if device is deleted / Device should not be deleted normally it should be archived.
+        null=True,
+        blank=True,
+        related_name='firewall_rules'
+    )
     port = models.IntegerField()
     protocol = models.CharField(max_length=10, choices=[('TCP', 'TCP'), ('UDP', 'UDP')])
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)

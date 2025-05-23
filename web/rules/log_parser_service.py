@@ -31,7 +31,7 @@ def enrich_ip_worker():
         dst_ip, src_ip = ip_enrichment_queue.get()
         try:
             if config.DEBUG:
-                print(f"Enriching IP from queue: {dst_ip} (src: {src_ip})", flush=True)
+                print(f"🔄 Enriching IP from queue: {dst_ip} (src: {src_ip})", flush=True)
             enrich_ip(dst_ip, src_ip)
         except Exception as e:
             print(f"❌ Failed to enrich {dst_ip}: {e}", flush=True)
