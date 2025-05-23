@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-1*c$42g$h)#e-p%-wkop5u20sn)$572^^02u8)zhk0ev2tez=f
 DEBUG = True
 
 RUN_PARSER_ON_STARTUP = True
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
 
 
 ALLOWED_HOSTS = ['*'] #TODO RECHECK!!! Standard is ['']
@@ -48,6 +50,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'rules.middleware.login.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'rules.middleware.start_log_parser.StartLogParserMiddleware',

@@ -51,40 +51,110 @@
               <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
               <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
               <th style="text-align: left; padding: 6px;">Description</th>
-              <th style="text-align: left; padding: 6px;">DNS</th>
+              <th style="text-align: left; padding: 6px; width: 100px">DNS</th>
               <th style="text-align: left; padding: 6px;">Created</th>
               <th style="text-align: left; padding: 6px;">Last active</th>
-              <th style="text-align: left; padding: 6px;">Examiner</th>
+              <th style="text-align: left; padding: 6px; width: 80px">Examiner</th>
+              <th style="text-align: left; padding: 6px; width: 35px">Info</th>
             </tr>
           </thead>
             <tbody>
-                {% for device in devices_active %}
-                <tr>
-                  <td>
-                    <input type="checkbox" name="archived" value="{{ device.device_id }}"
-                  </td>
-                    <td>{{ device.device_id }}</td>
-                    <td>{{ device.description }}</td>
-                    <td>{{ device.dns_server }}</td>
-                    <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
-                    <td>
-                      {% if device.last_active_from_leases %}
-                        {{ device.last_active_from_leases|date:"d.m.Y H:i" }}
-                        {% if device.last_active_from_leases >= recent_threshold %}
-                          <span style="color: green;">●</span>
-                        {% elif device.last_active_from_leases >= offline_threshold %}
-                          <span style="color: orange;">●</span>
-                        {% else %}
-                          <span style="color: red;">●</span>
-                        {% endif %}
-                      {% else %}
-                        <span style="color: grey;">●</span>
-                      {% endif %}
-                    </td>
-                    <td>{{ device.examiner }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            {% for device in devices_active %}
+            <tr>
+              <td>
+                <input type="checkbox" name="archived" value="{{ device.device_id }}">
+              </td>
+
+              <td>
+                {% if not device.has_lease %}
+                  <span style="cursor: pointer; color: orange;" onclick="toggleLeases('{{ device.device_id }}', this)">
+                    ▶
+                  </span>
+                  <span style="color: orange;">{{ device.device_id }}</span>
+                {% else %}
+                  <span style="cursor: pointer;" onclick="toggleLeases('{{ device.device_id }}', this)">
+                    ▶
+                  </span>
+                  {{ device.device_id }}
+                {% endif %}
+              </td>
+              <td>
+                {% if not device.has_lease %}
+                  <span style="color: orange;">{{ device.description }}</span>
+                {% else %}
+                  {{ device.description }}
+                {% endif %}
+              </td>
+              <td>
+                {% if not device.has_lease %}
+                  <span style="color: orange;">{{ device.dns_server }}</span>
+                {% else %}
+                  {{ device.dns_server }}
+                {% endif %}
+              </td>
+              <td>
+                {% if not device.has_lease %}
+                  <span style="color: orange;">{{ device.creation_date|date:"d.m.Y H:i" }}</span>
+                {% else %}
+                  {{ device.creation_date|date:"d.m.Y H:i" }}
+                {% endif %}
+              </td>
+              <td>
+                {% if device.last_active_from_leases %}
+                  {{ device.last_active_from_leases|date:"d.m.Y H:i" }}
+                  {% if device.last_active_from_leases >= recent_threshold %}
+                    <span style="color: green;">●</span>
+                  {% elif device.last_active_from_leases >= offline_threshold %}
+                    <span style="color: orange;">●</span>
+                  {% else %}
+                    <span style="color: red;">●</span>
+                  {% endif %}
+                {% else %}
+                  <span style="color: grey;">●</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if not device.has_lease %}
+                  <span style="color: orange;">{{ device.examiner }}</span>
+                {% else %}
+                  {{ device.examiner }}
+                {% endif %}
+              </td>
+              <td>
+                {% if not device.has_lease %}
+                  <span title="No lease added">⚠️</span>
+                {% endif %}
+              </td>
+            </tr>
+
+            <!-- Lease rows for this device -->
+            {% if device.leases %}
+              {% for lease in device.leases.all %}
+              <tr class="lease-row lease-{{ device.device_id }}" style="background-color: #f7f7f7; font-style: italic; display: none;">
+                <td></td>
+                <td colspan="7" style="padding: 4px 6px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <span> {{ lease.lease_start|date:"d.m.Y H:i" }} → {{ lease.lease_end|date:"d.m.Y H:i" }}</span> &nbsp; |
+                      <span><strong>MAC:</strong> {{ lease.mac_address }}</span> &nbsp; |
+                      <span><strong>IP:</strong> {{ lease.ip_address }}</span></br>
+                      <span><strong>Hostname:</strong> {{ lease.hostname }}</span> &nbsp; |
+                      <span><strong>Manufacturer:</strong> {{ lease.manufacturer }}</span>
+                    </div>
+                  </div><hr>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td></td>
+                <td colspan="7" style="padding: 4px 6px;"><em>No assigned leases</em></td>
+              </tr>
+            {% endif %}
+
+            {% endfor %}
+          </tbody>
+
         </table></br>
         <button type="submit">Archive Selected</button>
     </form>
@@ -92,57 +162,82 @@
     <br>
     <hr>
 
-    <h3>Inactive Devices</h3>
-    <form method="POST">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="unarchive_devices">
-        <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-          <thead>
-            <tr style="background-color: #ffdca8;">
-              <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
-              <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
-              <th style="text-align: left; padding: 6px;">Description</th>
-              <th style="text-align: left; padding: 6px;">DNS</th>
-              <th style="text-align: left; padding: 6px;">Created</th>
-              <th style="text-align: left; padding: 6px;">Last active</th>
-              <th style="text-align: left; padding: 6px;">Examiner</th>
-            </tr>
-          </thead>
-            <tbody>
-                {% for device in devices_inactive %}
-                <tr>
-                  <td>
-                    <input type="checkbox" name="unarchived" value="{{ device.device_id }}"
-                  </td>
-                    <td>{{ device.device_id }}</td>
-                    <td>{{ device.description }}</td>
-                    <td>{{ device.dns_server }}</td>
-                    <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
-                    <td>
-                      {% if device.last_active_from_leases %}
-                        {{ device.last_active_from_leases|date:"d.m.Y H:i" }}
-                        {% if device.last_active_from_leases >= recent_threshold %}
-                          <span style="color: green;">●</span>
-                        {% elif device.last_active_from_leases >= offline_threshold %}
-                          <span style="color: orange;">●</span>
-                        {% else %}
-                          <span style="color: red;">●</span>
-                        {% endif %}
-                      {% else %}
-                        <span style="color: grey;">●</span>
-                      {% endif %}
-                    </td>
-                    <td>{{ device.examiner }}</td>
-                </tr>
-                {% endfor %}
-                
-            </tbody>
-        </table></br>
-        <button type="submit">Unarchive Selected</button>
-    </form>
-  </div>
+    <h3 style="cursor: pointer;" onclick="toggleSection('inactive-devices-container', this)">▶ Inactive Devices</h3>
+    <div id="inactive-devices-container" style="display: none;">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="unarchive_devices">
+            <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                <thead>
+                    <tr style="background-color: #ffdca8;">
+                        <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
+                        <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
+                        <th style="text-align: left; padding: 6px;">Description</th>
+                        <th style="text-align: left; padding: 6px;">DNS</th>
+                        <th style="text-align: left; padding: 6px;">Created</th>
+                        <th style="text-align: left; padding: 6px;">Last active</th>
+                        <th style="text-align: left; padding: 6px;">Examiner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in devices_inactive %}
+                    <tr>
+                        <td><input type="checkbox" name="unarchived" value="{{ device.device_id }}"></td>
+                        <td>{{ device.device_id }}</td>
+                        <td>{{ device.description }}</td>
+                        <td>{{ device.dns_server }}</td>
+                        <td>{{ device.creation_date|date:"d.m.Y H:i" }}</td>
+                        <td>
+                            {% if device.last_active_from_leases %}
+                                {{ device.last_active_from_leases|date:"d.m.Y H:i" }}
+                                {% if device.last_active_from_leases >= recent_threshold %}
+                                    <span style="color: green;">●</span>
+                                {% elif device.last_active_from_leases >= offline_threshold %}
+                                    <span style="color: orange;">●</span>
+                                {% else %}
+                                    <span style="color: red;">●</span>
+                                {% endif %}
+                            {% else %}
+                                <span style="color: grey;">●</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ device.examiner }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>
+            <button type="submit">Unarchive Selected</button>
+        </form>
+    </div></div>
 
-  <!-- Manage section / LEFT -->
+    <script>
+    function toggleSection(id, header) {
+        const container = document.getElementById(id);
+        const isVisible = container.style.display !== 'none';
+        container.style.display = isVisible ? 'none' : 'block';
+        header.innerHTML = (isVisible ? '▶' : '▼') + ' ' + header.textContent.slice(2);
+    }
+    </script>
+
+    <script>
+  function toggleLeases(deviceId, arrowEl) {
+    const rows = document.querySelectorAll('.lease-' + deviceId);
+    const isHidden = rows.length > 0 && rows[0].style.display === 'none';
+
+    rows.forEach(row => {
+      row.style.display = isHidden ? 'table-row' : 'none';
+    });
+
+    if (arrowEl) {
+      arrowEl.innerText = isHidden ? '▼' : '▶';
+    }
+  }
+</script>
+
+
+
+
+  <!-- Manage section / RIGHT -->
   <div style="flex: 1 30%; background-color: #f9f9f9; padding: 16px; font-size: 13px; overflow-y: auto;">
     <h2>Assign Leases to Devices</h2>
     {% for lease, form in entries %}

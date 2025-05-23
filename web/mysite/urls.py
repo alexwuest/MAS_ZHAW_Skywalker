@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 from rules.views import (
     view_firewall_logs,
@@ -19,6 +21,8 @@ from rules.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
 
     path('api/device/<int:device_id>/linked-isps/', get_linked_isps_view, name='api-linked-isps'),
     path('api/toggle-isp/', toggle_isp_link_view, name='toggle_isp_link'),
@@ -44,3 +48,4 @@ urlpatterns = [
 
     path("device_logs", device_logs_view, name="device-logs"),
 ]
+

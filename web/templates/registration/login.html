@@ -84,41 +84,22 @@
 <body>
   <div id="overlay"></div>
     <div class="header">
-        <div class="menu-group">
-            <label>Views:</label>
-            <button class="nav-button" data-url="{% url 'view-logs' %}">Blocked Logs</button>
-            <button class="nav-button" data-url="{% url 'view-logs-passed' %}">Passed Logs</button>
-            <button class="nav-button" data-url="{% url 'device-ip-overview' %}">Grouped IPs</button>
-        </div>
-    
-        <div class="menu-group">
-            <label>Tools:</label>
-            <button class="nav-button" data-url="{% url 'manage-devices' %}">Manage Devices</button>
-            <button class="nav-button" data-url="{% url 'domain-lookup' %}">Domain Lookup</button>
-            <button class="nav-button" data-url="{% url 'device-firewall-rules' %}">Firewall Rules</button>
-            <button class="nav-button" data-url="{% url 'device-logs' %}">Device Logs</button>
-            <button class="nav-button" data-url="/admin">DB</button>
-        </div>
-    
-        <div class="menu-group">
-          <label for="deviceSelect">Device:</label>
-          <select id="deviceSelect" onchange="onDeviceSelectChange(this)">
-            <option value="" disabled>Select a device...</option>
-            {% for device in devices %}
-                {% if not device.archived %}
-                    <option value="{{ device.id }}"
-                        {% if selected_device_id == device.id %}selected{% endif %}>
-                        {{ device.device_id }} — {{ device.description }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-          </select> 
-                {% if user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-          {% csrf_token %}
-          <button type="submit">Logout</button>
-        </form>
-      {% endif %}
-
-        </div>
+        
       </div>
+        <div class="content" style="height: 100%; min-height: 500px;">
+            <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
+                <br><br><center><h2>Login</h2>
+                  {% if form.errors %}
+                    <p style="color:red;">Invalid username or password.</p>
+                  {% endif %}
+
+                  <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Login</button></center>
+                  </form>
+                </body>
+                </html>
+            </div>
+        </div>
+{% include "footer.html" %}
