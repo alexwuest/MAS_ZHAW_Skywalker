@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.db.models import Q, Max
+from django.db.models import Q, Max, Exists, OuterRef
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 
@@ -494,7 +494,7 @@ def manage_devices_view(request):
 
             print(f"Updated archive status. Archived: {selected_ids}")
             return redirect("manage-devices")
-
+        
 
         elif action == "unarchive_devices":
             selected_ids = set(request.POST.getlist("unarchived"))
@@ -509,7 +509,7 @@ def manage_devices_view(request):
 
             print(f"Updated archive status. Not archived anymore: {selected_ids}")
             return redirect("manage-devices")
-
+    
 
         elif action == "assign_lease":
             lease_form = AssignDeviceToLeaseForm(request.POST)
@@ -592,6 +592,10 @@ def manage_devices_view(request):
         .annotate(last_active_from_leases=Max('leases__last_active'))
         .order_by("device_id")
     )
+
+    # Adding "has_lease" boolean
+    leases_subquery = DeviceLease.objects.filter(device=OuterRef('pk'), show=True)
+    devices_with_last_active = devices_with_last_active.annotate(has_lease=Exists(leases_subquery))
 
     devices_active = devices_with_last_active.filter(archived=False)
     devices_inactive = devices_with_last_active.filter(archived=True)

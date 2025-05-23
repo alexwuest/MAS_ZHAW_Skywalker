@@ -106,8 +106,8 @@ class MetadataSeenByDevice(models.Model):
     """Keep track of which device has seen which metadata."""
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     metadata = models.ForeignKey(DestinationMetadata, on_delete=models.CASCADE)
-    first_seen_at = models.DateTimeField(auto_now_add=True)  # creation time
-    last_seen_at = models.DateTimeField(auto_now=True)       # updated all time
+    first_seen_at = models.DateTimeField(auto_now_add=True)     # creation time
+    last_seen_at = models.DateTimeField()                       # updated all time
 
 
     class Meta:
@@ -166,7 +166,7 @@ class DeviceLease(models.Model):
     show = models.BooleanField(default=True)                                                # Show in the web interface or to archived leases   
 
     class Meta:
-        unique_together = ['ip_address', 'mac_address', 'lease_start']
+        unique_together = ['ip_address', 'mac_address']
         indexes = [
             models.Index(fields=['mac_address', 'ip_address']),
         ]
