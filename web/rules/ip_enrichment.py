@@ -6,7 +6,7 @@ from . import config
 
 ip_enrichment_queue = Queue()
 _last_enriched = defaultdict(float)
-IP_LOOKUP_COOLDOWN = 360  # seconds
+IP_LOOKUP_COOLDOWN = 60  # seconds
 
 def enqueue_ip(dst_ip, src_ip):
     now = time.time()
