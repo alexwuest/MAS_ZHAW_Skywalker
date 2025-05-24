@@ -1,0 +1,25 @@
+{% include "header.html" %}
+
+<div class="content" style="height: 100%; min-height: 500px;">
+    <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
+      <h2>System Status Overview</h2>
+      <table style="width: 300px; border-collapse: collapse; border: 1px solid #ccc;">
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">OPNsense Status</td><td style="border: 1px solid #ccc; padding: 4px;">{% if opnsense_status == "Online" %}
+                <span style="color: green;"><strong>{{ opnsense_status }}</strong></span>
+              {% else %}
+                <span style="color: red;"><strong>OFFLINE</strong></span>
+              {% endif %}<br></td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Active Devices</td><td style="border: 1px solid #ccc; padding: 4px;">{{ active_devices }}</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Archived Devices</td><td style="border: 1px solid #ccc; padding: 4px;">{{ archived_devices }}</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Archivable Devices</td><td style="border: 1px solid #ccc; padding: 4px;">{{ probably_archivable }}</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Enrichments Queued</td><td style="border: 1px solid #ccc; padding: 4px;">{{ ip_enrichments_queued }}</tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Log Entries</td><td style="border: 1px solid #ccc; padding: 4px;">{{ log_entries }}</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Metadata Entries</td><td style="border: 1px solid #ccc; padding: 4px;">{{ metadata_entries }}</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Active Rules</td><td style="border: 1px solid #ccc; padding: 4px;">{{ active_firewall_rules }}</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 4px;">Total Firewall Rules</td><td style="border: 1px solid #ccc; padding: 4px;">{{ total_firewall_rules }}</td></tr>
+      </table>
+    </div>
+</div>
+
+
+{% include "footer.html" %}

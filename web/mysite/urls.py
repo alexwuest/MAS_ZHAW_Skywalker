@@ -16,7 +16,8 @@ from rules.views import (
     flush_metadata_seen_view,
     add_rule_view,
     remove_rule_view,
-    device_logs_view
+    device_logs_view,
+    system_status_view,
 )
 
 urlpatterns = [
@@ -47,5 +48,7 @@ urlpatterns = [
     path("remove-firewall-rule/", remove_firewall_rule_view, name="remove-firewall-rule"),
 
     path("device_logs", device_logs_view, name="device-logs"),
+
+    path("status/", system_status_view, name="system_status"),
 ]
 

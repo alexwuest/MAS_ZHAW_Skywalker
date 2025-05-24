@@ -48,8 +48,10 @@ class FirewallRuleAdmin(admin.ModelAdmin):
         'source_ip',
         'destination_ip',
         'isp_name',
+        'verify_opnsense',
         'manual',
         'dns',
+        'uuid',
         'start_date',
         'end_date',
     )
@@ -58,15 +60,20 @@ class FirewallRuleAdmin(admin.ModelAdmin):
         'protocol',
         'action',
         'isp_name',
+        'verify_opnsense',
         'start_date',
         'end_date',
     )
-    search_fields = (
-        'device',
+    search_fields = [
         'source_ip',
         'destination_ip',
         'isp_name',
-    )
+        'verify_opnsense',
+        'manual',
+        'dns',
+        'start_date',
+        'end_date',    ]
+
     date_hierarchy = 'start_date'
     ordering = ('-start_date',)
 
