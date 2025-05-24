@@ -1,7 +1,23 @@
 <div class="footer">
-    2025 Firewall Dashboard · Erstellt anlässlich der MAS Arbeit an der ZHAW · Alexander Wüst
+    2025 Firewall Dashboard · MAS Arbeit ZHAW · Alexander Wüst ···
+    {# System usage dot (based on int value) #}
+    {% if system_usage == 0 %}
+        <span title="OPNSense API usage - Idle" style="color: green; font-size: 1.5em;">●</span>
+    {% elif system_usage == 1 %}
+        <span title="OPNSense API usage - Some work" style="color: orange; font-size: 1.5em;">●</span>
+    {% else %}
+        <span title="OPNSense API usage - Uhhhf hard!" style="color: red; font-size: 1.5em;">●</span>
+    {% endif %}OPNSense API · 
+    {# IP enrichment usage dot (based on "LOW" / "MEDIUM" / "HIGH") #}
+    {% if ip_enrichments_queued_usage == "LOW" %}
+        <span title="IP-API Workload - Idle" style="color: green; font-size: 1.5em;">●</span>
+    {% elif ip_enrichments_queued_usage == "MEDIUM" %}
+        <span title="IP-API Workload - Some work" style="color: orange; font-size: 1.5em;">●</span>
+    {% else %}
+        <span title="IP-API Workload - Uhhhf hard!" style="color: red; font-size: 1.5em;">●</span>
+    {% endif %}IP-API ({{ ip_enrichments_queued }}) · Active Firewall Rules ({{ active_firewall_rules }})
+    </div>
   </div>
-
 <script>
     function onDeviceSelectChange(select) {
         const deviceId = select.value;

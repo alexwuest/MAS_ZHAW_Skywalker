@@ -76,11 +76,14 @@ def db_opnsense_sync():
 
     if not rules_to_verify.exists():
         return
+    
+    if rules_to_verify.count() <= 30:
+        points = 1
+    if rules_to_verify.count() > 30:
+        points = 2
+    config.API_USAGE += points
 
     for rule in rules_to_verify:
-        if config.DEBUG:
-            print(f"🔄 🔄 Rule Sync in progress... 🔄 🔄")
-            print(f"Verifying rule: {rule.uuid} ({rule.source_ip} → {rule.destination_ip})")
 
         try:
             exists = get_all_rules_uuid(rule.uuid)
@@ -144,6 +147,8 @@ def db_opnsense_sync():
     if deleted > 0:
         apply_firewall_changes()
     
+    config.API_USAGE -= points
+
     print("- RULE SYNC SUMMARY -")
     print(f"  ✅ Verified rules: {verified}")
     print(f"  🧹 Ended rules in DB (missing in OPNsense): {ended}")
@@ -155,6 +160,7 @@ def db_opnsense_sync():
 # Management ISP Rules
 ##############################################################################################################################
 def allow_blocked_ips_for_device(device_id, return_removed=False):          
+    
     print(f"Allowing blocked IPs for device: {device_id}")
     ip_source = get_active_ip(device_id)
     if not ip_source:
@@ -162,6 +168,8 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
 
     allowed_isps = get_allowed_isps(device_id)
     dest_ips = get_blocked_ips_by_isp(allowed_isps)
+
+    config.API_USAGE += 1
 
     # Preload existing rules from DB (active only, non-manual, non-DNS)
     existing_rules_qs = FirewallRule.objects.filter(
@@ -230,6 +238,8 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
     if added > 0 or removed > 0:
         apply_firewall_changes()
 
+    config.API_USAGE -= 1
+
     return (added, removed) if return_removed else added
 
 
@@ -277,4 +287,24 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
         return False
     
     apply_firewall_changes()
+    return True
+
+
+##############################################################################################################################
+# Archiving Device cleanup - Housekeeping ;-)
+##############################################################################################################################
+def archiving_device(device):
+    active_rules = FirewallRule.objects.filter(
+        device=device,
+        end_date__isnull=True
+    )
+
+    print(f"📦 Archiving {active_rules.count()} rules for device {device}")
+    print(f"Note this will be done with sync thread...")
+
+    for rule in active_rules:
+        rule.end_date = now()
+        rule.verify_opnsense = True
+        rule.save(update_fields=["end_date", "verify_opnsense"])
+    
     return True

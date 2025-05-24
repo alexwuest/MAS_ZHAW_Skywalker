@@ -1,21 +1,25 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.timezone import now
+from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.db.models import Q, Max, Exists, OuterRef
+from django.db.models import Q, Max, Exists, OuterRef, Subquery, DateTimeField
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 
 import socket
 import requests
-from datetime import timedelta
 
 from . import config
+from .config import OPNSENSE_IP, API_KEY, API_SECRET, CERT_PATH
 from .api_logs_parser import api_dhcp_parser
+from .ip_enrichment import ip_enrichment_queue
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
-from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule
+from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule, archiving_device
 from .api_firewall import delete_rule_by_source_and_destination, delete_rule_by_uuid, apply_firewall_changes, check_rule_exists
 from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm, HideLeaseForm
+
 
 ############################################################################
 # Emoji legend for code comments
@@ -504,7 +508,11 @@ def manage_devices_view(request):
                 # Update archive status
                 device.archived = device.device_id in selected_ids
                 print(f"Device {device.device_id} archived status BEFORE: {device.archived}")
-
+                try:
+                    archiving_device(device)
+                except Exception as e:
+                    print(f"Error archiving existing rules {e}")
+                
                 device.save(update_fields=["archived"])
 
             print(f"Updated archive status. Archived: {selected_ids}")
@@ -774,16 +782,6 @@ def device_logs_view(request):
 # System Status View
 ###########################################################################
 #TODO REFACTORING FIREWALL TO API!
-#TODO IMPORTS TO TOP
-
-from django.shortcuts import render
-from django.utils.timezone import now
-from datetime import timedelta
-from .models import Device, DeviceLease, FirewallLog, DestinationMetadata, FirewallRule
-from .ip_enrichment import ip_enrichment_queue
-import requests
-from .config import OPNSENSE_IP, API_KEY, API_SECRET, CERT_PATH
-from django.db.models import OuterRef, Subquery, DateTimeField
 
 def system_status_view(request):
     device_id = request.GET.get("device_id") or request.POST.get("device_id")
@@ -809,6 +807,7 @@ def system_status_view(request):
     log_entries = FirewallLog.objects.count()
     metadata_entries = DestinationMetadata.objects.count()
     active_firewall_rules = FirewallRule.objects.filter(end_date__isnull=True).count()
+    verify_opnsense = FirewallRule.objects.filter(verify_opnsense=True).count()
     total_firewall_rules = FirewallRule.objects.count()
 
     try:
@@ -834,6 +833,7 @@ def system_status_view(request):
         "active_firewall_rules": active_firewall_rules,
         "total_firewall_rules": total_firewall_rules,
         "opnsense_status": opnsense_status,
+        "verify_opnsense": verify_opnsense,
     }
 
     return render(request, "system_status.html", context)
