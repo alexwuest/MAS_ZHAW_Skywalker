@@ -57,7 +57,8 @@ def is_private_ip(ip):
 
 # Make sure the enrichment was done just once and avoid unnecessary requests to ip-api.com like private IPs
 def enrich_ip(ip, source_ip):
-    RECHECK_AFTER_HOURS = 96
+
+    RECHECK_AFTER_HOURS = 72
     now = timezone.now()
 
     if ip not in config.IP_TABLE:
@@ -70,9 +71,11 @@ def enrich_ip(ip, source_ip):
         
         try:
             last_checked = datetime.datetime.strptime(memory_entry["last_checked"], "%Y-%m-%d %H:%M:%S.%f")
-            if (now - last_checked).total_seconds() < RECHECK_AFTER_HOURS * 3600:
-                if config.DEBUG_ALL:
-                    print(f"✅ Memory-enriched {ip} still fresh.")
+            last_checked_time = (now - last_checked).total_seconds()
+            if last_checked_time < RECHECK_AFTER_HOURS * 3600:
+                if config.DEBUG:
+                    timestamp = django_now().strftime("%H:%M:%S %d.%m.%Y")
+                    print(f"{timestamp} ✅ Memory Query - {ip} still fresh - {last_checked_time:.2f} seconds / {last_checked_time:.2f} / 3600 hours old.")
                 return
         except Exception:
             pass
@@ -84,8 +87,9 @@ def enrich_ip(ip, source_ip):
         config.IP_TABLE[ip]["last_checked"] = db_entry.last_checked.strftime("%Y-%m-%d %H:%M:%S.%f")
         config.IP_TABLE[ip]["dns_name"] = db_entry.dns_name or "N/A"
         config.IP_TABLE[ip]["isp"] = db_entry.isp or "N/A"
-        if config.DEBUG_ALL:
-            print(f"✅ DB-enriched {ip} still fresh.")
+        if config.DEBUG:
+            timestamp = django_now().strftime("%H:%M:%S %d.%m.%Y")
+            print(f"{timestamp} ✅ DB Query - {ip} still fresh.")
 
         # Update MetadataSeenByDevice
         link_ip_to_devices(ip, db_entry, source_ip)
@@ -98,7 +102,7 @@ def enrich_ip(ip, source_ip):
     config.IP_TABLE[ip].update({"dns_name": dns_name})
 
     if not is_private_ip(ip):
-        if config.DEBUG_ALL:
+        if config.DEBUG:
             print(f"🔄 Enriching IP {ip}...")  
         ip_api_data = get_ip_api(ip)
         if ip_api_data:
@@ -146,6 +150,13 @@ def enrich_ip(ip, source_ip):
                 metadata_obj = DestinationMetadata.objects.filter(ip=ip, end_date__isnull=True).first()
                 if metadata_obj:
                     link_ip_to_devices(ip, metadata_obj, source_ip)
+
+                # Update all firewall logs that haven't yet been linked
+                linked_logs = FirewallLog.objects.filter(destination_ip=ip, destination_metadata__isnull=True)
+                linked_count = linked_logs.update(destination_metadata=metadata_obj)
+                if config.DEBUG_ALL:
+                    if linked_count:
+                        print(f"🔗 Linked {linked_count} FirewallLog entries to metadata for {ip}")
 
                 break
             except OperationalError as e:
@@ -281,7 +292,7 @@ def link_ip_to_devices(destination_ip, metadata_obj, source_ip):
         leases = DeviceLease.objects.filter(ip_address=source_ip).select_related("device")
 
         if not leases.exists():
-            if config.DEBUG:
+            if config.DEBUG_ALL:
                 print(f"⚠️  No leases found for IP: {source_ip}")
         else:
             if config.DEBUG_ALL:
@@ -456,10 +467,12 @@ def parse_logs(search_address=None):
 
         # Enrich IP's
         for ip in new_ips:
-            enqueue_ip(dst, src)
+            if ip not in config.IP_TABLE or not config.IP_TABLE[ip].get("_lookup_done"):
+                enqueue_ip(ip, src)
         
         if config.DEBUG_ALL:
             datetime_str = datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")
             print(f"{datetime_str} Firewall logs collected and enriched.")
 
         time.sleep(3)  # Sleep before next API call   
+

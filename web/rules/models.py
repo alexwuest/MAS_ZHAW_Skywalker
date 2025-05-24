@@ -123,6 +123,7 @@ class FirewallRule(models.Model):
         ('REJECT', 'Reject'),
     ]
     source_ip = models.GenericIPAddressField()
+    uuid = models.CharField(max_length=50, unique=True, null=False, blank=False)              # UUID from OPNsense
     destination_ip = models.GenericIPAddressField()
     destination_info = models.ForeignKey(
         DestinationMetadata,
@@ -143,6 +144,7 @@ class FirewallRule(models.Model):
     action = models.CharField(max_length=6, choices=ACTION_CHOICES)
     manual = models.BooleanField(default=False)                                             # Manual rules by user not by ISP button
     dns = models.BooleanField(default=False)                                                # DNS rules should not be removed automatically  
+    verify_opnsense = models.BooleanField(default=False)                                    # Verify if rule needs to be added or removed / to keep rules alligned DB <> OPNsense / just needed if anything goes wrong!           
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
     isp_name = models.CharField(max_length=100)

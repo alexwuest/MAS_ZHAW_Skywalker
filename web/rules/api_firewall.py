@@ -12,6 +12,7 @@ from .config import API_KEY, API_SECRET, OPNSENSE_IP, CERT_PATH
 ADD_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/addRule"
 DEL_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/delRule"
 SEARCH_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/searchRule"
+GET_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/get_rule"
 APPLY_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/apply"
 
 # shared sessions
@@ -23,7 +24,14 @@ session.headers.update({"Content-Type": "application/json"})
 session_get = requests.Session()
 session_get.auth = HTTPBasicAuth(API_KEY, API_SECRET)
 
-def add_firewall_rule(ip_source, ip_destination, manual=False, dns=False, session=session):
+
+def add_firewall_rule(ip_source, ip_destination, description=None):
+    """
+    Add a firewall rule to allow traffic from ip_source to ip_destination.
+    Returns the rule UUID on success, or None on failure.
+    """
+    rule_description = description or f"{ip_source} automated rule to {ip_destination}"
+
     payload = {
         "rule": {
             "action": "pass",
@@ -33,61 +41,59 @@ def add_firewall_rule(ip_source, ip_destination, manual=False, dns=False, sessio
             "source_net": ip_source,
             "destination_net": ip_destination,
             "log": "1",
-            "description": f"{ip_source} automated rule to {ip_destination}",
+            "description": rule_description,
         }
     }
 
     try:
-        t0 = time.perf_counter()
         response = session.post(
             ADD_RULE_ENDPOINT,
-            data=json.dumps(payload),
+            json=payload,
             verify=CERT_PATH
         )
 
-        t1 = time.perf_counter()
-
-        api_duration = t1 - t0
-
         if response.status_code == 200:
-            print(f"✅ Rule added for {ip_destination} (Req time: {api_duration:.2f}s)")
-
-            # Lookup Device from source_ip
-            lease = DeviceLease.objects.filter(
-                ip_address=ip_source,
-                lease_end__gt=timezone.now()
-            ).order_by('-lease_start').first()
-
-            device = lease.device if lease else None
-
-            # Update the database with the new rule
-            try:
-                FirewallRule.objects.get_or_create(
-                    device=device,
-                    source_ip=ip_source,
-                    destination_ip=ip_destination,
-                    protocol="any",
-                    port=0,
-                    action="PASS",
-                    manual=manual,
-                    dns=dns,
-                    end_date=None,
-                )
-
-            except Exception as e:
-                print(f"Error updating database: {e}")
-
-            return True
+            data = response.json()
+            rule_uuid = data.get("uuid") or data.get("rule", {}).get("uuid")
+            if rule_uuid:
+                print(f"✅ Rule added. UUID: {rule_uuid} (for {ip_destination})")
+                return rule_uuid
+            else:
+                print("⚠️ Rule added but UUID not returned.")
         else:
-            print(f"Error adding rule for {ip_destination}: {response.status_code} - {response.text}")
-            return False
+            print(f"❌ Failed to add rule: {response.status_code} - {response.text}")
 
     except requests.RequestException as e:
-        print(f"Network error: {e}")
+        print(f"⚠️ Network error while adding rule: {e}")
+
+    return None
+
+
+def delete_rule_by_uuid(rule_uuid):
+    try:
+        response = session.post(
+            f"{DEL_RULE_ENDPOINT}/{rule_uuid}",
+            json={"reason": "Auto-delete"},
+            verify=CERT_PATH
+        )
+        if response.status_code == 200:
+            print(f"✅ Deleted rule {rule_uuid}")
+            return True
+        else:
+            print(f"❌ Failed to delete rule {rule_uuid}: {response.status_code} - {response.text}")
+            return False
+    except requests.RequestException as e:
+        print(f"⚠️ Network error deleting rule {rule_uuid}: {e}")
         return False
-    
+
+
 
 def delete_rule_by_source_and_destination(ip_source, ip_destination):
+    print(f"⚠️ WARNING SHOULD NOT USED ANYMORE")    #TODO REMOVE!!!!
+    print(f"⚠️ WARNING SHOULD NOT USED ANYMORE")
+    print(f"⚠️ WARNING SHOULD NOT USED ANYMORE")
+    print(f"⚠️ WARNING SHOULD NOT USED ANYMORE")
+    print(f"⚠️ WARNING SHOULD NOT USED ANYMORE")
     try:
         t0 = time.perf_counter()
         response = session_get.get(
@@ -155,84 +161,68 @@ def delete_rule_by_source_and_destination(ip_source, ip_destination):
     
 
 def delete_multiple_rules(rules_to_remove):
-    """Delete multiple rules by source/destination, apply only once at the end."""
-    try:
-        # Load all firewall rules ONCE
-        t0 = time.perf_counter()
-        response = session_get.get(SEARCH_RULE_ENDPOINT, verify=CERT_PATH)
-        t1 = time.perf_counter()
-        print(f"✅ Loaded rules in {t1 - t0:.2f}s")
+    deleted_count = 0
 
-        if response.status_code != 200:
-            print(f"❌ Error loading rules: {response.status_code} - {response.text}")
-            return 0
+    for ip_source, ip_destination in rules_to_remove:
+        # Get rule from DB
+        rule = FirewallRule.objects.filter(
+            source_ip=ip_source,
+            destination_ip=ip_destination,
+            end_date__isnull=True
+        ).order_by('-start_date').first()
 
-        all_rules = response.json().get("rows", [])
-        deleted_count = 0
-
-        for ip_source, ip_destination in rules_to_remove:
-            t2 = time.perf_counter()
-            matching_rule = next(
-                (r for r in all_rules if ip_source in r.get("description", "") and ip_destination in r.get("description", "")),
-                None
-            )
-
-            if matching_rule:
-                uuid = matching_rule.get("uuid")
-                del_response = session.post(
-                    f"{DEL_RULE_ENDPOINT}/{uuid}",
-                    json={"reason": "Auto-delete"},
-                    verify=CERT_PATH
-                )
-
-                if del_response.status_code == 200:
-                    # Update DB with deleteted rules
-                    FirewallRule.objects.filter(
-                        source_ip=ip_source,
-                        destination_ip=ip_destination,
-                        end_date__isnull=True
-                    ).update(end_date=timezone.now())
-                    deleted_count += 1
-                    t3 = time.perf_counter()
-                    print(f"✅ Deleted rule: {ip_source} to {ip_destination} {t3 - t2:.2f}s")
-                else:
-                    print(f"❌ Failed to delete rule {uuid}: {del_response.status_code}")
-
+        if rule and rule.uuid:
+            if delete_rule_by_uuid(rule.uuid):
+                rule.end_date = timezone.now()
+                rule.save(update_fields=["end_date"])
+                deleted_count += 1
             else:
-                # Rule not found in firewall but still active in DB
-                updated = FirewallRule.objects.filter(
-                    source_ip=ip_source,
-                    destination_ip=ip_destination,
-                    end_date__isnull=True
-                ).update(end_date=timezone.now())
-                if updated:
-                    print(f"⚠️ Rule missing in firewall, cleaned up DB: {ip_source} → {ip_destination}")
+                print(f"❌ Deletion failed for UUID {rule.uuid}")
+        else:
+            # Rule exists in DB but has no UUID or not found
+            updated = FirewallRule.objects.filter(
+                source_ip=ip_source,
+                destination_ip=ip_destination,
+                end_date__isnull=True
+            ).update(end_date=timezone.now())
 
-        return deleted_count
+            if updated:
+                print(f"⚠️ Rule not in firewall (or missing UUID), cleaned up DB: {ip_source} → {ip_destination}")
 
-    except requests.RequestException as e:
-        print(f"⚠️ Network error during deletion: {e}")
-        return 0
+    return deleted_count
 
 
-def get_all_rules():
+def get_all_rules_uuid(uuid):
     try:
-        response = requests.post(
-            SEARCH_RULE_ENDPOINT,
+        url = f"{GET_RULE_ENDPOINT}/{uuid}"  # e.g., /api/firewall/filter/getRule/<uuid>
+        response = requests.get(
+            url,
             auth=HTTPBasicAuth(API_KEY, API_SECRET),
             verify=CERT_PATH
         )
+        if config.DEBUG_ALL:
+            print(f"🔄 RULE SYNC - Checking rule in OPNsense: {uuid} → Status code: {response.status_code}")
+
         if response.status_code == 200:
-            return response.json().get("rows", [])
+            data = response.json()
+            if not data or "rule" not in data:
+                if config.DEBUG:
+                    print(f"⚠️ No rule found for UUID: {uuid}")
+                return None
+            return True  # Rule found
+        elif response.status_code == 404:
+            return None  # Rule not found
         else:
-            print(f"Failed to get rules: {response.status_code} - {response.text}")
-            return []
+            print(f"⚠️ Unexpected status code: {response.status_code}")
+            return None
+
     except requests.RequestException as e:
-        print(f"Error fetching all rules: {e}")
-        return []
+        print(f"❌ Error fetching rule by UUID: {e}")
+        return None
 
 
-def check_rule_exists(ip_source, ip_destination):
+
+def check_rule_exists(ip_source, ip_destination): # TODO REMOVE
     try:
         response = requests.post(
             SEARCH_RULE_ENDPOINT,

@@ -43,7 +43,7 @@ def format_network_info(network_info):
 
 def get_firewall_rule_uuids():
     """Fetch all firewall rule UUIDs."""
-    response = requests.get(SEARCH_RULES_ENDPOINT, auth=HTTPBasicAuth(API_KEY, API_SECRET), verify="certificate_crt.pem")
+    response = requests.post(SEARCH_RULES_ENDPOINT, auth=HTTPBasicAuth(API_KEY, API_SECRET), verify="certificate_crt.pem")
 
     if response.status_code == 200:
         return response.json().get("rows", [])
