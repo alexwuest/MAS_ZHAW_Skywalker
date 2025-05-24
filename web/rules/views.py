@@ -13,8 +13,8 @@ from datetime import timedelta
 from . import config
 from .api_logs_parser import api_dhcp_parser
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
-from .api_firewall_sync import allow_blocked_ips_for_device
-from .api_firewall import delete_rule_by_source_and_destination, add_firewall_rule, apply_firewall_changes, check_rule_exists
+from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule
+from .api_firewall import delete_rule_by_source_and_destination, delete_rule_by_uuid, apply_firewall_changes, check_rule_exists
 from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm, HideLeaseForm
 
 ############################################################################
@@ -360,9 +360,8 @@ def add_rule_view(request):
 
         # Avoid adding if already exists
         if not check_rule_exists(source_ip, destination_ip):
-            added = add_firewall_rule(source_ip, destination_ip, manual=True)
-            if added:
-                apply_firewall_changes()
+            add_single_rule(source_ip, destination_ip, manual=True)
+
     return redirect(request.META.get('HTTP_REFERER', '/overview/'))
 
 ###########################################################################
@@ -374,10 +373,25 @@ def remove_rule_view(request):
     destination_ip = request.POST.get("destination_ip")
 
     if source_ip and destination_ip:
-        from .api_firewall import delete_rule_by_source_and_destination, apply_firewall_changes
-        deleted = delete_rule_by_source_and_destination(source_ip, destination_ip)
-        if deleted > 0:
-            apply_firewall_changes()
+        rule = FirewallRule.objects.filter(
+            source_ip=source_ip,
+            destination_ip=destination_ip,
+            end_date__isnull=True
+        ).order_by('-start_date').first()
+
+        if rule:
+            if rule.uuid and delete_rule_by_uuid(rule.uuid):
+                rule.end_date = timezone.now()
+                rule.save(update_fields=["end_date"])
+                apply_firewall_changes()
+            else:
+                # Fallback if UUID is missing or deletion failed
+                FirewallRule.objects.filter(
+                    source_ip=source_ip,
+                    destination_ip=destination_ip,
+                    end_date__isnull=True
+                ).update(end_date=timezone.now())
+
     return redirect(request.META.get('HTTP_REFERER', '/overview/'))
 
 
@@ -431,14 +445,15 @@ def remove_firewall_rule_view(request):
             return JsonResponse({"status": "error", "message": "Cannot remove DNS rule"}, status=400)
 
         rule = FirewallRule.objects.get(id=rule_id)
+        uuid = rule.uuid                    
         rule.end_date = timezone.now()
         rule.save(update_fields=["end_date"])
 
         # Call the API to remove the rule
         print(f"Removing rule: {rule}")
         print(f"Removing rule: {rule.source_ip} → {rule.destination_ip}")
-        result = delete_rule_by_source_and_destination(rule.source_ip, rule.destination_ip)
-
+        result = delete_rule_by_uuid(uuid)
+        
         if result:
             print(f"Firewall rule removed: {rule}")
         else:
@@ -542,8 +557,6 @@ def manage_devices_view(request):
                     print(f"ERROR: Unknown DNS server: '{dns}'")
                     return redirect('manage-devices')
 
-                from .api_firewall import check_rule_exists, add_firewall_rule, delete_rule_by_source_and_destination, apply_firewall_changes
-
                 changes_made = False
 
                 # Remove rules from all other leases except the newest
@@ -551,13 +564,13 @@ def manage_devices_view(request):
                 for old_lease in other_leases:
                     if old_lease.ip_address:
                         print(f"INFO: Removing old rule for {old_lease.ip_address}")
-                        removed = delete_rule_by_source_and_destination(old_lease.ip_address, dns_ip)
+                        removed = delete_rule_by_source_and_destination(old_lease.ip_address, dns_ip)  #TODO OLD!!!
                         if removed > 0:
                             changes_made = True
 
                 # Add rule for the newest lease only if needed
                 if newest_lease.ip_address and not check_rule_exists(newest_lease.ip_address, dns_ip):
-                    if add_firewall_rule(newest_lease.ip_address, dns_ip, dns=True):
+                    if add_single_rule(newest_lease.ip_address, dns_ip, dns=True):
                         print(f"✅ Rule added for {newest_lease.ip_address} → {dns_ip}")
                         changes_made = True
                 else:
@@ -755,3 +768,72 @@ def device_logs_view(request):
         "page_obj": page_obj,
         "limit": request.GET.get("limit", 100),
     })
+
+
+###########################################################################
+# System Status View
+###########################################################################
+#TODO REFACTORING FIREWALL TO API!
+#TODO IMPORTS TO TOP
+
+from django.shortcuts import render
+from django.utils.timezone import now
+from datetime import timedelta
+from .models import Device, DeviceLease, FirewallLog, DestinationMetadata, FirewallRule
+from .ip_enrichment import ip_enrichment_queue
+import requests
+from .config import OPNSENSE_IP, API_KEY, API_SECRET, CERT_PATH
+from django.db.models import OuterRef, Subquery, DateTimeField
+
+def system_status_view(request):
+    device_id = request.GET.get("device_id") or request.POST.get("device_id")
+    now_time = now()
+    sixty_days_ago = now_time - timedelta(days=60)
+
+    active_devices = Device.objects.filter(archived=False).count()
+    archived_devices = Device.objects.filter(archived=True).count()
+    
+    inactive_leases = DeviceLease.objects.filter(
+        device=OuterRef('pk')
+    ).order_by('-last_active').values('last_active')[:1]
+        
+    probably_archivable = Device.objects.filter(
+        archived=False
+    ).annotate(
+        last_seen=Subquery(inactive_leases, output_field=DateTimeField())
+    ).filter(
+        last_seen__lt=sixty_days_ago
+    ).count()
+
+    ip_enrichments_queued = ip_enrichment_queue.qsize()
+    log_entries = FirewallLog.objects.count()
+    metadata_entries = DestinationMetadata.objects.count()
+    active_firewall_rules = FirewallRule.objects.filter(end_date__isnull=True).count()
+    total_firewall_rules = FirewallRule.objects.count()
+
+    try:
+        response = requests.get(
+            f"{OPNSENSE_IP}/api/diagnostics/firewall/log",
+            auth=(API_KEY, API_SECRET),
+            verify=CERT_PATH,
+            timeout=3
+        )
+        opnsense_status = "Online" if response.status_code == 200 else "Offline"
+    except Exception:
+        opnsense_status = "Offline"
+
+    context = {
+        "devices": Device.objects.all().order_by('device_id'),
+        "selected_device_id": int(device_id) if device_id else None,
+        "active_devices": active_devices,
+        "archived_devices": archived_devices,
+        "probably_archivable": probably_archivable,
+        "ip_enrichments_queued": ip_enrichments_queued,
+        "log_entries": log_entries,
+        "metadata_entries": metadata_entries,
+        "active_firewall_rules": active_firewall_rules,
+        "total_firewall_rules": total_firewall_rules,
+        "opnsense_status": opnsense_status,
+    }
+
+    return render(request, "system_status.html", context)
