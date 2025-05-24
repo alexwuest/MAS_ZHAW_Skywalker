@@ -1,11 +1,14 @@
+import time
 import threading
 import os
 from .ip_enrichment import ip_enrichment_queue
 from .api_logs_parser import parse_logs
-from . import config
+from . import config, api_firewall_sync
 
 _log_parser_started = False
 _log_parser_lock = threading.Lock()
+
+# TODO Add other functions to classes as well. Better implementation see below!
 
 def start_log_parser():
     global _log_parser_started
@@ -21,6 +24,15 @@ def start_log_parser():
             threading.Thread(target=enrich_ip_worker, daemon=True).start()
             print("✅ IP enrichment worker thread started.")
 
+            # Start IP queue monitor thread
+            threading.Thread(target=print_queue_status, daemon=True).start()
+            print("✅ IP queue monitor thread started.")
+
+            # Start the firewall rule verifier thread
+            FirewallRuleVerifier().start()
+            print("✅ Firewall rule verifier thread started.")
+
+
 
 def enrich_ip_worker():
     from .api_logs_parser import enrich_ip
@@ -30,10 +42,46 @@ def enrich_ip_worker():
     while True:
         dst_ip, src_ip = ip_enrichment_queue.get()
         try:
-            if config.DEBUG:
+            if config.DEBUG_ALL:
                 print(f"🔄 Enriching IP from queue: {dst_ip} (src: {src_ip})", flush=True)
             enrich_ip(dst_ip, src_ip)
         except Exception as e:
             print(f"❌ Failed to enrich {dst_ip}: {e}", flush=True)
         finally:
             ip_enrichment_queue.task_done()
+
+
+def print_queue_status():
+    import time
+    while True:
+        try:
+            qsize = ip_enrichment_queue.qsize()
+            print(40*"*")
+            print(f"📊 IP Queue size: {qsize}", flush=True)
+            queue_list = list(ip_enrichment_queue.queue)
+            print(f"🧾 Top queued IPs: {[item[0] for item in queue_list[:5]]}", flush=True)
+            print(40*"*")
+        except Exception as e:
+            print(f"⚠️ Error printing queue: {e}", flush=True)
+        time.sleep(60)
+
+
+class FirewallRuleVerifier(threading.Thread):
+    def __init__(self, interval_seconds=60):
+        super().__init__(daemon=True)
+        self.interval = interval_seconds
+        self._stop_event = threading.Event()
+
+    def run(self):
+        print("🔁 FirewallRuleVerifier thread started. Running every", self.interval, "seconds", flush=True)
+        while not self._stop_event.is_set():
+            try:
+                print("🛡️ Verifying firewall rules against OPNsense...", flush=True)
+                api_firewall_sync.db_opnsense_sync()
+            except Exception as e:
+                print(f"❌ FirewallRuleVerifier error: {e}", flush=True)
+            time.sleep(self.interval)
+
+    def stop(self):
+        self._stop_event.set()
+
