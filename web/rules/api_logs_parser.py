@@ -19,7 +19,7 @@ print("Loaded OPNSENSE_IP:", OPNSENSE_IP)
 LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
 
 # Sleep between API requests to avoid hitting rate limits 1.4 / 43 requests per minute
-api_request_delay = 0
+api_request_delay = 1.4
 
 # Adding private IP check to avoid later IP lookup fails with ip-api.com and keep requests low...
 def is_private_ip(ip):

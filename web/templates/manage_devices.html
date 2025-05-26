@@ -49,9 +49,10 @@
           <thead>
             <tr style="background-color: #ffdca8;">
               <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
-              <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
+              <th style="text-align: left; padding: 6px;">Device ID</th>
               <th style="text-align: left; padding: 6px;">Description</th>
-              <th style="text-align: left; padding: 6px; width: 100px">DNS</th>
+              <th style="text-align: left; padding: 6px;">Source IP</th>
+              <th style="text-align: left; padding: 6px;">DNS</th>
               <th style="text-align: left; padding: 6px;">Created</th>
               <th style="text-align: left; padding: 6px;">Last active</th>
               <th style="text-align: left; padding: 6px; width: 80px">Examiner</th>
@@ -84,6 +85,14 @@
                 {% else %}
                   {{ device.description }}
                 {% endif %}
+              </td>
+              <td>{{ device.last_active_ip }}
+                <form method="post" action="{% url 'manage-devices' %}" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="adjust_source_ip">
+                  <input type="hidden" name="device_id" value="{{ device.id }}">
+                  <button type="submit" onclick="return confirm('Update rules as IP changed? This process is normaly not needed!')">🔄</button>
+                </form>
               </td>
               <td>
                 {% if not device.has_lease %}
@@ -233,8 +242,6 @@
     }
   }
 </script>
-
-
 
 
   <!-- Manage section / RIGHT -->

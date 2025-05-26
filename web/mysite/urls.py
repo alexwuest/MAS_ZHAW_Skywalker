@@ -18,6 +18,7 @@ from rules.views import (
     remove_rule_view,
     device_logs_view,
     system_status_view,
+    mark_verify_opnsense_view,
 )
 
 urlpatterns = [
@@ -38,7 +39,6 @@ urlpatterns = [
     path("add-rule/", add_rule_view, name="add-rule-view"),
     path("remove-rule/", remove_rule_view, name="remove-rule-view"),
 
-    
     path('', manage_devices_view, name='manage-devices'),
     path('manage-devices/', manage_devices_view, name='manage-devices'),
  
@@ -49,6 +49,8 @@ urlpatterns = [
 
     path("device_logs", device_logs_view, name="device-logs"),
 
-    path("status/", system_status_view, name="system_status"),
+    path("system/", system_status_view, name="system-status"),
+    path("system/verify/", mark_verify_opnsense_view, name="mark-verify-opnsense"),
+
 ]
 

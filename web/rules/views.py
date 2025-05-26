@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.utils.timezone import now
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.db.models import Q, Max, Exists, OuterRef, Subquery, DateTimeField
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.core.paginator import Paginator
+from django.db.models.fields import GenericIPAddressField
 
 import socket
 import requests
@@ -16,10 +16,9 @@ from .config import OPNSENSE_IP, API_KEY, API_SECRET, CERT_PATH
 from .api_logs_parser import api_dhcp_parser
 from .ip_enrichment import ip_enrichment_queue
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
-from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule, archiving_device
+from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule, archiving_device, adjust_invalid_source_ips
 from .api_firewall import delete_rule_by_source_and_destination, delete_rule_by_uuid, apply_firewall_changes, check_rule_exists
 from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm, HideLeaseForm
-
 
 ############################################################################
 # Emoji legend for code comments
@@ -527,11 +526,25 @@ def manage_devices_view(request):
                 if device.device_id in selected_ids:
                     # Remove the device from the list of archived devices
                     device.archived = False
-
                     device.save(update_fields=["archived"])
 
             print(f"Updated archive status. Not archived anymore: {selected_ids}")
             return redirect("manage-devices")
+        
+
+        elif action == "adjust_source_ip":
+            device_id = request.POST.get("device_id")
+            if not device_id:
+                return HttpResponseBadRequest("Missing device_id")
+
+            try:
+                device = Device.objects.get(id=device_id)
+            except Device.DoesNotExist:
+                return HttpResponseBadRequest("Device not found")
+
+            adjust_invalid_source_ips(device)
+            return redirect("manage-devices")
+
     
 
         elif action == "assign_lease":
@@ -567,25 +580,36 @@ def manage_devices_view(request):
 
                 changes_made = False
 
-                # Remove rules from all other leases except the newest
-                other_leases = DeviceLease.objects.filter(device=device).exclude(id=newest_lease.id)
-                for old_lease in other_leases:
-                    if old_lease.ip_address:
-                        print(f"INFO: Removing old rule for {old_lease.ip_address}")
-                        removed = delete_rule_by_source_and_destination(old_lease.ip_address, dns_ip)  #TODO OLD!!!
-                        if removed > 0:
-                            changes_made = True
 
-                # Add rule for the newest lease only if needed
-                if newest_lease.ip_address and not check_rule_exists(newest_lease.ip_address, dns_ip):
-                    if add_single_rule(newest_lease.ip_address, dns_ip, dns=True):
-                        print(f"✅ Rule added for {newest_lease.ip_address} → {dns_ip}")
-                        changes_made = True
+
+                # Add new DNS rule
+                uuid = add_single_rule(newest_lease.ip_address, dns_ip, manual=False, dns=True)
+
+                if uuid:
+                    print(f"✅ New DNS rule added for {newest_lease.ip_address} → {dns_ip}")
+
+                    changes_made = True
+
+                    # Clean up old rules (DNS only)
+                    all_dns_rules = FirewallRule.objects.filter(device=device, dns=True, end_date__isnull=True)
+
+                    for rule in all_dns_rules:
+                        if rule.uuid != uuid:
+                            print(f"INFO: Removing old DNS rule with UUID {rule.uuid}")
+                            if delete_rule_by_uuid(rule.uuid):
+                                rule.end_date = now = timezone.now()
+                                rule.save()
+                                changes_made = True
+
                 else:
-                    print(f"INFO: Rule already exists for {newest_lease.ip_address} → {dns_ip}")
+                    print(f"NO UUID after DNS creation!!!!")
 
                 if changes_made:
                     apply_firewall_changes()
+
+                # Starting to change all old rules!
+                adjust_invalid_source_ips(device)
+                print(f"Started to change all old rules to new source IP {newest_lease.ip_address}")
 
                 return redirect('manage-devices')
 
@@ -608,9 +632,17 @@ def manage_devices_view(request):
     recent_threshold = now - timedelta(minutes=10)  # Less than 30 days but older than 10 minutes will be yellow
     offline_threshold = now - timedelta(days=30)    # Older than 30 days will be red
 
+    ip_from_latest_lease = DeviceLease.objects.filter(
+        device=OuterRef('pk'),
+        last_active__isnull=False
+    ).order_by('-last_active').values('ip_address')[:1]
+
     devices_with_last_active = (
         Device.objects
-        .annotate(last_active_from_leases=Max('leases__last_active'))
+        .annotate(
+            last_active_from_leases=Max('leases__last_active'),
+            last_active_ip=Subquery(ip_from_latest_lease, output_field=GenericIPAddressField())
+        )
         .order_by("device_id")
     )
 
@@ -627,6 +659,7 @@ def manage_devices_view(request):
     device_id = request.GET.get("device_id")
 
     return render(request, 'manage_devices.html', {
+        'ip_from_latest_lease': ip_from_latest_lease,
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
         'devices': devices_with_last_active,
@@ -785,7 +818,7 @@ def device_logs_view(request):
 
 def system_status_view(request):
     device_id = request.GET.get("device_id") or request.POST.get("device_id")
-    now_time = now()
+    now_time = timezone.now()
     sixty_days_ago = now_time - timedelta(days=60)
 
     active_devices = Device.objects.filter(archived=False).count()
@@ -835,5 +868,11 @@ def system_status_view(request):
         "opnsense_status": opnsense_status,
         "verify_opnsense": verify_opnsense,
     }
-
     return render(request, "system_status.html", context)
+
+
+@require_POST
+def mark_verify_opnsense_view(request):
+    count = FirewallRule.objects.filter(end_date__isnull=True).update(verify_opnsense=True)
+    print(f"Marked {count} firewall rules as verify_opnsense=True")
+    return redirect("system-status")

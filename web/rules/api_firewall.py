@@ -11,6 +11,7 @@ from .config import API_KEY, API_SECRET, OPNSENSE_IP, CERT_PATH
 # Endpoints
 ADD_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/addRule"
 DEL_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/delRule"
+ADJUST_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/setRule"
 SEARCH_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/searchRule"
 GET_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/get_rule"
 APPLY_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/apply"
@@ -194,7 +195,7 @@ def delete_multiple_rules(rules_to_remove):
 
 def get_all_rules_uuid(uuid):
     try:
-        url = f"{GET_RULE_ENDPOINT}/{uuid}"  # e.g., /api/firewall/filter/getRule/<uuid>
+        url = f"{GET_RULE_ENDPOINT}/{uuid}"
         response = requests.get(
             url,
             auth=HTTPBasicAuth(API_KEY, API_SECRET),
@@ -260,3 +261,34 @@ def apply_firewall_changes():
             print(f'Error applying firewall rules: {response.text}')
     except requests.RequestException as e:
         print(f"Network error while applying rules: {e}")
+
+
+def source_ip_adjustment(uuid, active_ip):
+    """ Adjust source ip for Devices where this has changed """
+
+    payload = {
+        "rule": {
+            "source_net": active_ip,
+        }
+    }
+
+    try:
+        url = f"{ADJUST_RULE_ENDPOINT}/{uuid}"
+        response = session.post(
+            url,
+            json=payload,
+            verify=CERT_PATH
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            rule_uuid = data.get("uuid") or data.get("rule", {}).get("uuid") or uuid
+            print(f"✅ Rule adjusted. UUID: {rule_uuid}")
+            return rule_uuid
+        else:
+            print(f"❌ Failed to adjust rule: {response.status_code} - {response.text}")
+
+    except requests.RequestException as e:
+        print(f"⚠️ Network error while adjusting rule: {e}")
+
+    return None

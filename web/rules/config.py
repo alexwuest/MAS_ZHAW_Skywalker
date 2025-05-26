@@ -13,7 +13,7 @@ OPNSENSE_IP = os.getenv("OPNSENSE_IP")
 CERT_PATH = BASE_DIR / "certificate_crt.pem"
 
 IP_TABLE = {}
-DEBUG = False                # Debugging will log to console
+DEBUG = True                # Debugging will log to console
 DEBUG_ALL = False            # A pain for the console :-)
 
 API_USAGE = 0               # 0 low, 1 medium, 2 high

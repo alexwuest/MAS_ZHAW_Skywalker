@@ -1,12 +1,13 @@
 #TODO Longer inactive devices should be removed from the firewall list to keep it clean and API calls quicker
-#TODO Update when source ip changes /api/firewall/filter/setRule/{uuid}
-
+from copy import deepcopy
 from django.utils import timezone
+import time
 from django.utils.timezone import now
 from datetime import timedelta
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata
-from .api_firewall import add_firewall_rule, get_all_rules_uuid, apply_firewall_changes, delete_multiple_rules, delete_rule_by_uuid
+from .api_firewall import add_firewall_rule, get_all_rules_uuid, apply_firewall_changes, delete_multiple_rules, delete_rule_by_uuid, source_ip_adjustment
 from . import config
+
 
 def get_active_ip(device_id_str):
     from .models import Device
@@ -63,7 +64,6 @@ def check_rule_exists(ip_source, ip_destination):                               
 # Sync OPNsense Firewall Rules
 ##############################################################################################################################
 def db_opnsense_sync():
-
     # Overview variables
     verified = 0
     ended = 0
@@ -84,7 +84,6 @@ def db_opnsense_sync():
     config.API_USAGE += points
 
     for rule in rules_to_verify:
-
         try:
             exists = get_all_rules_uuid(rule.uuid)
             if config.DEBUG_ALL:
@@ -246,7 +245,6 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
 ##############################################################################################################################
 # Single rule addition from grouped view
 ##############################################################################################################################
-
 def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
     try:
         rule_uuid = add_firewall_rule(source_ip, destination_ip)
@@ -287,7 +285,7 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
         return False
     
     apply_firewall_changes()
-    return True
+    return rule_uuid
 
 
 ##############################################################################################################################
@@ -307,4 +305,73 @@ def archiving_device(device):
         rule.verify_opnsense = True
         rule.save(update_fields=["end_date", "verify_opnsense"])
     
+    return True
+
+
+##############################################################################################################################
+# Rule swap if IP changed for DEVICE
+##############################################################################################################################
+def get_active_ip_object(device):
+    """Returns the latest active IP for the device, or None."""
+    return (
+        DeviceLease.objects
+        .filter(device=device, lease_end__gt=now())
+        .order_by('-lease_start')
+        .values_list('ip_address', flat=True)
+        .first()
+    )
+
+def adjust_invalid_source_ips(device):
+    print(f"Lookup source IP adjustment for {device}")
+    active_ip = get_active_ip_object(device)
+    if not active_ip:
+        print(f"No active IP found for device {device.device_id}")
+        return
+    
+    print(f"Active IP: {active_ip}")
+
+    # Fetch rules that are still active and source_ip is not equal to the current lease
+    rules = FirewallRule.objects.filter(
+        device=device,
+        end_date__isnull=True
+    ).exclude(source_ip=active_ip)
+    config.API_USAGE += 1
+    for rule in rules:
+        uuid = rule.uuid
+        
+        try:
+            result = source_ip_adjustment(uuid, active_ip)
+
+            # If worked out copy rule, mark old entry as ended, new entry with new address with new start date 
+            
+            try:
+                # If worked out copy rule, mark old entry as ended, new entry with new address with new start date
+                if result:
+
+                    # End the existing rule
+                    rule.end_date = now()
+                    rule.save(update_fields=["end_date"])
+
+                    # Duplicate the rule properly
+                    new_rule = deepcopy(rule)
+                    new_rule.pk = None  # ensures a new DB record
+                    new_rule.source_ip = active_ip
+                    new_rule.start_date = now()
+                    new_rule.end_date = None
+                    new_rule.verify_opnsense = False
+                    new_rule.save()
+
+                    print(f"✅ Rule {rule.destination_ip} / {rule.destination_info} migrated to {active_ip}. Previous rule closed.")
+
+                else:
+                    print("ERROR occured during DB adjustment of firewall rule")
+
+            except Exception as e:
+                print(f"ERROR occured during DB adjustment of firewall rule {rule} with {e}") 
+                return None
+
+        except FirewallRule.DoesNotExist:
+            print("❌ Rule not found.")
+            return None
+    config.API_USAGE -= 1
     return True

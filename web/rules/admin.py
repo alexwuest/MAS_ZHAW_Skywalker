@@ -43,6 +43,7 @@ class FirewallLogAdmin(admin.ModelAdmin):
 
 @admin.register(FirewallRule)
 class FirewallRuleAdmin(admin.ModelAdmin):
+    list_per_page = 500
     list_display = (
         'device',
         'source_ip',
@@ -109,6 +110,7 @@ class Device(admin.ModelAdmin):
 
 @admin.register(DestinationMetadata)
 class DestinationMetadataAdmin(admin.ModelAdmin):
+    list_per_page = 500
     list_display = (
         'ip',
         'dns_name',
@@ -144,6 +146,7 @@ class DestinationMetadataAdmin(admin.ModelAdmin):
 
 @admin.register(MetadataSeenByDevice)
 class MetadataSeenByDeviceAdmin(admin.ModelAdmin):
+    list_per_page = 500
     list_display = (
         'device',
         'metadata',

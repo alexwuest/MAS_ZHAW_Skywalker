@@ -123,7 +123,7 @@ class FirewallRule(models.Model):
         ('REJECT', 'Reject'),
     ]
     source_ip = models.GenericIPAddressField()
-    uuid = models.CharField(max_length=50, unique=True, null=False, blank=False)              # UUID from OPNsense
+    uuid = models.CharField(max_length=50, null=False, blank=False)              # UUID from OPNsense
     destination_ip = models.GenericIPAddressField()
     destination_info = models.ForeignKey(
         DestinationMetadata,
