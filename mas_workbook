@@ -410,3 +410,17 @@ python manage.py runserver 0.0.0.0:8000
 
 # Need to split up the ip_enrichment to a own file because of circular import.
 # ip_enrichment.py
+
+################################
+## may 2025
+################################
+# Wrote a big part of the work...
+
+################################
+## 30.05.2025
+################################
+# Made in the last days many adjustments to the code. Combined parts. Tested quite much. Found out does my rules now were LAN Port which can not resolved by the API search_rule.
+# When adding rules not to a specific port this rules are floating rules, which can be asked by the api... Rules now do not longer belong to "LAN".
+# Added some feature requests to the frontend... showing for each ISP in the overview how many rules applied and how many rules could be added (max). This illustated with some icons. Each ISP can be updated now individually.
+# Added a help section for later. As soon RC is here, i will add some pictures for the actual implementation.
+# Added local DNS as suggested. Added a Port Forwarding for all 53 Requests to the local OPNsense unbound DNS service.
