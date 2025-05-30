@@ -424,3 +424,13 @@ python manage.py runserver 0.0.0.0:8000
 # Added some feature requests to the frontend... showing for each ISP in the overview how many rules applied and how many rules could be added (max). This illustated with some icons. Each ISP can be updated now individually.
 # Added a help section for later. As soon RC is here, i will add some pictures for the actual implementation.
 # Added local DNS as suggested. Added a Port Forwarding for all 53 Requests to the local OPNsense unbound DNS service.
+
+# Generate keygen on the running django server !!!! Important no passphrase for thread authentication
+ssh-keygen -t ed25519 -f ~/.ssh/opnsense_key -C "opnsense-dns-parser"
+
+# Copy keygen to the opnsense firewall
+ssh-copy-id -i ~/.ssh/opnsense_key.pub root@192.168.5.1
+
+# Test connection without key
+ssh -i ~/.ssh/opnsense_key root@192.168.5.1 "echo OK"
+
