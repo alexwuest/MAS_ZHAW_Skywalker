@@ -1,0 +1,296 @@
+{% load dict_extras %}
+{% include "header.html" %}
+
+<div class="content" style="display: flex; height: 100%; min-height: 500px;">
+{% if device %}
+    <!-- Log section / LEFT -->
+    <div style="flex: 8; background-color: #f9f9f9; font-size: 13px; padding: 16px; overflow-y: auto;">
+            <div>
+                <h2>{% if log_type == "block" %}Blocked{% else %}Allowed{% endif %} Firewall Logs for: {{ device.device_id }} - {{ device.description }}</h2>
+                <pre class="log_output">
+{{ logs|safe }}
+                </pre>    
+            </div>  
+    </div>
+
+    <!-- Sidebar / RIGHT -->
+    <div style="flex: 3; background-color: #f9f9f9; padding: 16px; font-size: 13px; overflow-y: auto;">
+        <label for="refreshRate"><strong>Refresh page:</strong></label><br/>
+        <select id="refreshRate" onchange="setRefreshRate()">
+            <option value="0">Off</option>
+            <option value="5000">Every 5s</option>
+            <option value="10000">Every 10s</option>
+            <option value="30000">Every 30s</option>
+        </select>
+        <button onclick="location.reload();">Refresh Now</button>
+        <br/>
+        <h3 style="margin-top: 24px;">Organisations (ISP)</h3>
+        <div id="ispList" style="font-size: 12px;">
+            <table style="font-size: 12px; width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;"></th>
+                        <th style="text-align: left;"></th>
+                        <th style="text-align: left;"></th>
+                        <th style="text-align: left;"></th>
+                        <th style="text-align: left;"></th>
+                        
+                    </tr>
+                </thead>
+                <tbody id="ispList">
+                    {% for isp in isp_list %}
+                        <tr>
+                            <td>
+                                <input type="checkbox"
+                                    data-isp-name="{{ isp.name }}"
+                                    onchange="toggleISPLink(this);">
+                            </td>
+                                <td>
+                                    {% with isp_rule_status|get_item:isp.name as status %}
+                                        {% if status %}
+                                            <span class="isp-icons"
+                                                data-isp="{{ isp.name }}"
+                                                data-with-rules="{{ status.with_rules }}"
+                                                data-total="{{ status.total }}">
+                                                {% if status.all_added %}
+                                                    ✅
+                                                {% else %}
+                                                    ⚠️
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            <td>
+                                {% with isp_rule_status|get_item:isp.name as status %}
+                                    {% if status %}
+                                        ({{ status.with_rules }}/{{ status.total }})
+                                    {% else %}
+                                        (0/0)
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>{{ isp.name }}</td>
+                            <td>
+                                <button onclick="updateFirewallRulesForISP('{{ isp.name }}')" data-isp="{{ isp.name }}">
+                                    Update
+                                </button>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4"><em>No ISPs found.</em></td></tr>
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        This button will update device rules. Adding new ones and removing outdated ones:
+        <br/><br/>
+        <button id="updateButton" onclick="updateFirewallRules()">Update All Rules!</button>
+
+<!-- Fullscreen overlay during update -->
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.6); z-index:9999; text-align:center; padding-top:200px; font-size:20px;">
+    <strong>Updating firewall rules...</strong>
+</div>
+
+    <script>
+        function getCookie(name) {
+            const cookie = document.cookie.split(';').find(c => c.trim().startsWith(name + '='));
+            return cookie ? decodeURIComponent(cookie.trim().split('=')[1]) : null;
+        }
+
+
+        function loadDeviceISPLinks() {
+            const params = new URLSearchParams(window.location.search);
+            const deviceId = params.get("device") || document.getElementById('deviceSelect').value;
+
+            if (deviceId) {
+                document.getElementById('deviceSelect').value = deviceId;
+            }
+
+            fetch(`/api/device/${deviceId}/linked-isps/`)
+                .then(response => response.json())
+                .then(data => {
+                    const linkedIsps = data.linked_isps;
+                    document.querySelectorAll('#ispList input[type="checkbox"]').forEach(checkbox => {
+                        const isLinked = linkedIsps.includes(checkbox.dataset.ispName);
+                        checkbox.checked = isLinked;
+                    });
+                    updateIspStatusIcons();
+                });
+        }
+
+        function updateIspStatusIcons() {
+            document.querySelectorAll('.isp-icons').forEach(icon => {
+                const isp = icon.dataset.isp;
+                const checkbox = document.querySelector(`input[type="checkbox"][data-isp-name="${isp}"]`);
+                const withRules = parseInt(icon.dataset.withRules);
+                const total = parseInt(icon.dataset.total);
+
+                if (!checkbox) return;
+
+                if (!checkbox.checked) {
+                    if (withRules === 0) {
+                        icon.textContent = "❌";
+                    } else {
+                        icon.textContent = "⚠️";
+                    }
+                } else {
+                    if (withRules === total && total > 0) {
+                        icon.textContent = "✅";
+                    } else {
+                        icon.textContent = "⚠️";
+                    }
+                }
+            });
+        }
+
+
+        function toggleISPLink(checkbox) {
+            const deviceId = document.getElementById('deviceSelect').value;
+            const ispName = checkbox.dataset.ispName;
+            const link = checkbox.checked;
+
+            fetch('/api/toggle-isp/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: `device_id=${deviceId}&isp_name=${encodeURIComponent(ispName)}&link=${link}`
+            }).finally(() => {
+                updateIspStatusIcons(); 
+            });
+        }
+
+
+        function setRefreshRate() {
+            const rate = parseInt(document.getElementById('refreshRate').value);
+            localStorage.setItem("refreshRate", rate);
+            if (refreshTimeout) clearTimeout(refreshTimeout);
+            if (rate > 0) {
+                refreshTimeout = setTimeout(() => {
+                    window.location.reload();
+                }, rate);
+            }
+        }
+
+        let refreshTimeout = null;
+
+        window.onload = function () {
+            const savedRate = localStorage.getItem("refreshRate") || "5000";
+            const refreshSelect = document.getElementById('refreshRate');
+            if (refreshSelect) {
+                refreshSelect.value = savedRate;
+            }
+            if (parseInt(savedRate) > 0) {
+                setRefreshRate();
+            }
+            loadDeviceISPLinks();
+        }
+
+        let lastRefreshRate = null;
+
+        // Update all Rules
+        function updateFirewallRules() {
+            const deviceId = document.getElementById('deviceSelect').value;
+            const button = document.getElementById('updateButton');
+            const overlay = document.getElementById('overlay');
+
+            // Disable button and show loading text
+            button.disabled = true;
+            const originalText = button.textContent;
+            button.textContent = "Updating... can take a while!!!";
+            overlay.style.display = "block";
+
+            const refreshSelect = document.getElementById('refreshRate');
+            lastRefreshRate = refreshSelect.value;
+            refreshSelect.value = "0";
+            if (refreshTimeout) clearTimeout(refreshTimeout);
+
+            fetch("/update-firewall/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `device_id=${encodeURIComponent(deviceId)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "ok") {
+                    const added = data.rules_added ?? 0;
+                    const removed = data.rules_removed ?? 0;
+                    alert(`+ Rules added: ${added}\n- Rules removed: ${removed}`);
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error("Update error:", error);
+                alert("Something went wrong.");
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = originalText;
+                overlay.style.display = "none";
+                refreshSelect.value = lastRefreshRate;
+                setRefreshRate();
+                location.reload();
+                
+            });
+        }
+
+
+    function updateFirewallRulesForISP(isp) {
+        const deviceId = document.getElementById('deviceSelect').value;
+        const overlay = document.getElementById('overlay');
+
+        const button = document.querySelector(`button[data-isp="${isp}"]`);
+        const checkbox = document.querySelector(`input[type="checkbox"][data-isp-name="${isp}"]`);
+        const mode = checkbox && checkbox.checked ? "add" : "remove";
+
+        const originalText = button.textContent;
+
+        button.disabled = true;
+        button.textContent = "Updating...";
+        overlay.style.display = "block";
+
+        fetch("/update-firewall-isp/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `device_id=${encodeURIComponent(deviceId)}&isp=${encodeURIComponent(isp)}&mode=${encodeURIComponent(mode)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "ok") {
+                const added = data.rules_added ?? 0;
+                const removed = data.rules_removed ?? 0;
+                alert(`[${isp}]\n+ Rules added: ${added}\n- Rules removed: ${removed}`);
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error("Update error:", error);
+            alert("Something went wrong.");
+        })
+        .finally(() => {
+            button.disabled = false;
+            button.textContent = originalText;
+            overlay.style.display = "none";
+            location.reload();
+        });
+    }
+    </script>
+
+{% else %}
+    <p>Go to "Manage Devices" and add a new device to see this view.</p>
+{% endif %}
+</div>
+</div>
+{% include "footer.html" %}
