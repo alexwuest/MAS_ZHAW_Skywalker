@@ -1,0 +1,72 @@
+{% include "header.html" %}
+
+<div class="content" style="height: 100%; min-height: 800px;">
+    <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
+      <h2>Help & Usage Guide</h2>
+
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <strong>1. Prepare Evidence Device</strong></br>
+            <a href="#prepare-device" class="gray-link">1.1 Prepare the Device</a><br>
+            <a href="#connect-wlan" class="gray-link">1.2 Connect to WLAN</a><br>
+            <a href="#add-device" class="gray-link">1.3 Add Device</a><br>
+            <a href="#assign-lease" class="gray-link">1.4 Assign the Lease</a><br>
+            <strong>2. Analyze Device Traffic</strong></br>
+            <a href="#blocked-logs" class="gray-link">2.1 View: Blocked Logs</a><br>
+            <a href="#passed-logs" class="gray-link">2.2 View: Passed Logs</a><br>
+            <a href="#grouped-ip" class="gray-link">2.3 View: Grouped IPs by ISP</a><br>
+            <strong>3. Tools</strong></br>
+        </div>
+
+        <h2 id="prepare-device">1.1 Prepare the Device</h2>
+        <ul>
+            <li><strong>Disable Proxy Services</strong><br>Features like <em>Apple Private Relay</em> or VPNs must be turned off.</li><br>
+            <li><strong>Disable MAC Address Randomization</strong><br>e.g. turn off “Private Wi-Fi Address” on iOS.</li><br>
+            <li><strong>Set Static DNS Server</strong><br>Use the internal DNS server manually on the device.</li><br>
+        </ul>
+
+        <h2 id="connect-wlan">1.2 Connect to WLAN</h2>
+        <p>Connect the device to the internal WLAN "Tarkin" using the password provided in <strong>Syspass</strong>.</p>
+
+        <h2 id="add-device">1.3 Add the Device</h2>
+        <p>Navigate to <strong>Manage Devices</strong>:</p>
+        <ul>
+            <li>Evidence ID: <code class="inline-code">A000000001</code></li>
+            <li>Description: <code class="inline-code">Apple iPhone 16 Pro</code></li>
+            <li>Examiner: <code class="inline-code">stpg83</code></li>
+            <li>DNS Server: Your internal DNS server</li>
+        </ul>
+
+        <h2 id="assign-lease">1.4 Assign the Lease</h2>
+        <p><strong>Note:</strong> Leases cannot be revoked yet!</p>
+        <ul>
+            <li>Find the correct IP/MAC from the device.</li>
+            <li>Select the corresponding lease entry and assign it.</li>
+        </ul>
+
+        <h2 id="blocked-logs">2.1 View: Blocked Logs</h2>
+        <ul>
+            <li>View recent blocked connections with IP, port, protocol, ISP info.</li>
+            <li>Use ISP filters to allow or disallow traffic related to the ISP.</li>
+            <li>Status icons show if the IP is enriched or unknown.</li>
+        </ul>
+
+        <h2 id="passed-logs">2.2 View: Passed Logs</h2>
+        <ul>
+            <li>View recent passed connections with IP, port, protocol, ISP info.</li>
+            <li>Use device filters to narrow down.</li>
+            <li>Status icons show if the IP is enriched or unknown.</li>
+        </ul>
+
+        <h2 id="grouped-ip"> 2.3 View: Grouped IPs by ISP</h2>
+        <ul>
+            <li>See which ISPs the device communicated with.</li>
+            <li>Each shows <code>(active / total)</code> firewall rule count.</li>
+            <li>Use “Update Firewall” to sync rules per ISP.</li>
+        </ul>
+
+
+    </div>
+</div>
+
+{% include "footer.html" %}
