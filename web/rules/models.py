@@ -9,7 +9,7 @@ class Device(models.Model):
     dns_server = models.CharField(
         max_length=20,
         choices=get_dns_choices(),
-        default="cloudflare"
+        default="local"
     )
     examiner = models.CharField(max_length=20, blank=False)
     archived = models.BooleanField(default=False)

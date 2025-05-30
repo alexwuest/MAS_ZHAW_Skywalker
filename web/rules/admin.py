@@ -6,6 +6,7 @@ admin.site.register(DeviceAllowedISP)
 
 @admin.register(FirewallLog)
 class FirewallLogAdmin(admin.ModelAdmin):
+    list_per_page = 500
     list_display = (
         'timestamp',
         'action',
@@ -18,6 +19,7 @@ class FirewallLogAdmin(admin.ModelAdmin):
         'destination_metadata',
     )
     list_filter = (
+        'source_ip',
         'action',
         'interface',
         'protocol',
