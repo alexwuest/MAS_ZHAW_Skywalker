@@ -4,7 +4,7 @@ import socket
 import datetime
 from requests.auth import HTTPBasicAuth
 from django.utils import timezone
-from django.utils.timezone import now as django_now
+from django.utils.timezone import timedelta, now as django_now
 from django.utils.dateparse import parse_datetime
 from django.db import IntegrityError, OperationalError
 
@@ -13,19 +13,22 @@ from .models import FirewallLog, DestinationMetadata, DeviceLease, MetadataSeenB
 from .ip_enrichment import enqueue_ip
 from . import api_dhcp_parser, config 
 
+
 print("Loaded OPNSENSE_IP:", OPNSENSE_IP)
 
 # API Endpoints
 LOGS_ENDPOINT = f"{OPNSENSE_IP}/api/diagnostics/firewall/log"
 
 # Sleep between API requests to avoid hitting rate limits 1.4 / 43 requests per minute
-api_request_delay = 1.4
+api_request_delay = 0.5
+
+# Grace period for linking logs to metadata
+FIREWALL_LOG_GRACE_SECONDS = 2
 
 # Adding private IP check to avoid later IP lookup fails with ip-api.com and keep requests low...
 def is_private_ip(ip):
     try:
         first, second, third, *_ = map(int, ip.split('.'))
-
         return (
             # Private Networks A,B,C
             first == 10 or
@@ -56,7 +59,7 @@ def is_private_ip(ip):
 
 
 # Make sure the enrichment was done just once and avoid unnecessary requests to ip-api.com like private IPs
-def enrich_ip(ip, source_ip):
+def enrich_ip(ip, source_ip, timestamp=None):
 
     RECHECK_AFTER_HOURS = 72
     now = timezone.now()
@@ -74,8 +77,8 @@ def enrich_ip(ip, source_ip):
             last_checked_time = (now - last_checked).total_seconds()
             if last_checked_time < RECHECK_AFTER_HOURS * 3600:
                 if config.DEBUG:
-                    timestamp = django_now().strftime("%H:%M:%S %d.%m.%Y")
-                    print(f"{timestamp} ✅ Memory Query - {ip} still fresh - {last_checked_time:.2f} seconds / {last_checked_time:.2f} / 3600 hours old.")
+                    timestamp_print = django_now().strftime("%H:%M:%S %d.%m.%Y")
+                    print(f"{timestamp_print} ✅ Memory Query - {ip} still fresh - {last_checked_time:.2f} seconds / {last_checked_time:.2f} / 3600 hours old.")
                 return
         except Exception:
             pass
@@ -88,11 +91,11 @@ def enrich_ip(ip, source_ip):
         config.IP_TABLE[ip]["dns_name"] = db_entry.dns_name or "N/A"
         config.IP_TABLE[ip]["isp"] = db_entry.isp or "N/A"
         if config.DEBUG:
-            timestamp = django_now().strftime("%H:%M:%S %d.%m.%Y")
-            print(f"{timestamp} ✅ DB Query - {ip} still fresh.")
+            timestamp_print = django_now().strftime("%H:%M:%S %d.%m.%Y")
+            print(f"{timestamp_print} ✅ DB Query - {ip} still fresh.")
 
         # Update MetadataSeenByDevice
-        link_ip_to_devices(ip, db_entry, source_ip)
+        link_ip_to_devices(ip, db_entry, source_ip, timestamp)
         return
     
     # Mark entry as not complete
@@ -102,7 +105,7 @@ def enrich_ip(ip, source_ip):
     config.IP_TABLE[ip].update({"dns_name": dns_name})
 
     if not is_private_ip(ip):
-        if config.DEBUG:
+        if config.DEBUG_ALL:
             print(f"🔄 Enriching IP {ip}...")  
         ip_api_data = get_ip_api(ip)
         if ip_api_data:
@@ -149,7 +152,7 @@ def enrich_ip(ip, source_ip):
                 # Update MetadataSeenByDevice
                 metadata_obj = DestinationMetadata.objects.filter(ip=ip, end_date__isnull=True).first()
                 if metadata_obj:
-                    link_ip_to_devices(ip, metadata_obj, source_ip)
+                    link_ip_to_devices(ip, metadata_obj, source_ip, timestamp)
 
                 # Update all firewall logs that haven't yet been linked
                 linked_logs = FirewallLog.objects.filter(destination_ip=ip, destination_metadata__isnull=True)
@@ -254,7 +257,8 @@ def get_ip_api(ip, retry=False):
                 "hosting": data.get("hosting"),
             })
             if config.DEBUG:
-                print(f"✅ IP lookup successful: {ip} - {data.get('isp')}")
+                timestamp_print = django_now().strftime("%H:%M:%S %d.%m.%Y")
+                print(f"{timestamp_print} ✅ IP lookup successful: {ip} - {data.get('isp')}")
 
             if config.DEBUG_ALL:
                 print(f"📦 Enriched data for {ip}: {data}")
@@ -287,16 +291,32 @@ def get_ip_api(ip, retry=False):
         return None
 
 
-def link_ip_to_devices(destination_ip, metadata_obj, source_ip):
+def link_ip_to_devices(destination_ip, metadata_obj, source_ip, timestamp):
     try:
-        leases = DeviceLease.objects.filter(ip_address=source_ip).select_related("device")
+        leases = DeviceLease.objects.filter(
+            ip_address=source_ip,
+            lease_start__lte=timestamp,
+            lease_end__gt=timestamp
+        ).select_related("device")
+
+        # Only proceed if a real firewall log exists with matching source/destination and timestamp
+        log_exists = FirewallLog.objects.filter(
+            source_ip=source_ip,
+            destination_ip=destination_ip,
+            timestamp__gte=timestamp - timedelta(seconds=FIREWALL_LOG_GRACE_SECONDS),
+            timestamp__lte=timestamp + timedelta(seconds=FIREWALL_LOG_GRACE_SECONDS)
+        ).exists()
+
+
+        if not log_exists:
+            if config.DEBUG_ALL:
+                print(f"⛔ Skipping metadata binding: No real log exists for {source_ip} → {destination_ip} at {timestamp}")
+            return
 
         if not leases.exists():
             if config.DEBUG_ALL:
-                print(f"⚠️  No leases found for IP: {source_ip}")
-        else:
-            if config.DEBUG_ALL:
-                print(f"✅ Found leases for {source_ip}: {list(leases)}")
+                print(f"⚠️ No leases found for IP: {source_ip} at {timestamp}")
+            return
 
         for lease in leases:
             device = lease.device
@@ -306,17 +326,19 @@ def link_ip_to_devices(destination_ip, metadata_obj, source_ip):
             metadata_seen, created = MetadataSeenByDevice.objects.get_or_create(
                 device=device,
                 metadata=metadata_obj,
-                defaults={"last_seen_at": django_now()}
+                defaults={"last_seen_at": timestamp}
             )
 
             if not created:
-                metadata_seen.last_seen_at = django_now()
+                metadata_seen.last_seen_at = timestamp
                 metadata_seen.save(update_fields=["last_seen_at"])
 
             if config.DEBUG_ALL:
-                print(f"MetadataSeenByDevice {'created' if created else 'updated'} for {device.device_id} → {destination_ip}", flush=True)
+                print(f"✅ Bound metadata to {device.device_id} → {destination_ip} (log+lease match)", flush=True)
+
     except Exception as e:
-        print(f"❌ Exception while linking IP {destination_ip} to devices: {e}", flush=True)
+        print(f"❌ Error linking IP {destination_ip} to devices: {e}", flush=True)
+
 
 
 
@@ -388,14 +410,18 @@ def print_overview(company):
 def parse_logs(search_address=None):
     """Continuously fetch and parse logs, updating unique IPs."""
 
-    api_dhcp_parser.parse_opnsense_leases()  # Get the DHCP leases from the firewall
+    try:
+        api_dhcp_parser.parse_opnsense_leases()  # Get the DHCP leases from the firewall
+    except Exception as e:
+        print(f"❌ Failed to parse DHCP leases: {e}")
+
     seen_logs = set()
 
     while True:
         logs = get_firewall_logs()
         filtered_logs = filter_logs(logs, search_address)
 
-        new_ips = set()
+        new_ips = {}
 
         for log in filtered_logs:
             log_entry = f"{log.get('__timestamp__')} - {log.get('action')} - {log.get('interface')} - {log.get('src')}:{log.get('srcport')} -> {log.get('dst')}:{log.get('dstport')}"
@@ -419,7 +445,7 @@ def parse_logs(search_address=None):
             if dst and not is_private_ip(dst):
                 if config.DEBUG_ALL:
                     print("🔄 New log entry:", log_entry)
-                new_ips.add(dst)
+                new_ips[dst] = (src, timestamp)
 
             # Lookup existing metadata
             existing_metadata = DestinationMetadata.objects.filter(ip=dst, end_date__isnull=True).order_by('-start_date').first()
@@ -466,13 +492,14 @@ def parse_logs(search_address=None):
                     print(f"⚠️ Duplicate firewall log skipped for {src} → {dst}")
 
         # Enrich IP's
-        for ip in new_ips:
+        for ip, (src_ip, ts) in new_ips.items():
             if ip not in config.IP_TABLE or not config.IP_TABLE[ip].get("_lookup_done"):
-                enqueue_ip(ip, src)
+                enqueue_ip(ip, src_ip, ts)
         
         if config.DEBUG_ALL:
-            datetime_str = datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")
-            print(f"{datetime_str} Firewall logs collected and enriched.")
+            ts_str = django_now().strftime("%H:%M:%S %d.%m.%Y")
+            print(f"{ts_str} ✅ DB Query - {ip} still fresh.")
 
-        time.sleep(3)  # Sleep before next API call   
+
+        time.sleep(3) 
 

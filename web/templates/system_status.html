@@ -40,6 +40,34 @@
         </td></tr>
         <tr><td style="border: 1px solid #ccc; padding: 4px;">Total Firewall Rules</td><td style="border: 1px solid #ccc; padding: 4px;">{{ total_firewall_rules }}</td></tr>
       </table>
+      <br>
+      <h2>Unlinked Metadata (IPs with no known device)</h2>
+      <table>
+          <thead>
+              <tr>
+                  <th>IP</th>
+                  <th>ISP</th>
+                  <th>Country</th>
+                  <th>City</th>
+                  <th>Last Checked</th>
+                  <th>DNS Name</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for entry in unlinked_metadata %}
+              <tr>
+                  <td>{{ entry.ip }}</td>
+                  <td>{{ entry.isp }}</td>
+                  <td>{{ entry.country }}</td>
+                  <td>{{ entry.city }}</td>
+                  <td>{{ entry.last_checked|date:"Y-m-d H:i:s" }}</td>
+                  <td>{{ entry.dns_name }}</td>
+              </tr>
+          {% empty %}
+              <tr><td colspan="6">✅ All metadata is linked to devices.</td></tr>
+          {% endfor %}
+          </tbody>
+      </table>
     </div>
 </div>
 

@@ -1,4 +1,8 @@
 DNS_CONFIG = {
+    "local": {
+        "ip": "192.168.5.1",
+        "label": "local (192.168.5.1)",
+    },
     "cloudflare": {
         "ip": "1.1.1.1",
         "label": "Cloudflare (1.1.1.1)",

@@ -86,13 +86,9 @@
                   {{ device.description }}
                 {% endif %}
               </td>
-              <td>{{ device.last_active_ip }}
-                <form method="post" action="{% url 'manage-devices' %}" style="display: inline;">
-                  {% csrf_token %}
-                  <input type="hidden" name="action" value="adjust_source_ip">
-                  <input type="hidden" name="device_id" value="{{ device.id }}">
-                  <button type="submit" onclick="return confirm('Update rules as IP changed? This process is normaly not needed!')">🔄</button>
-                </form>
+              <td>
+                {{ device.last_active_ip }}
+                <button type="button" onclick="submitAdjustIP({{ device.id }})" title="Update rules as IP changed? This process is normally not needed!">🔄</button>
               </td>
               <td>
                 {% if not device.has_lease %}
@@ -293,3 +289,18 @@
 </div>
 
 {% include "footer.html" %}
+
+<!-- Hidden form to adjust source IP -->
+<form id="adjustForm" method="post" action="{% url 'manage-devices' %}" style="display: none;">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="adjust_source_ip">
+  <input type="hidden" name="device_id" id="adjustDeviceId">
+</form>
+
+<script>
+function submitAdjustIP(deviceId) {
+  if (!confirm("Update rules as IP changed? This process is normally not needed!")) return;
+  document.getElementById("adjustDeviceId").value = deviceId;
+  document.getElementById("adjustForm").submit();
+}
+</script>

@@ -36,7 +36,7 @@ def add_firewall_rule(ip_source, ip_destination, description=None):
     payload = {
         "rule": {
             "action": "pass",
-            "interface": "lan",
+            #"interface": "lan",
             "ipprotocol": "inet",
             "protocol": "any",
             "source_net": ip_source,

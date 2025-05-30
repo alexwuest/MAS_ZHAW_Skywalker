@@ -12,6 +12,7 @@
     body {
       margin: 0;
       font-family: monospace;
+      line-height: 1.6;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -67,6 +68,22 @@
       cursor: wait; /* show loading cursor */
     }
 
+    .inline-code {
+    background-color: #dcdcdc;
+    color: #484848;
+    font-family: monospace;
+    font-size: 90%;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+   }
+
+   .gray-link {
+    color: rgb(154, 154, 154);
+    text-decoration: none;
+  }
+
+
     </style>
     <script>
         function goToUrl(baseUrl) {
@@ -79,6 +96,16 @@
                 window.location.href = baseUrl;
             }
         }
+        function goToUrlWithParams(baseUrl, extraParams) {
+          const select = document.getElementById("deviceSelect");
+          const deviceId = select?.value;
+          let url = `${baseUrl}?${extraParams}`;
+          if (deviceId) {
+              url += `&device_id=${encodeURIComponent(deviceId)}`;
+          }
+          window.location.href = url;
+        }
+
     </script>
 </head>
 <body>
@@ -86,8 +113,8 @@
     <div class="header">
         <div class="menu-group">
             <label>Views:</label>
-            <button class="nav-button" data-url="{% url 'view-logs' %}">Blocked Logs</button>
-            <button class="nav-button" data-url="{% url 'view-logs-passed' %}">Passed Logs</button>
+            <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=block">Blocked Logs</button>
+            <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=pass">Passed Logs</button>
             <button class="nav-button" data-url="{% url 'device-ip-overview' %}">Grouped IPs</button>
         </div>
     
@@ -99,6 +126,7 @@
             <button class="nav-button" data-url="{% url 'device-logs' %}">Device Logs</button>
             <button class="nav-button" data-url="{% url 'system-status' %}">Status</button>
             <button class="nav-button" data-url="/admin">DB</button>
+            <button class="nav-button" data-url="/help">❔</button>
         </div>
     
         <div class="menu-group">

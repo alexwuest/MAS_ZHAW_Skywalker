@@ -3,6 +3,7 @@ import threading
 import os
 from .ip_enrichment import ip_enrichment_queue
 from .api_logs_parser import parse_logs
+from .api_firewall_sync import recheck_metadata_seen
 from . import config, api_firewall_sync
 
 _log_parser_started = False
@@ -28,10 +29,13 @@ def start_log_parser():
             threading.Thread(target=print_queue_status, daemon=True).start()
             print("✅ IP queue monitor thread started.")
 
+            # Start recheck MetaDataSeen
+            threading.Thread(target=recheck_metadata_seen, daemon=True).start()
+            print("✅ Recheck MetaDataSeen thread started.")
+
             # Start the firewall rule verifier thread
             FirewallRuleVerifier().start()
             print("✅ Firewall rule verifier thread started.")
-
 
 
 def enrich_ip_worker():
@@ -40,11 +44,11 @@ def enrich_ip_worker():
     print("🔁 IP enrichment worker running...", flush=True)
 
     while True:
-        dst_ip, src_ip = ip_enrichment_queue.get()
+        dst_ip, src_ip, timestamp = ip_enrichment_queue.get()
         try:
             if config.DEBUG_ALL:
-                print(f"🔄 Enriching IP from queue: {dst_ip} (src: {src_ip})", flush=True)
-            enrich_ip(dst_ip, src_ip)
+                print(f"🔄 Enriching IP from queue: {dst_ip} (src: {src_ip}, (timestamp {timestamp}))", flush=True)
+            enrich_ip(dst_ip, src_ip, timestamp)
         except Exception as e:
             print(f"❌ Failed to enrich {dst_ip}: {e}", flush=True)
         finally:

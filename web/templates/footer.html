@@ -30,15 +30,16 @@
         document.querySelectorAll(".nav-button").forEach(btn => {
             btn.addEventListener("click", function () {
                 const baseUrl = this.getAttribute("data-url");
-                const deviceId = document.getElementById("deviceSelect").value;
-                if (deviceId) {
-                    window.location.href = `${baseUrl}?device_id=${encodeURIComponent(deviceId)}`;
-                } else {
-                    window.location.href = baseUrl;
+                const deviceId = document.getElementById("deviceSelect")?.value;
+                if (baseUrl) {
+                    const url = new URL(baseUrl, window.location.origin);
+                    if (deviceId) url.searchParams.set("device_id", deviceId);
+                    window.location.href = url.toString();
                 }
             });
         });
     });
+
 </script>
 
 </body>

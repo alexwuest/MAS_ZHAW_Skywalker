@@ -3,8 +3,6 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 from rules.views import (
-    view_firewall_logs,
-    firewall_passed_logs_view,
     manage_devices_view,
     get_linked_isps_view,
     toggle_isp_link_view,
@@ -19,6 +17,9 @@ from rules.views import (
     device_logs_view,
     system_status_view,
     mark_verify_opnsense_view,
+    help_view,
+    update_firewall_isp_view,
+    combined_firewall_logs_view,
 )
 
 urlpatterns = [
@@ -28,11 +29,11 @@ urlpatterns = [
 
     path('api/device/<int:device_id>/linked-isps/', get_linked_isps_view, name='api-linked-isps'),
     path('api/toggle-isp/', toggle_isp_link_view, name='toggle_isp_link'),
+    path("update-firewall-isp/", update_firewall_isp_view, name="update_firewall_isp"),
     
-    path('logs/', view_firewall_logs, name='view-logs'),
-    path('update-firewall/', update_firewall_rules_view, name='update_firewall_rules'),
+    path("firewall/logs/", combined_firewall_logs_view, name="firewall_logs"),
 
-    path('passed_logs/', firewall_passed_logs_view, name='view-logs-passed'),
+    path('update-firewall/', update_firewall_rules_view, name='update_firewall_rules'),
     
     path('overview/', device_ip_overview_view, name='device-ip-overview'),
     path('flush-metadata/', flush_metadata_seen_view, name='flush-metadata'),
@@ -51,6 +52,8 @@ urlpatterns = [
 
     path("system/", system_status_view, name="system-status"),
     path("system/verify/", mark_verify_opnsense_view, name="mark-verify-opnsense"),
+
+    path("help/", help_view, name="help"),
 
 ]
 
