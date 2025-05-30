@@ -197,12 +197,6 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
         (rule.source_ip, rule.destination_ip): rule
         for rule in existing_rules_qs
     }
-    
-    print(f"ip_source: {ip_source}") #TODO REMOVE
-    print(f"allowed_isps: {allowed_isps}")#TODO REMOVE
-    print(f"dest_ips: {dest_ips}")#TODO REMOVE
-    print(f"existing_rules_qs: {existing_rules_qs}")#TODO REMOVE
-    print(f"existing_rules: {existing_rules}")#TODO REMOVE
 
     # Preload metadata (enrichment cache)
     metadata_lookup = {

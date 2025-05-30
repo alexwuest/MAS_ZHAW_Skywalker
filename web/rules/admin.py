@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP, FirewallLog, MetadataSeenByDevice
+from .models import Device, FirewallRule, DestinationMetadata, DeviceLease, DeviceAllowedISP, FirewallLog, MetadataSeenByDevice, DNSRecord
 
 admin.site.register(DeviceAllowedISP)
 
@@ -197,3 +197,27 @@ class DeviceLeaseAdmin(admin.ModelAdmin):
     def device_display(self, obj):
         return obj.device.device_id if obj.device else '–'
     device_display.short_description = 'Device ID'
+
+
+
+@admin.register(DNSRecord)
+class DNSRecordAdmin(admin.ModelAdmin):
+    list_per_page = 500
+    list_display = (
+        'timestamp',
+        'source_ip',
+        'resolved_ip',
+        'query_type',
+        'domain',
+        'raw_line',
+    )
+    list_filter = (
+        'source_ip',
+    )
+    search_fields = (
+        'source_ip',
+        'resolved_ip',
+        'domain',        
+    )
+    date_hierarchy = 'timestamp'
+    ordering = ('-timestamp',)
