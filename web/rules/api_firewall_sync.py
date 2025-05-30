@@ -4,34 +4,49 @@ from django.utils import timezone
 import time
 from django.utils.timezone import now
 from datetime import timedelta
-from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata
+from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata, MetadataSeenByDevice
 from .api_firewall import add_firewall_rule, get_all_rules_uuid, apply_firewall_changes, delete_multiple_rules, delete_rule_by_uuid, source_ip_adjustment
 from . import config
 
+CHECK_INTERVAL_SECONDS = 60  # 15 minutes 900
 
-def get_active_ip(device_id_str):
-    from .models import Device
-    now = timezone.now()
-    try:
-        device = Device.objects.get(device_id=device_id_str)
-    except Device.DoesNotExist:
-        return None
-    lease = DeviceLease.objects.filter(device=device, lease_end__gt=now).order_by('-lease_start').first()
-    return lease.ip_address if lease else None
+def get_active_ip(device=None, device_id=None):
+    """Returns the latest active IP for the device object or device_id, or None."""
+    if device:
+        return (
+            DeviceLease.objects
+            .filter(device=device, lease_end__gt=now())
+            .order_by('-lease_start')
+            .values_list('ip_address', flat=True)
+            .first()
+        )
+    if device_id:
+        return (
+            DeviceLease.objects
+            .filter(device_id=device_id, lease_end__gt=now())
+            .order_by('-lease_start')
+            .values_list('ip_address', flat=True)
+            .first()
+        )
 
 
 def get_allowed_isps(device_id):
-    return list(DeviceAllowedISP.objects.filter(device__device_id=device_id).values_list('isp_name', flat=True))
+    return list(
+        DeviceAllowedISP.objects
+        .filter(device_id=device_id)
+        .values_list('isp_name', flat=True)
+    )
 
-def get_blocked_ips_by_isp(isp_list):
+
+def get_blocked_ips_by_isp(isp_list, source_ip):
     return set(
         FirewallLog.objects.filter(
             action='block',
-            destination_metadata__isp__in=isp_list
+            destination_metadata__isp__in=isp_list,
+            source_ip=source_ip,
         ).values_list('destination_ip', flat=True)
     )
-
-                                        
+                        
 def check_rule_exists(ip_source, ip_destination):                                           # NEW Rule check!
     # Try to find rule in the DB
     rule = FirewallRule.objects.filter(
@@ -156,31 +171,38 @@ def db_opnsense_sync():
                 
 
 ##############################################################################################################################
-# Management ISP Rules
+# Management ISP Rules - ALL
 ##############################################################################################################################
 def allow_blocked_ips_for_device(device_id, return_removed=False):          
     
     print(f"Allowing blocked IPs for device: {device_id}")
-    ip_source = get_active_ip(device_id)
+    ip_source = get_active_ip(device_id=device_id)
+    
     if not ip_source:
         return 0
 
     allowed_isps = get_allowed_isps(device_id)
-    dest_ips = get_blocked_ips_by_isp(allowed_isps)
-
+    dest_ips = get_blocked_ips_by_isp(allowed_isps, ip_source)
     config.API_USAGE += 1
 
-    # Preload existing rules from DB (active only, non-manual, non-DNS)
+
+    # Preload existing rules from DB (active only, non-DNS)
     existing_rules_qs = FirewallRule.objects.filter(
         source_ip=ip_source,
         end_date__isnull=True,
-        manual=False,
         dns=False
     )
+    
     existing_rules = {
         (rule.source_ip, rule.destination_ip): rule
         for rule in existing_rules_qs
     }
+    
+    print(f"ip_source: {ip_source}") #TODO REMOVE
+    print(f"allowed_isps: {allowed_isps}")#TODO REMOVE
+    print(f"dest_ips: {dest_ips}")#TODO REMOVE
+    print(f"existing_rules_qs: {existing_rules_qs}")#TODO REMOVE
+    print(f"existing_rules: {existing_rules}")#TODO REMOVE
 
     # Preload metadata (enrichment cache)
     metadata_lookup = {
@@ -210,7 +232,7 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
                 if existing:
                     print(f"⚠️ Skipped adding duplicate UUID to DB: {uuid}")
                 else:
-                    device_instance = Device.objects.get(device_id=device_id)
+                    device_instance = Device.objects.get(id=device_id)
                     FirewallRule.objects.create(
                         source_ip=ip_source,
                         device=device_instance,
@@ -243,6 +265,87 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
 
 
 ##############################################################################################################################
+# Management ISP Rules - Single ISP
+##############################################################################################################################
+def allow_ips_for_device_and_isp(device_id, isp_name, mode="sync", return_removed=False):
+    print(f"[{mode.upper()}] Updating firewall rules for device {device_id} and ISP: {isp_name}")
+    
+    ip_source = get_active_ip(device_id=device_id)
+    if not ip_source:
+        return (0, 0)
+
+    # All destination IPs seen by this device for this ISP
+    valid_dest_ips = set(DestinationMetadata.objects.filter(
+        isp=isp_name,
+        end_date__isnull=True,
+        metadataseenbydevice__device_id=device_id
+    ).values_list("ip", flat=True))
+    print(f"valid_dest_ips: {valid_dest_ips}")
+
+    # Existing firewall rules
+    existing_rules_qs = FirewallRule.objects.filter(
+        source_ip=ip_source,
+        end_date__isnull=True,
+        manual=False,
+        dns=False,
+        isp_name=isp_name
+    )
+    existing_rules = {
+        rule.destination_ip: rule for rule in existing_rules_qs
+    }
+
+    added = 0
+    removed = 0
+
+    # ADD RULES
+    if mode in ("add", "sync"):
+        for ip_dest in valid_dest_ips:
+            if ip_dest in existing_rules:
+                existing_rules[ip_dest].verify_opnsense = True
+                existing_rules[ip_dest].save(update_fields=["verify_opnsense"])
+            else:
+                metadata = DestinationMetadata.objects.filter(ip=ip_dest, end_date__isnull=True).first()
+                uuid = add_firewall_rule(ip_source, ip_dest)
+                if uuid and not FirewallRule.objects.filter(uuid=uuid).exists():
+                    FirewallRule.objects.create(
+                        source_ip=ip_source,
+                        device_id=device_id,
+                        destination_ip=ip_dest,
+                        protocol="any",
+                        port=0,
+                        action="PASS",
+                        end_date=None,
+                        manual=False,
+                        isp_name=isp_name,
+                        destination_info=metadata,
+                        uuid=uuid
+                    )
+                    added += 1
+
+    # REMOVE RULES
+    if mode == "remove":
+        # Remove all current rules for this ISP/device
+        to_remove = list(existing_rules.values())
+    elif mode == "sync":
+        # Remove only rules that are no longer valid
+        to_remove = [
+            rule for ip, rule in existing_rules.items()
+            if ip not in valid_dest_ips
+        ]
+    else:
+        to_remove = []
+
+    if to_remove:
+        removed = delete_multiple_rules([(r.source_ip, r.destination_ip) for r in to_remove])
+
+    # Apply changes if needed
+    if added > 0 or removed > 0:
+        apply_firewall_changes()
+
+    return (added, removed) if return_removed else added
+
+
+##############################################################################################################################
 # Single rule addition from grouped view
 ##############################################################################################################################
 def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
@@ -265,6 +368,12 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
     print(f"Lease: {lease}")
     device = lease.device if lease else None
     print(f"Device: {device}")
+
+
+    metadata = DestinationMetadata.objects.filter(ip=destination_ip, end_date__isnull=True).first()
+    isp = metadata.isp if metadata else "Unknown"
+    print(isp)
+
     
     # Update the database with the new rule
     try:
@@ -273,6 +382,7 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
             uuid=rule_uuid,
             source_ip=source_ip,
             destination_ip=destination_ip,
+            isp_name=isp,
             protocol="any",
             port=0,
             action="PASS",
@@ -311,19 +421,9 @@ def archiving_device(device):
 ##############################################################################################################################
 # Rule swap if IP changed for DEVICE
 ##############################################################################################################################
-def get_active_ip_object(device):
-    """Returns the latest active IP for the device, or None."""
-    return (
-        DeviceLease.objects
-        .filter(device=device, lease_end__gt=now())
-        .order_by('-lease_start')
-        .values_list('ip_address', flat=True)
-        .first()
-    )
-
 def adjust_invalid_source_ips(device):
     print(f"Lookup source IP adjustment for {device}")
-    active_ip = get_active_ip_object(device)
+    active_ip = get_active_ip(device=device)
     if not active_ip:
         print(f"No active IP found for device {device.device_id}")
         return
@@ -375,3 +475,63 @@ def adjust_invalid_source_ips(device):
             return None
     config.API_USAGE -= 1
     return True
+
+
+##############################################################################################################################
+# Rule swap if IP changed for DEVICE
+##############################################################################################################################
+def recheck_metadata_seen():
+    print("Recheck for unlinked Metadata service started...")
+    while True:
+        try:
+            now = timezone.now()
+
+            # Get all relevant firewall logs with metadata
+            logs = FirewallLog.objects.filter(
+                destination_metadata__isnull=False,
+                timestamp__gte=now - timedelta(hours=12)
+            ).select_related("destination_metadata")
+
+            added_count = 0
+
+            for log in logs:
+                dst_ip = log.destination_ip
+                src_ip = log.source_ip
+                timestamp = log.timestamp
+                metadata = log.destination_metadata
+
+                if not metadata or not src_ip:
+                    continue
+
+                # Match lease for the source_ip
+                leases = DeviceLease.objects.filter(
+                    ip_address=src_ip,
+                    lease_start__lte=timestamp,
+                    lease_end__gt=timestamp
+                ).select_related("device")
+
+                for lease in leases:
+                    device = lease.device
+                    if not device:
+                        continue
+
+                    # Check if already seen
+                    exists = MetadataSeenByDevice.objects.filter(
+                        device=device,
+                        metadata=metadata
+                    ).exists()
+
+                    if not exists:
+                        MetadataSeenByDevice.objects.create(
+                            device=device,
+                            metadata=metadata,
+                            last_seen_at=timestamp
+                        )
+                        added_count += 1
+
+            print(f"MetadataSeenByDevice recheck completed: {added_count} new entries")
+
+        except Exception as e:
+            print(f"❌ MetadataSeenByDevice recheck error: {e}")
+
+        time.sleep(CHECK_INTERVAL_SECONDS)
