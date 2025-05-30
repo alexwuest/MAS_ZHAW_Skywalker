@@ -5,6 +5,8 @@ from .ip_enrichment import ip_enrichment_queue
 from .api_logs_parser import parse_logs
 from .api_firewall_sync import recheck_metadata_seen
 from . import config, api_firewall_sync
+from .ssh_dns_parser import dns_capture_worker
+
 
 _log_parser_started = False
 _log_parser_lock = threading.Lock()
@@ -29,13 +31,17 @@ def start_log_parser():
             threading.Thread(target=print_queue_status, daemon=True).start()
             print("✅ IP queue monitor thread started.")
 
-            # Start recheck MetaDataSeen
+            # Start recheck MetaDataSeen thread
             threading.Thread(target=recheck_metadata_seen, daemon=True).start()
             print("✅ Recheck MetaDataSeen thread started.")
 
             # Start the firewall rule verifier thread
             FirewallRuleVerifier().start()
             print("✅ Firewall rule verifier thread started.")
+
+            # Start DNS parser thread
+            threading.Thread(target=dns_capture_worker, daemon=True).start()
+            print("✅ DNS capture worker thread started.")
 
 
 def enrich_ip_worker():
@@ -88,4 +94,3 @@ class FirewallRuleVerifier(threading.Thread):
 
     def stop(self):
         self._stop_event.set()
-

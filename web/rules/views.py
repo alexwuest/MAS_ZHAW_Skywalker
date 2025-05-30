@@ -17,7 +17,7 @@ from . import config
 from .config import OPNSENSE_IP, API_KEY, API_SECRET, CERT_PATH
 from .api_logs_parser import api_dhcp_parser, is_private_ip
 from .ip_enrichment import ip_enrichment_queue
-from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
+from .models import Device, DNSRecord, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
 from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule, archiving_device, adjust_invalid_source_ips, allow_ips_for_device_and_isp
 from .api_firewall import delete_rule_by_uuid, apply_firewall_changes, check_rule_exists
 from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm, HideLeaseForm
@@ -308,6 +308,29 @@ def device_ip_overview_view(request):
         else:
             known_ips.setdefault(isp, []).append((ip, meta, seen))
 
+
+    # Collect leases for this device
+    source_ips = list(device.leases.values_list("ip_address", flat=True))
+
+    # Get all DNS records from these source IPs
+    dns_records = DNSRecord.objects.filter(
+        source_ip__in=source_ips
+    ).values('source_ip', 'resolved_ip', 'domain', 'timestamp', 'last_seen_at', 'query_type', 'resolved_ip', 'raw_line')
+
+    dns_lookup_all = {}
+    for record in dns_records:
+        rip = record["resolved_ip"]
+        dns_lookup_all.setdefault(rip, []).append({
+            "source_ip": record["source_ip"],
+            "domain": record["domain"],
+            "timestamp": record["timestamp"],
+            "last_seen_at": record["last_seen_at"],
+            "query_type": record["query_type"],
+            "resolved_ip": record["resolved_ip"],
+            "raw_line": record["raw_line"],
+        })
+  
+
     return render(request, "device_ip_overview.html", {
     "devices": devices,
     "device": device,
@@ -316,6 +339,7 @@ def device_ip_overview_view(request):
     "selected_device_id": device.id if device else None,
     "selected_filter": filter_recent,
     "active_rules_dict": active_rules_dict,
+    "dns_lookup_all": dns_lookup_all,
 })
 
 ###########################################################################

@@ -83,6 +83,29 @@
     text-decoration: none;
   }
 
+  .tooltip-icon {
+    display: inline-block;
+    cursor: pointer;
+    color: #555;
+    position: relative;
+  }
+
+  .tooltip-icon .tooltip-text {
+    display: none;
+    position: absolute;
+    left: 25px;
+    top: -10px;
+    background-color: #f8f8f8;
+    color: #333;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    z-index: 999;
+    padding: 10px 10px;
+  }
+
+  .tooltip-icon:hover .tooltip-text {
+    display: block;
+  }
 
     </style>
     <script>

@@ -116,6 +116,17 @@ class MetadataSeenByDevice(models.Model):
             models.Index(fields=['device', 'metadata']),
         ]
 
+
+class DNSRecord(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    source_ip = models.GenericIPAddressField()
+    query_type = models.CharField(max_length=10)
+    domain = models.CharField(max_length=255)
+    resolved_ip = models.GenericIPAddressField(null=True, blank=True)
+    raw_line = models.TextField()
+    last_seen_at = models.DateTimeField(auto_now_add=True)                      # updated all time
+
+
 class FirewallRule(models.Model):
     ACTION_CHOICES = [
         ('PASS', 'Pass'),
