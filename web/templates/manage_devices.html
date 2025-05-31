@@ -5,7 +5,7 @@
   <!-- Manage section / LEFT -->
   <div style="flex: 1 70%; background-color: #f9f9f9; font-size: 13px; padding: 16px; overflow-y: auto;">
     <h2>Add new device</h2>
-    Initialy add a device and afterwards add leases to the device. So it will be visible under the device in the frontend "Show Logs"</br></br>
+    Initialy add a device and afterwards add leases to the device. <a href="{% url 'help' %}?device_id={{ device.id }}#prepare-device">Help article</a></br></br>
     <form method="post">
       {% csrf_token %}
       <input type="hidden" name="action" value="add_device">
@@ -32,9 +32,7 @@
             <td>{{ form.dns_server.label_tag }}</td>
             <td>{{ form.dns_server }}</td>
         </tr>
-      </table>
-      </br>- Please adjust DNS Settings on device to manual and use ip above. 
-      </br>- Deactivate "Private WLAN-Addresse" on iOS devices.</br></br>
+      </table><br>
       <button type="submit">Approve Device</button>
     </form>
 
@@ -160,7 +158,7 @@
             {% endfor %}
           </tbody>
 
-        </table></br>
+        </table>
         <button type="submit">Archive Selected</button>
     </form>
 
@@ -210,7 +208,7 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-            </table><br>
+            </table>
             <button type="submit">Unarchive Selected</button>
         </form>
     </div></div>

@@ -37,10 +37,10 @@
       background-color: #000000b9;
       color: white;
       border: none;
-      padding: 6px 12px;
+      padding: 4px 10px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .content {
@@ -135,14 +135,14 @@
   <div id="overlay"></div>
     <div class="header">
         <div class="menu-group">
-            <label>Views:</label>
+            <label></label>
             <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=block">Blocked Logs</button>
             <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=pass">Passed Logs</button>
             <button class="nav-button" data-url="{% url 'device-ip-overview' %}">Grouped IPs</button>
         </div>
     
         <div class="menu-group">
-            <label>Tools:</label>
+            <label></label>
             <button class="nav-button" data-url="{% url 'manage-devices' %}">Manage Devices</button>
             <button class="nav-button" data-url="{% url 'domain-lookup' %}">Domain Lookup</button>
             <button class="nav-button" data-url="{% url 'device-firewall-rules' %}">Firewall Rules</button>

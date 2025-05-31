@@ -40,19 +40,19 @@
 
         <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
           <colgroup>
-            <col style="width: 40px;">
-            <col style="width: 150px;">
-            <col style="width: 230px;">
-            <col style="width: 230px;">
-            <col style="width: auto;">
-            <col style="width: 200px;">
-            <col style="width: 200px;">
-            <col style="width: 200px;">
+            <col style="width: 30px;">
+            <col style="width: 120px;">
+            <col style="width: 220px;">
+            <col style="width: 220px;">
+            <col style="width: 220px;">
+            <col style="width: 140px;">
+            <col style="width: 140px;">
+            <col style="width: 160px;">
             <col style="width: auto;">
           </colgroup>
           <thead>
             <tr style="background-color: #cceeff;">
-              <th class="sorttable_nosort" style="text-align: left; padding: 6px;">Rule</th>
+              <th class="sorttable_nosort" style="text-align: left; padding: 6px;"></th>
               <th style="text-align: left; padding: 6px;">IP</th>
               <th style="text-align: left; padding: 6px;">ORG</th>
               <th style="text-align: left; padding: 6px;">ISP</th>
@@ -105,146 +105,7 @@
                                 {{ entry.raw_line }} 
                               </span>
                             </span>
-                          </small></br>{% load dict_extras %}
-{% include "header.html" %}
-
-<div class="content" style="display: flex; height: 100%; min-height: 500px;">
-  <div style="flex: 4; background-color: #f9f9f9; font-size: 13px; padding: 16px; overflow-y: auto;">
-    {% if device %}
-      <h2>Grouped Overview for: {{ device.device_id }} - {{ device.description }}</h2>
-
-      <form method="get" style="margin-bottom: 20px;">
-        <input type="hidden" name="device_id" value="{{ selected_device_id }}">
-        <select name="filter_recent" id="filter_recent">
-          <option value="60" {% if selected_filter == '60' or not selected_filter %}selected{% endif %}>Last 60 seconds</option>
-          <option value="120" {% if selected_filter == '120' %}selected{% endif %}>Last 120 seconds</option>
-          <option value="180" {% if selected_filter == '180' %}selected{% endif %}>Last 180 seconds</option>
-          <option value="240" {% if selected_filter == '240' %}selected{% endif %}>Last 240 seconds</option>
-          <option value="360" {% if selected_filter == '360' %}selected{% endif %}>Last 360 seconds</option>
-        </select>
-        <button type="submit">Refresh</button>
-        <label for="filter_recent"> Show only entries from last:</label>
-      </form>
-
-      <form method="post" action="{% url 'flush-metadata' %}" style="display: inline;">
-        {% csrf_token %}
-        <input type="hidden" name="device_id" value="{{ selected_device_id }}">
-        <button type="submit">Delete Seen Metadata</button>  
-        <span style="margin-left: 8px;">Reset the overview by clearing all seen IPs.</span>
-      </form>
-
-      <br><br>
-      <input type="text" id="ipSearch" placeholder="Search IP or Domain..." style="margin-bottom: 10px; padding: 6px; width: 300px;">
-
-      <form method="post" action="{% url 'add-multiple-rules-view' %}">
-        {% csrf_token %}
-        <input type="hidden" name="device_id" value="{{ selected_device_id }}">
-
-        <table class="sortable" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-          <thead>
-            <tr style="background-color: #cceeff;">
-              <th><input type="checkbox" onclick="toggleAll(this)"> All</th>
-              <th>IP</th>
-              <th>ORG</th>
-              <th>ISP</th>
-              <th>DNS Request</th>
-              <th>Location</th>
-              <th>First seen</th>
-              <th>Last seen</th>
-              <th>DNS Reverse</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for ip, meta, seen in new_ips %}
-            <tr>
-              <td><input type="checkbox" name="selected_ips" value="{{ ip }}"></td>
-              <td>{{ ip }}</td>
-              <td>{{ meta.org }}</td>
-              <td>{{ meta.isp }}</td>
-              <td>
-                {% with dns_lookup_all|get_item:ip as dns_entries %}
-                  {% if dns_entries %}
-                    {% for entry in dns_entries %}
-                      <small>
-                        <span class="tooltip-icon">ℹ️ {{ entry.domain }}
-                          <span class="tooltip-text">
-                            {{ entry.domain }} >> {{ entry.query_type }} >> {{ entry.resolved_ip }}<br><br>
-                            {{ entry.timestamp|date:"d.m.y H:i:s" }} First DNS request<br>
-                            {{ entry.last_seen_at|date:"d.m.y H:i:s" }} Last DNS request<br><br>
-                            Parsed line:<br>{{ entry.raw_line }}
-                          </span>
-                        </span>
-                      </small><br>
-                    {% endfor %}
-                  {% else %}<em>-</em>{% endif %}
-                {% endwith %}
-              </td>
-              <td>{{ meta.zip_code }} {{ meta.city }}, {{ meta.country }}</td>
-              <td>{{ seen.first_seen_at|date:"d.m.Y H:i:s" }}</td>
-              <td>{{ seen.last_seen_at|date:"d.m.Y H:i:s" }}</td>
-              <td>{{ meta.dns_name }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-
-        <button type="submit" style="margin-top: 12px;">Add Selected Rules</button>
-      </form>
-    {% else %}
-      <p>Go to "Manage Devices" and add a new device to see this view.</p>
-    {% endif %}
-  </div>
-</div>
-
-<style>
-.tooltip-icon {
-  display: inline-block;
-  margin-left: 6px;
-  cursor: pointer;
-  font-size: 0.9em;
-  color: #555;
-  position: relative;
-}
-
-.tooltip-icon .tooltip-text {
-  display: none;
-  position: absolute;
-  left: 20px;
-  top: -10px;
-  background-color: #f8f8f8;
-  color: #333;
-  padding: 6px 10px;
-  border-radius: 6px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  white-space: nowrap;
-  font-size: 0.85em;
-  z-index: 999;
-}
-
-.tooltip-icon:hover .tooltip-text {
-  display: block;
-}
-</style>
-
-<script>
-function toggleAll(source) {
-  document.querySelectorAll('input[name="selected_ips"]').forEach(cb => cb.checked = source.checked);
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  const searchInput = document.getElementById('ipSearch');
-  searchInput.addEventListener('keyup', function () {
-    const query = this.value.toLowerCase();
-    document.querySelectorAll('tbody tr').forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(query) ? '' : 'none';
-    });
-  });
-});
-</script>
-
-{% include "footer.html" %}
-
+                          </small></br>
                         {% endfor %}
                       {% else %}
                         <em>-</em>
@@ -269,19 +130,19 @@ document.addEventListener('DOMContentLoaded', function () {
             <summary style="font-weight: bold; cursor: pointer;">{{ isp }} ({{ entries|length }})</summary>
             <table class="sortable" style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
               <colgroup>
-                <col style="width: 40px;">
-                <col style="width: 150px;">
-                <col style="width: 230px;">
-                <col style="width: 230px;">
-                <col style="width: auto;">
-                <col style="width: 200px;">
-                <col style="width: 200px;">
-                <col style="width: 200px;">
+                <col style="width: 30px;">
+                <col style="width: 120px;">
+                <col style="width: 220px;">
+                <col style="width: 220px;">
+                <col style="width: 220px;">
+                <col style="width: 140px;">
+                <col style="width: 140px;">
+                <col style="width: 160px;">
                 <col style="width: auto;">
               </colgroup>
               <thead>
                 <tr style="background-color: #ffdca8;">
-                  <th class="sorttable_nosort" style="text-align: left; padding: 6px;">Rule</th>
+                  <th class="sorttable_nosort" style="text-align: left; padding: 6px;"></th>
                   <th style="text-align: left; padding: 6px;">IP</th>
                   <th style="text-align: left; padding: 6px;">ORG</th>
                   <th style="text-align: left; padding: 6px;">ISP</th>
