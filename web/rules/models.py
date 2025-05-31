@@ -5,7 +5,7 @@ class Device(models.Model):
     device_id = models.CharField(max_length=20, unique=True)
     creation_date = models.DateTimeField(auto_now_add=True)
 
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=False)
     dns_server = models.CharField(
         max_length=20,
         choices=get_dns_choices(),
