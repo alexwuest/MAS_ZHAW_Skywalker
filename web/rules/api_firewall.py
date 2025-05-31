@@ -149,7 +149,6 @@ def get_all_rules_uuid(uuid):
         return None
 
 
-
 def check_rule_exists(ip_source, ip_destination): # TODO REMOVE
     try:
         response = requests.post(
@@ -172,6 +171,26 @@ def check_rule_exists(ip_source, ip_destination): # TODO REMOVE
     except requests.RequestException as e:
         print(f"error while checking rules: {e}")
         return False
+
+
+def get_all_rules():
+    try:
+        response = requests.post(
+            SEARCH_RULE_ENDPOINT,
+            auth=HTTPBasicAuth(API_KEY, API_SECRET),
+            verify=CERT_PATH
+        )
+
+        if response.status_code == 200:
+            rules = response.json().get("rows", [])
+            return rules
+        else:
+            print(f"Failed to fetch rules: {response.status_code} - {response.text}")
+            return False
+    except requests.RequestException as e:
+        print(f"Network error while fetching rules: {e}")
+        return False
+
 
 
 def apply_firewall_changes():

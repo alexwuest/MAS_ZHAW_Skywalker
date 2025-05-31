@@ -5,7 +5,7 @@ import time
 from django.utils.timezone import now
 from datetime import timedelta
 from .models import Device, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, DestinationMetadata, MetadataSeenByDevice
-from .api_firewall import add_firewall_rule, get_all_rules_uuid, apply_firewall_changes, delete_multiple_rules, delete_rule_by_uuid, source_ip_adjustment
+from .api_firewall import add_firewall_rule, get_all_rules_uuid, get_all_rules, apply_firewall_changes, delete_multiple_rules, delete_rule_by_uuid, source_ip_adjustment
 from . import config
 
 CHECK_INTERVAL_SECONDS = 60  # 15 minutes 900
@@ -84,6 +84,10 @@ def db_opnsense_sync():
     ended = 0
     deleted = 0
     failed = 0
+
+    # Make first a cleanup before checking the flagged rules.
+    print("🔄 Check for OPNSENSE Rules...")
+    check_opnsense_rules()
 
     # Load all active rules with verify_opnsense True
     rules_to_verify = FirewallRule.objects.filter(verify_opnsense=True)
@@ -472,7 +476,7 @@ def adjust_invalid_source_ips(device):
 
 
 ##############################################################################################################################
-# Rule swap if IP changed for DEVICE
+# Check if MetadataSeenByDevice needs to be updated
 ##############################################################################################################################
 def recheck_metadata_seen():
     print("Recheck for unlinked Metadata service started...")
@@ -529,3 +533,41 @@ def recheck_metadata_seen():
             print(f"❌ MetadataSeenByDevice recheck error: {e}")
 
         time.sleep(CHECK_INTERVAL_SECONDS)
+
+
+##############################################################################################################################
+# Check for all Rules on OPNsense if any are missing in DB
+##############################################################################################################################
+def check_opnsense_rules():
+    try:
+        response = get_all_rules()
+        if not response:
+            print("Failed to fetch rules or no rules returned.")
+            return False
+
+        for rule in response:
+            uuid = rule.get("uuid")
+            enabled = rule.get("enabled") == "1"
+            description = rule.get("description", "")
+
+            if config.DEBUG:
+                print(f"OPNSense UUID: {uuid} | Enabled: {enabled} | Description: {description}")
+
+            try:
+                db_rule = FirewallRule.objects.get(uuid=uuid, end_date=None)
+                if db_rule:
+                    if config.DEBUG_ALL:
+                        print("Rule is active in DB and nothing needs to be done.")
+
+            except FirewallRule.DoesNotExist:
+                print(f"Found active OPNsense rule not present in DB: UUID={uuid} | Description={description}")
+                if delete_rule_by_uuid(uuid):
+                    print("Rule removed from OPNsense.")
+            except Exception as e:
+                print(f"Unexpected error while checking/updating DB for rule {uuid}: {e}")
+                continue
+
+        return True
+    except Exception as e:
+        print(f"Unexpected error in check_opnsense_rules(): {e}")
+        return False
