@@ -82,4 +82,3 @@ urlpatterns = [
     # ? VIEW
     path("help/", help_view, name="help"),
 ]
-

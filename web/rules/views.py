@@ -77,6 +77,12 @@ from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm
 # Show Output with logfile parser run
 ###########################################################################
 
+# TODO REMOVE? NOT USED ANYMORE....
+# TODO REMOVE? NOT USED ANYMORE....
+# TODO REMOVE? NOT USED ANYMORE....
+# TODO REMOVE? NOT USED ANYMORE....
+# TODO REMOVE? NOT USED ANYMORE....
+
 from django.db.models import Q
 
 def view_firewall_logs_all(request):
@@ -115,7 +121,7 @@ def view_firewall_logs_all(request):
 
     isp_list.sort(key=lambda x: x["name"])
 
-    return render(request, "firewall_logs.html", {
+    return render(request, "firewall_logs2.html", {
         "logs": logs,
         "ip_data": config.IP_TABLE,
         "isp_list": isp_list,
@@ -239,7 +245,7 @@ def combined_firewall_logs_view(request):
 
         isp_list = [{"name": isp, "evidence_id": None} for isp in sorted(filter(None, isp_set))]
 
-    return render(request, "firewall_logs_combined.html", {
+    return render(request, "overview_blocked_passed.html", {
         "logs": logs,
         "ip_data": config.IP_TABLE,
         "isp_list": isp_list,
@@ -253,7 +259,7 @@ def combined_firewall_logs_view(request):
 
 
 ###########################################################################
-# Show grouped output by device
+# ISP OVERVIEW
 ###########################################################################
 def device_ip_overview_view(request):
     devices = Device.objects.all().order_by("device_id")
@@ -327,7 +333,7 @@ def device_ip_overview_view(request):
         })
   
 
-    return render(request, "device_ip_overview.html", {
+    return render(request, "overview_isp.html", {
     "devices": devices,
     "device": device,
     "new_ips": new_ips,
@@ -339,7 +345,7 @@ def device_ip_overview_view(request):
 })
 
 ###########################################################################
-# DNS view by device
+# DNS OVERVIEW
 ###########################################################################
 from .models import DNSRecord, Device, DeviceLease
 
@@ -378,7 +384,7 @@ def device_dns_records_view(request):
         ).exists()
         rule_status[ip] = has_rule
 
-    return render(request, 'device_dns_records.html', {
+    return render(request, 'overview_dns.html', {
         'device': device,
         'devices': devices,
         'dns_records': dns_records,
@@ -490,7 +496,7 @@ def device_firewall_rules_view(request):
             end_date__isnull=True
         ).order_by('-start_date')
 
-    return render(request, "device_firewall_rules.html", {
+    return render(request, "tools_firewall_rules.html", {
         "device": device,
         "rules": rules,
         "devices": devices,
@@ -537,7 +543,7 @@ def remove_firewall_rule_view(request):
 
 
 ###########################################################################
-# Combined view for device management
+# MANAGE DEVICES
 ###########################################################################
 
 def manage_devices_view(request):
@@ -732,7 +738,7 @@ def manage_devices_view(request):
     selected_device_id = request.GET.get("device_id")
 
 
-    return render(request, 'manage_devices.html', {
+    return render(request, 'tools_manage_devices.html', {
         'ip_from_latest_lease': ip_from_latest_lease,
         'form': device_form,
         'entries': zip(unlinked_leases, lease_forms),
@@ -845,7 +851,7 @@ def toggle_isp_link_view(request):
 
 
 ###########################################################################
-# Lookup page
+# DOMAIN LOOKUP
 ###########################################################################
 def domain_lookup_view(request):
     form = DomainLookupForm()
@@ -871,7 +877,7 @@ def domain_lookup_view(request):
                     isp = "Unknown"
                 results.append({'ip': ip, 'isp': isp})
 
-    return render(request, "domain_lookup.html", {
+    return render(request, "tools_domain_lookup.html", {
         "form": form,
         "results": results,
         "devices": Device.objects.all().order_by('device_id'),
@@ -909,7 +915,7 @@ def device_logs_view(request):
         logs = page_obj.object_list
 
 
-    return render(request, "device_logs.html", {
+    return render(request, "tools_device_logs.html", {
         "device": device,
         "logs": logs,
         "devices": devices,
@@ -920,7 +926,7 @@ def device_logs_view(request):
 
 
 ###########################################################################
-# System Status View
+# STATUS OVERVIEW
 ###########################################################################
 #TODO REFACTORING FIREWALL TO API!
 
@@ -984,7 +990,7 @@ def system_status_view(request):
         "verify_opnsense": verify_opnsense,
         "unlinked_metadata": unlinked_metadata,
     }
-    return render(request, "system_status.html", context)
+    return render(request, "toos_status.html", context)
 
 @require_POST
 def mark_verify_opnsense_view(request):
@@ -1000,7 +1006,7 @@ def help_view(request):
 
     device_id = request.GET.get("device_id") or request.POST.get("device_id")
 
-    return render(request, "help.html", {
+    return render(request, "tools_help.html", {
         "devices": Device.objects.all().order_by('device_id'),
         "selected_device_id": int(device_id) if device_id else None,
     })
