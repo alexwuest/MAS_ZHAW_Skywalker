@@ -434,3 +434,429 @@ ssh-copy-id -i ~/.ssh/opnsense_key.pub root@192.168.5.1
 # Test connection without key
 ssh -i ~/.ssh/opnsense_key root@192.168.5.1 "echo OK"
 
+################################
+## 31.05.2025
+################################
+
+# Working to get an idea about apple...
+# It showed up does the Apple IP's 17.248.209.XX seems to be in charge for the icloud services. 
+# Without this range no access to icloud but also no ring from find my network.
+
+17.248.209.16
+ℹ️ p42-acsegateway.icloud.com.
+ℹ️ gateway.fe2.apple-dns.net.
+ℹ️ mask-api.fe2.apple-dns.net.
+ℹ️ acsegateway.fe2.apple-dns.net.
+ℹ️ p42-mobilebackup.icloud.com.
+ℹ️ quota.fe2.apple-dns.net.
+ℹ️ p42-contacts.icloud.com.
+ℹ️ setup.fe2.apple-dns.net.
+ℹ️ contacts.fe2.apple-dns.net.
+ℹ️ p42-fmip.icloud.com.
+ℹ️ fmip.fe2.apple-dns.net.
+ℹ️ p42-fmf.icloud.com.
+ℹ️ p41-contacts.icloud.com.
+ℹ️ p138-contacts.icloud.com.
+ℹ️ p42-fmipmobile.icloud.com.
+ℹ️ fmfmobile.fe2.apple-dns.net.
+ℹ️ fmipmobile.fe2.apple-dns.net.
+ℹ️ gateway.icloud.com.
+ℹ️ mobilebackup.fe2.apple-dns.net.
+
+17.248.209.65
+ℹ️ p42-acsegateway.icloud.com.
+ℹ️ mask-api.fe2.apple-dns.net.
+ℹ️ gateway.fe2.apple-dns.net.
+ℹ️ acsegateway.fe2.apple-dns.net.
+ℹ️ setup.fe2.apple-dns.net.
+ℹ️ p42-caldav.icloud.com.
+ℹ️ quota.fe2.apple-dns.net.
+ℹ️ contacts.fe2.apple-dns.net.
+ℹ️ p41-quota.icloud.com.
+ℹ️ fmip.fe2.apple-dns.net.
+ℹ️ p42-fmf.icloud.com.
+ℹ️ p41-contacts.icloud.com.
+ℹ️ p138-contacts.icloud.com.
+ℹ️ mobilebackup.fe2.apple-dns.net.
+ℹ️ fmfmobile.fe2.apple-dns.net.
+ℹ️ fmipmobile.fe2.apple-dns.net.
+ℹ️ setup.icloud.com.
+ℹ️ p42-mobilebackup.icloud.com.
+
+# fmf seems to stand for "Find My Friends" and fmip for "Find My iPhone".
+
+# (92/139)	Apple Inc. and still no ring...
+# However if i cannot get the icloud data without the find my network i will not be able to access the data.
+
+#Actual ruleset still no ring from find my network / no store / no icloud access
+	A000000002	192.168.5.132	17.188.171.227	-	False	False	False	409bdbbc-c04d-4c82-b906-f5476e753fa2	May 31, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.132	17.188.183.30	-	False	False	False	adaa8159-fc75-4d50-baa8-e3ef73b6326b	May 31, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.132	17.253.108.125	Apple Inc.	False	True	False	6f648613-20ef-4f1f-a856-1808fab7a856	May 31, 2025, 8:57 p.m.	-
+	A000000002	192.168.5.132	17.253.14.251	-	False	False	False	28b69738-7fae-4ead-98e8-b82a6624467e	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.14.253	-	False	False	False	4343395b-6884-4422-a916-1284718f1ed3	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.215	-	False	False	False	e7eb0492-1d63-4f47-8976-4f3c720132bc	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.105.201	-	False	False	False	db1d2377-f97e-4747-bd9e-db3e90dfe03a	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.202	-	False	False	False	770d928d-b28b-4660-8fce-d062931c9192	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.105.202	-	False	False	False	a37d6cc8-ee30-4812-ab12-adc4d0bd3517	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.156.128.11	-	False	False	False	aadc86d9-7635-4221-95a5-ec80e2894f93	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.208	-	False	False	False	bd42ee7c-5190-4c0c-aa63-52c0b78f8071	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.36.200.79	-	False	False	False	704b9210-e010-4312-b606-f02c9485dda4	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.210	-	False	False	False	63579357-1429-4747-8277-88826a10e5a4	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.53.203	-	False	False	False	5aaba937-9282-494a-8909-7c4032917dae	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.206	-	False	False	False	b637db90-b652-4b8d-b542-09231e3805ca	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.53.206	-	False	False	False	c5a505c0-fab8-462d-862c-ee050e31574b	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.32.194.43	-	False	False	False	ff605bea-fb93-446d-82f2-a5db92dec5e3	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.32.194.12	-	False	False	False	d97f1319-2c66-4004-ba0d-34fa5cf3dbe3	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	146.75.119.6	-	False	False	False	e256d2fd-7e56-438d-a0a1-4abc08e018ff	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.209	-	False	False	False	58bac90e-b004-411d-8945-5c2d0ff737e8	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.207	-	False	False	False	ad427257-6ef0-4caa-8927-0d0be1a86a26	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	194.230.81.144	-	False	False	False	1a2b4ced-7904-4fbc-be4a-565f6f9b937d	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	194.230.81.145	-	False	False	False	e1f57967-16cf-424a-a00e-ff49284eb905	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.157.96.170	-	False	False	False	b69a35b8-fdf5-4968-9d38-93151bc1e03f	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.200	-	False	False	False	d6bb32bd-6866-4a27-878d-ef516671a0c6	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.122.46.102	-	False	False	False	ac8ee55a-6f42-41f3-b6fe-712a8b19b592	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	16.170.124.74	-	False	False	False	619f25a6-7480-4d2f-91fe-84b4db683d6e	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.203	-	False	False	False	f20e5f58-9827-4546-83a3-e1f1fafabd01	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.213	-	False	False	False	f9c93df1-facf-41a5-a6ab-4234989cc87d	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.8.130.144	-	False	False	False	50ae7135-5d08-495f-a068-cdd8af66e314	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.8.130.85	-	False	False	False	3befc881-ab51-4d17-ba7e-59181ba67683	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.8.130.25	-	False	False	False	e7879c28-2cc2-4dbc-884f-973324292790	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.188.23.18	-	False	False	False	ee259542-199e-4b4e-9a59-a9b23bc5c6d1	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.188.23.85	-	False	False	False	fc35ed98-47ef-4080-bd6c-bbf1e39b2c14	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.188.23.47	-	False	False	False	9981ab29-c1dc-4b96-94dd-392da8b2a1d4	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.214	-	False	False	False	6f857451-ed4b-454e-8ca2-8d293cc92354	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.218	-	False	False	False	b571dee3-6763-41b9-a0ce-15c953d36fe9	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.219	-	False	False	False	692bd64f-631b-4c39-9d86-333e03bf03c9	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.53.202	-	False	False	False	6b36bf78-e70a-4541-9712-9de61f05c46f	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.217	-	False	False	False	3d846469-7e0e-49e4-9ed5-1a2f105f85c8	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.197	-	False	False	False	5625548f-a8d6-4219-8a9b-afe1d405cd49	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.205	-	False	False	False	3253043f-36e4-4df5-ab75-05727d80fdf6	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.145.16.2	-	False	False	False	dd74ca3d-9494-4f8f-abf3-8bcd2805be36	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.53.204	-	False	False	False	aad6c3f2-6aaf-4842-8f76-30610d22b4a7	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.220	-	False	False	False	37641fe1-957e-430c-bfa1-fef017e777a7	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.36.206.5	-	False	False	False	cca50fcc-e2ef-4772-b3de-dca4f4882485	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.36.206.4	-	False	False	False	dd2a7f70-3568-4549-a6bd-782375652896	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.171.47.23	-	False	False	False	e75e7704-cd24-486b-ab68-eebd4ad3e5cc	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.33.194.222	-	False	False	False	9736c963-32ef-4252-9e8e-e7fd5372b91a	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.137.162.2	-	False	False	False	10a6c4f6-adb4-481e-a459-fbb016dd375e	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.23.18.34	-	False	False	False	0703d595-fc92-4e83-9182-f357938e6f57	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	194.230.81.146	-	False	False	False	f9137deb-7c80-4995-917c-eca476faed35	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	194.230.81.139	-	False	False	False	bb42ad66-0543-462e-a549-9165eae43b75	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.57.172.11	-	False	False	False	86eb1833-6971-459e-bd46-7d14c05a8b9c	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.57.172.10	-	False	False	False	9e7b501b-893d-4b18-a243-d34f4bbf9aa0	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.157.64.66	-	False	False	False	59874463-ac54-4584-bdb9-d5dfe2e64b27	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.57.12.16	-	False	False	False	ac8f0daa-97be-4e63-9bbe-e85c68534322	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.57.12.242	-	False	False	False	19f4094e-e57d-4ba7-a8f9-b9848be32058	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.57.12.243	-	False	False	False	ac1b64e8-7165-4e17-b48a-401cffbe3ff4	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.137.162.3	-	False	False	False	1218fbdb-8800-402a-ac5c-17b0a97e48de	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.111.103.20	-	False	False	False	f71d4398-da58-468e-9943-d4b03c64e75d	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.242.179.27	-	False	False	False	8a96c6ea-ff2d-4c8f-a330-f4c285db04ee	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.33.192.58	-	False	False	False	f2881f0d-3a6a-4f9f-978b-4c0287ba5775	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.171.47.21	-	False	False	False	b7e081c3-2747-47f7-b307-a5f2c91b9b24	May 31, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.132	17.253.57.196	Apple Inc.	False	True	False	67c3077b-5ef4-4902-bd14-43264849f98f	May 31, 2025, 8:36 p.m.	-
+	A000000002	192.168.5.132	17.253.57.201	Apple Inc.	False	True	False	57a1aeec-df19-4953-82e6-1bf2908c0729	May 31, 2025, 8:36 p.m.	-
+	A000000002	192.168.5.132	17.188.172.74	-	False	False	False	823ace40-77bc-4d75-93e0-77b0d7de06b5	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.143.158	-	False	False	False	efb304ee-c5fc-4435-a0f7-3372c5cc8494	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.170.10	-	False	False	False	cfd62f54-948b-445b-89e0-a3dc8d47f1bd	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.179.2	-	False	False	False	883c8c25-8d59-42a2-b54a-005a81743d7c	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.178.34	-	False	False	False	e4726247-68ed-4cd3-bbb2-4b1a15e5b848	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.182.196	-	False	False	False	29eb4962-3892-4ef2-9c2b-f96bc21bb628	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.183.4	-	False	False	False	d0a97583-5a1a-4156-8541-282c72aee130	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.182.68	-	False	False	False	49fb4955-6cb8-460a-9e85-5697d6907320	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.182.4	-	False	False	False	8db3d430-5728-4729-aa84-68a61f02e1b4	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.182.132	-	False	False	False	42bdc11a-83ea-4b37-9318-70c5963e80d3	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.54	-	False	False	False	c54dd4a7-b114-40a7-98ed-cb866fcca9a4	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.57	-	False	False	False	be07c83c-a5a1-465f-b85e-89446b3d56f7	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.55	-	False	False	False	7be98904-2965-4652-9078-91b886a0b295	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.56	-	False	False	False	2fca0970-05eb-47aa-ac50-bc73230269db	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.178.226	-	False	False	False	96e380e9-6628-4ade-9acb-9130205969d7	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.143.126	-	False	False	False	72a4a352-0177-4469-a7a7-a20ae6f6b175	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.143.189	-	False	False	False	b548f167-d0bc-47d1-a3fa-692e043a43f7	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.143.187	-	False	False	False	d251ddf3-0c9f-4e37-807a-899c2d77452b	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.143.125	-	False	False	False	62fb1e2e-456f-405a-a21a-c2e11a12da25	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.143.157	-	False	False	False	c204addd-c05d-4116-ac92-eb6deb33ed77	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.179.34	-	False	False	False	09269606-7107-4daa-8686-5673a96ee29b	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.178.2	-	False	False	False	2a3727d4-606f-4914-906f-6237efa61922	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.171.202	-	False	False	False	a753a434-1140-45c6-b6e0-e10a4026c68b	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.170.72	-	False	False	False	2951eafd-2d83-4904-becc-4cbdd5c7cce8	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.172.72	-	False	False	False	84361ca7-63ef-4899-8df4-7ebc3fb4bd39	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.171.138	-	False	False	False	28523527-4f3e-4c7c-a573-a3b47495eb54	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.170.135	-	False	False	False	70883045-60bd-4db0-963f-99db2dc9755a	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.172.10	-	False	False	False	2330e7fd-a0b9-4629-b489-1fd2b791b73f	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.168.161	-	False	False	False	8cbf1c01-8c61-4e67-acd3-657ef82efa74	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.188.171.74	-	False	False	False	29808b95-e9f3-44c0-b7be-5ddd9e90b128	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.27	-	False	False	False	4542fbc7-c123-4703-81b9-0c784ca5f765	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.22	-	False	False	False	14a2d70b-fa58-4f30-a374-4ef91d7fded9	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.26	-	False	False	False	e4981332-79b5-49fd-985c-ee43af51eb0f	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.25	-	False	False	False	6e119069-b405-41b1-8d89-fcaa1667b9d9	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.24	-	False	False	False	7140712c-a0a1-4150-bd26-b4b340299eed	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	17.57.146.23	-	False	False	False	30c46645-a423-4e02-993e-e04782ff96d5	May 31, 2025, 8:35 p.m.	-
+	A000000002	192.168.5.132	172.224.55.7	Akamai Technologies, Inc.	False	False	False	ca65b730-3e6c-452b-b6dc-182680f0199e	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	2.21.22.113	Akamai Technologies	False	False	False	34892722-baf7-4313-851d-9bbead2fa51b	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.11	Akamai Technologies, Inc.	False	False	False	b7134173-4f71-4291-95d7-5bf0b295d5bb	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.3	Akamai Technologies, Inc.	False	False	False	d9c8dbfd-fcf4-40ad-af4c-f713f187bf6a	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	23.50.108.3	Akamai Technologies, Inc.	False	False	False	e6c0dd26-3c0e-48b3-adea-c473a8da7924	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	104.79.19.174	Akamai Technologies, Inc.	False	False	False	43b7e6df-6cb0-45cb-82cc-1f02a365737b	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	2.21.22.122	Akamai Technologies	False	False	False	41871f20-5f26-4a9d-a400-b2843e25a412	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.6	Akamai Technologies, Inc.	False	False	False	d7c5579e-3a96-49b1-9afc-c672d45e6129	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.4	Akamai Technologies, Inc.	False	False	False	5f1025f4-b9d5-4075-b71a-4fb6f2483994	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	2.21.22.115	Akamai Technologies	False	False	False	308b1040-9bce-45b2-b4a6-b7d7709ff9b1	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	92.123.27.42	Akamai Technologies	False	False	False	9a094f36-5a30-4615-9090-ce418003bcec	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	23.212.193.118	Akamai Technologies, Inc.	False	False	False	444b4f7b-c68d-434e-9313-9d8ade499397	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	23.207.210.69	Akamai International, BV	False	False	False	8e07cc31-7526-4db4-946b-7fd4f130f8d7	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	23.207.210.72	Akamai International, BV	False	False	False	87ac8853-f917-4c88-a1d7-7f9e012009c4	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.5	Akamai Technologies, Inc.	False	False	False	1a419a30-318f-4342-a254-34924b198b5b	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.12	Akamai Technologies, Inc.	False	False	False	f85c9748-4109-4a85-ab38-9e736a471c15	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.8	Akamai Technologies, Inc.	False	False	False	47baf6fc-ba7f-4867-85b9-f0dddbf6af81	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.13	Akamai Technologies, Inc.	False	False	False	dcacf6ab-0594-4a74-ad2a-3cfdd55c245e	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	2.21.22.121	Akamai Technologies	False	False	False	9059ad6b-6b0d-4ea7-bfe5-bc362ff47c4d	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	95.100.50.182	Akamai Technologies	False	False	False	5b58fbf8-132f-48d3-8656-6e118e50d005	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	2.21.22.105	Akamai Technologies	False	False	False	f123b4ed-73cc-4851-9b62-57a2d447b1d1	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	184.24.196.175	Akamai Technologies	False	False	False	876688ca-93e6-4dbd-adb2-feff6e4185e9	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	23.212.192.26	Akamai Technologies, Inc.	False	False	False	e1830a83-bb0e-4906-aea0-b648a19fb9e4	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	92.123.27.98	Akamai Technologies	False	False	False	b5ea3ee6-1d84-433d-831e-847d7ab01d1f	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.10	Akamai Technologies, Inc.	False	False	False	b078d629-ef1f-4666-9721-7f0e34787646	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	2.21.22.123	Akamai Technologies	False	False	False	6a9a9608-77ef-418d-986c-fdd50b0aae69	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	23.207.210.85	Akamai International, BV	False	False	False	82d15477-1d21-44da-866a-f7f3c7842134	May 31, 2025, 8:34 p.m.	-
+	A000000002	192.168.5.132	172.224.55.9	Akamai Technologies, Inc.	False	False	False	52686b22-5deb-430e-a2c9-32b689429ed1	May 31, 2025, 8:34 p.m.	-
+
+
+
+
+Added another batch of rules
+get access to store... could download "Dateien" file app from ios from store
+
+	A000000002	192.168.5.132	184.24.198.40	-	False	False	False	7fa30c37-2495-41af-a0ad-a954a0edee03	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.57.199	-	False	False	False	37e76a0b-57e8-436a-aef0-58101db051cb	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	2.20.215.90	-	False	False	False	2e51523b-c572-4aa6-8ff0-63721fc36ae8	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	184.24.196.28	-	False	False	False	89cdeb2c-af08-40af-bfc3-21eb8e04f0f1	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	194.230.81.147	-	False	False	False	fa7d12cb-d1eb-49e7-a916-cfd6079db47a	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	194.230.81.161	-	False	False	False	42a1a86d-a04d-4f10-b54e-c0305cc973f6	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.144.10	-	False	False	False	f80ec415-7c20-45e1-b68a-0f57495a74ad	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.57.13.47	-	False	False	False	7399fbc8-31fe-4f30-b37a-f68cfdc86f20	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.8.136.71	-	False	False	False	e0a67429-42d7-4950-8400-a36fb7998c6a	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.8.136.52	-	False	False	False	d8e7c3d1-37f3-4cfd-85f4-bea06b6fb98a	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.8.136.172	-	False	False	False	e7e39f7a-b8d0-43fe-95b0-65eda13540e4	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	2.21.22.107	-	False	False	False	703c3e7f-36ae-4643-bdda-8114426fa27f	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.179.252.18	-	False	False	False	25844b8b-df3e-458d-9b00-24fbd7371a28	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	104.77.40.67	-	False	False	False	5d79a902-3990-482f-9ae9-9fc840ac5213	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.32.214.33	-	False	False	False	3a48f827-6268-41b3-ab95-f15eb0ec7d87	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	2.21.22.112	-	False	False	False	85657328-1c34-490f-84f6-963cc49789ff	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	194.230.81.138	-	False	False	False	529f9cdb-a85b-4e23-9fec-52cb8b6fc875	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.57.198	-	False	False	False	2a1ec8f2-7dab-414c-a8a1-b00f4aa37a59	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.57.204	-	False	False	False	ca19c283-1c69-4f86-b4fc-68fe51270142	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.53.205	-	False	False	False	52d19023-1c3b-4aaa-8a1a-fbccf89b421e	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.57.216	-	False	False	False	566403fd-29e0-4fc8-8ea9-865b313514c9	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.47.160.116	-	False	False	False	0469b281-0433-400a-8f04-d822d872fc9c	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.14.125	-	False	False	False	efd60ec6-f4a3-4abd-ae43-6404bb661452	May 31, 2025, 9:24 p.m.	-
+	A000000002	192.168.5.132	17.253.14.123	-	False	False	False	d22f42d7-4421-4138-a5d1-d0468c15392e	May 31, 2025, 9:24 p.m.	-
+
+Download from file app is not working... but i see the files in the folder...
+	A000000002	192.168.5.132	17.253.37.208	-	False	False	False	523cc55d-2f16-44c0-8d16-ce6b7a2133ba	May 31, 2025, 9:28 p.m.	-
+	A000000002	192.168.5.132	17.253.37.197	-	False	False	False	dbd745e4-ff68-4547-94e9-0216ceebf760	May 31, 2025, 9:28 p.m.	-
+	A000000002	192.168.5.132	17.188.182.97	-	False	False	False	a1e16510-cd55-4920-89c3-362518be082a	May 31, 2025, 9:28 p.m.
+
+pds.ess.apple.com
+	A000000002	192.168.5.132	17.138.132.1	-	False	False	False	b3366fe0-8910-4b21-8406-ff0aa758a0d1	May 31, 2025, 9:30 p.m.	-
+	A000000002	192.168.5.132	17.138.144.4	-	False	False	False	b0955dee-f46e-4166-90cd-740aff0a63c8	May 31, 2025, 9:30 p.m.	-
+	A000000002	192.168.5.132	17.138.204.2	-	False	False	False	70412ce1-b48b-4374-8817-061b3843d7d2	May 31, 2025, 9:30 p.m.	-
+
+After a long loading time i got the iCloud+ storage usage... and the memory plan. Still no access to the files
+
+
+aaplimg
+	A000000002	192.168.5.132	16.16.163.191	-	False	False	False	3d3ae661-ef23-40ff-b8e5-340ff44dae82	May 31, 2025, 9:35 p.m.	-
+	A000000002	192.168.5.132	17.145.0.2	-	False	False	False	940cca84-0a7f-40cd-a7d7-1ad300cbe20a	May 31, 2025, 9:35 p.m.	-
+	A000000002	192.168.5.132	17.32.214.124	-	False	False	False	1c0e1eef-1822-453d-bbaf-b08b196b2679	May 31, 2025, 9:35 p.m.	-
+	A000000002	192.168.5.132	17.137.184.130	-	False	False	False	35dbab90-5b2e-46f2-a4b5-1039bd32e74f	May 31, 2025, 9:35 p.m.	-
+	A000000002	192.168.5.132	17.253.57.195	-	False	False	False	6e7ca14b-e413-46dd-ab73-951b5c85b82e	May 31, 2025, 9:35 p.m.	-
+	A000000002	192.168.5.132	17.253.15.195	-	False	False	False	bae31ce9-aa39-4d9d-9a6b-63e9221cd8a4	May 31, 2025, 9:35 p.m.	-
+	A000000002	192.168.5.132	17.253.15.206	-	False	False	False	c882c6d0-e8db-4334-aea6-3ffd7341c8a7	May 31, 2025, 9:35 p.m.	-
+
+	A000000002	192.168.5.132	17.138.176.4	-	False	False	False	94501bd0-ac61-4c62-9172-1c54dbb560dc	May 31, 2025, 9:38 p.m.  -
+
+
+	A000000002	192.168.5.132	17.157.64.74	Apple Inc.	False	True	False	b0253770-c0f8-4560-9043-bb37d6d0f982	May 31, 2025, 9:42 p.m.	-
+	A000000002	192.168.5.132	18.101.156.68	Amazon Technologies Inc.	False	True	False	19656f9a-f6e6-4f8c-8164-995893118a65	May 31, 2025, 9:41 p.m.	-
+	A000000002	192.168.5.132	23.212.192.245	Akamai Technologies, Inc.	False	True	False	7d8d9618-4dbf-4466-9d53-808cad220880	May 31, 2025, 9:41 p.m.	-
+	A000000002	192.168.5.132	17.32.194.15	Apple Inc.	False	True	False	7be00aa9-953b-4807-b475-b172076f1658	May 31, 2025, 9:40 p.m.	-
+
+Could achieve to login to privacy apple com with 2FA. Still no ring from Tablet. Could now go trough the process to make a full backup of videos and photos to google photos. But i would need 88GB free space to proceed.match
+The other approach would be the download but it will send a mail and it can take up to 7 days to get the link. This is also a security delay, they tell in the mail.
+
+(124/157)	Apple Inc. quite a big ruleset now...
+
+	A000000002	192.168.5.132	142.250.27.84	-	False	False	False	68933312-c407-4c7e-96a3-bb689c604ade	May 31, 2025, 9:56 p.m.	-
+
+	A000000002	192.168.5.132	2.21.22.169	-	False	False	False	ffa35a1c-c53c-42f0-a5af-958029b05904	May 31, 2025, 9:58 p.m.	-
+	A000000002	192.168.5.132	2.21.22.184	-	False	False	False	02b4669b-84dd-41a6-bb69-12030180a634	May 31, 2025, 9:58 p.m.	-
+	A000000002	192.168.5.132	2.21.22.168	-	False	False	False	0eeb6557-40cc-4581-984f-946fcb66b78c	May 31, 2025, 9:58 p.m.	-
+	A000000002	192.168.5.132	2.21.22.153	-	False	False	False	4dfe512e-8b8d-472f-b400-cf053c69be81	May 31, 2025, 9:58 p.m.	-
+	A000000002	192.168.5.132	2.21.22.170	-	False	False	False	4ad1d6a0-a1cd-4677-bec6-22a8426edce5	May 31, 2025, 9:58 p.m.	-
+	A000000002	192.168.5.132	17.253.144.11	-	False	False	False	7ee1a3e0-523b-48e9-b156-478fe0b08b05	May 31, 2025, 9:58 p.m.	-
+
+
+	A000000002	192.168.5.132	17.248.213.68	Apple Inc.	False	True	False	1d075af0-d9b3-4c86-b9c0-bab5c744c023	May 31, 2025, 10:08 p.m.	-
+	A000000002	192.168.5.132	17.248.213.64	Apple Inc.	False	True	False	f97db621-2ab0-49d6-a83d-456ba4c5aa05	May 31, 2025, 10:08 p.m.	-
+	A000000002	192.168.5.132	17.248.213.65	Apple Inc.	False	True	False	f2d46df0-6cd8-4696-9f98-4a126f0de343	May 31, 2025, 10:08 p.m.	-
+	A000000002	192.168.5.132	17.248.213.67	Apple Inc.	False	True	False	48e0aff5-476a-4595-b07c-a741ee5443e3	May 31, 2025, 10:07 p.m.	-
+	A000000002	192.168.5.132	17.248.213.66	Apple Inc.	False	True	False	7e63b213-2dfb-469f-9727-14031879ac2a	May 31, 2025, 10:07 p.m.	-
+	A000000002	192.168.5.132	17.248.213.69	Apple Inc.	False	True	False	ced72ae0-3fe7-4d0f-89bb-df9e8a2a7f17	May 31, 2025, 10:07 p.m.	-
+	A000000002	192.168.5.132	17.248.213.71	Apple Inc.	False	True	False	847f95c5-51e4-4863-aeba-bbaa4c166d88	May 31, 2025, 10:07 p.m.	-
+	A000000002	192.168.5.132	17.248.213.70	Apple Inc.	False	True	False	f861cb5d-2f8a-4bc6-a4a1-8793bb568bdd	May 31, 2025, 10:07 p.m.	-
+	A000000002	192.168.5.132	17.188.169.152	Apple Inc.	False	True	False	b33267ef-fbe9-410d-8168-36b3b4d82ae3	May 31, 2025, 10:05 p.m.	-
+	A000000002	192.168.5.132	17.253.14.129	Apple Inc.	False	True	False	0b1bf6d8-7f5b-4c0c-a38a-1ac685e75d38	May 31, 2025, 10:04 p.m.	-
+	A000000002	192.168.5.132	17.138.128.4	Apple Inc.	False	True	False	046e8396-65b7-4f3b-85bd-b07ce70c2a89	May 31, 2025, 10:04 p.m.	-
+	A000000002	192.168.5.132	17.188.180.227	Apple Inc.	False	True	False	ce570471-dba2-48fd-9706-d27f4c814c6c	May 31, 2025, 10:04 p.m.	-
+	A000000002	192.168.5.132	17.188.181.8	Apple Inc.	False	True	False	b345ea91-4b42-44cd-9906-cafbadf2d035	May 31, 2025, 10:03 p.m.	-
+	A000000002	192.168.5.132	17.253.14.65	Apple Inc.	False	True	False	5aae9670-ce32-4ba1-804c-dfbcbfa5eda3	May 31, 2025, 10:03 p.m.	-
+
+ess.apple
+
+A000000002	192.168.5.132	194.230.81.154	-	False	False	False	f1a75301-64c7-4367-9ba4-50b49b7e8a5d	May 31, 2025, 10:09 p.m.	-
+	A000000002	192.168.5.132	17.188.178.190	-	False	False	False	c18f1fb1-4494-4021-8402-6948b94ffae3	May 31, 2025, 10:09 p.m.	-
+	A000000002	192.168.5.132	17.188.178.186	-	False	False	False	f562b2b4-e0b4-49af-903c-716c6aff6b66	May 31, 2025, 10:09 p.m.	-
+
+(141/162)	Apple Inc. still nothing
+
+gs-loc.apple.com.
+A000000002	192.168.5.132	17.57.163.32	Apple Inc.	False	True	False	1502ceef-f2b7-43ab-80b3-bc5101d973f1	May 31, 2025, 10:13 p.m.	-
+	A000000002	192.168.5.132	17.57.163.33	Apple Inc.	False	True	False	43784bc4-cd95-47c8-8746-58202a5dd5b0	May 31, 2025, 10:13 p.m.	-
+
+
+A000000002	192.168.5.132	17.57.161.5	Apple Inc.	False	True	False	fa924666-3f06-4b39-9810-e2607ab6418d	May 31, 2025, 10:15 p.m.	-
+	A000000002	192.168.5.132	17.253.14.241	Apple Inc.	False	True	False	d81c3183-abc3-4494-88eb-72f912284b89	May 31, 2025, 10:15 p.m.	-
+	A000000002	192.168.5.132	17.253.56.115	Apple Inc.	False	True	False	378b6052-0149-4ef3-96bd-e34ec7753cc8	May 31, 2025, 10:15 p.m.	-
+	A000000002	192.168.5.132	17.253.56.243	Apple Inc.	False	True	False	5908f55c-6fad-41e4-9273-a1055c36a294	May 31, 2025, 10:15 p.m.	-
+	A000000002	192.168.5.132	17.253.56.113	Apple Inc.	False	True	False	b921fbd5-8138-4509-9700-328e1deae261	May 31, 2025, 10:15 p.m.	-
+	A000000002	192.168.5.132	17.167.200.10	Apple Inc.	False	True	False	95ad6fed-2d4b-4b05-9969-0dea62b377e2	May 31, 2025, 10:14 p.m.	-
+	A000000002	192.168.5.132	17.57.163.32	Apple Inc.	False	True	False	1502ceef-f2b7-43ab-80b3-bc5101d973f1	May 31, 2025, 10:13 p.m.	-
+	A000000002	192.168.5.132	17.57.163.33	Apple Inc.	False	True	False	43784bc4-cd95-47c8-8746-58202a5dd5b0	May 31, 2025, 10:13 p.m.	-
+
+
+(151/166)	Apple Inc.
+ok still no ring
+
+Found 12 ip addresses which have such dns lookups. All yet not in the ruleset.
+
+
+❌ 17.248.209.68 (17 records)
+
+	Timestamp	Query Type	Domain	Source IP
+	31.05.2025 21:55:52	A	fmipmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:29:07	A	mobilebackup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:16:47	A	fmfmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:13:48	A	fmf.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:01:04	A	p138-contacts.icloud.com.	192.168.5.132
+	31.05.2025 20:01:02	A	p41-contacts.icloud.com.	192.168.5.132
+	31.05.2025 20:01:00	A	contacts.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:00:58	A	p42-fmf.icloud.com.	192.168.5.132
+	31.05.2025 19:44:30	A	fmip.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:32:19	A	p42-fmfmobile.icloud.com.	192.168.5.132
+	31.05.2025 19:32:16	A	setup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:27:42	A	quota.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:22:22	A	p42-mobilebackup.icloud.com.	192.168.5.132
+	31.05.2025 19:17:10	A	acsegateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:11:37	A	mask-api.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:08:09	A	gateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:07:07	A	p42-acsegateway.icloud.com.	192.168.5.132
+❌ 17.248.209.64 (19 records)
+
+	Timestamp	Query Type	Domain	Source IP
+	31.05.2025 21:55:52	A	fmipmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 21:53:09	A	p42-fmipmobile.icloud.com.	192.168.5.132
+	31.05.2025 21:25:55	A	p42-fmf.icloud.com.	192.168.5.132
+	31.05.2025 20:58:16	A	p42-fmfmobile.icloud.com.	192.168.5.132
+	31.05.2025 20:56:42	A	p42-mobilebackup.icloud.com.	192.168.5.132
+	31.05.2025 20:36:21	A	p42-fmip.icloud.com.	192.168.5.132
+	31.05.2025 20:13:48	A	fmf.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:13:39	A	fmfmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:06:19	A	mobilebackup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:44:30	A	fmip.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:35:24	A	p41-quota.icloud.com.	192.168.5.132
+	31.05.2025 19:31:00	A	p42-contacts.icloud.com.	192.168.5.132
+	31.05.2025 19:30:13	A	p42-caldav.icloud.com.	192.168.5.132
+	31.05.2025 19:25:00	A	quota.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:21:57	A	setup.icloud.com.	192.168.5.132
+	31.05.2025 19:13:20	A	gateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:11:37	A	mask-api.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:10:36	A	acsegateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:07:07	A	p42-acsegateway.icloud.com.	192.168.5.132
+❌ 17.248.209.73 (24 records)
+
+	Timestamp	Query Type	Domain	Source IP
+	31.05.2025 21:53:09	A	p42-fmipmobile.icloud.com.	192.168.5.132
+	31.05.2025 21:33:07	A	mask-api.icloud.com.	192.168.5.132
+	31.05.2025 21:27:13	A	p138-contacts.icloud.com.	192.168.5.132
+	31.05.2025 21:25:57	A	p41-contacts.icloud.com.	192.168.5.132
+	31.05.2025 21:04:05	A	fmfmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:58:16	A	fmipmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:13:48	A	fmf.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:06:19	A	mobilebackup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:01:04	A	calendars.icloud.com.	192.168.5.132
+	31.05.2025 20:01:01	A	caldav.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:00:58	A	p42-fmf.icloud.com.	192.168.5.132
+	31.05.2025 19:48:48	A	fmip.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:35:24	A	p41-quota.icloud.com.	192.168.5.132
+	31.05.2025 19:32:19	A	p42-fmfmobile.icloud.com.	192.168.5.132
+	31.05.2025 19:31:00	A	p42-contacts.icloud.com.	192.168.5.132
+	31.05.2025 19:30:13	A	p42-caldav.icloud.com.	192.168.5.132
+	31.05.2025 19:25:00	A	quota.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:23:58	A	setup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:22:22	A	p42-mobilebackup.icloud.com.	192.168.5.132
+	31.05.2025 19:21:57	A	p42-quota.icloud.com.	192.168.5.132
+	31.05.2025 19:21:57	A	setup.icloud.com.	192.168.5.132
+	31.05.2025 19:18:23	A	gateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:10:36	A	acsegateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:08:07	A	mask-api.fe2.apple-dns.net.	192.168.5.132
+❌ 17.248.209.66 (20 records)
+
+	Timestamp	Query Type	Domain	Source IP
+	31.05.2025 21:53:09	A	p42-fmipmobile.icloud.com.	192.168.5.132
+	31.05.2025 21:53:09	A	fmfmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:56:42	A	p42-mobilebackup.icloud.com.	192.168.5.132
+	31.05.2025 20:56:33	A	setup.icloud.com.	192.168.5.132
+	31.05.2025 20:36:21	A	p42-fmip.icloud.com.	192.168.5.132
+	31.05.2025 20:18:10	A	fmipmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:06:19	A	mobilebackup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:01:05	A	p138-contacts.icloud.com.	192.168.5.132
+	31.05.2025 20:01:02	A	p41-contacts.icloud.com.	192.168.5.132
+	31.05.2025 20:01:01	A	caldav.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:44:30	A	fmip.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:35:24	A	p41-quota.icloud.com.	192.168.5.132
+	31.05.2025 19:33:40	A	contacts.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:32:16	A	setup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:30:13	A	p42-caldav.icloud.com.	192.168.5.132
+	31.05.2025 19:25:00	A	quota.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:22:22	A	acsegateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:21:57	A	p42-quota.icloud.com.	192.168.5.132
+	31.05.2025 19:08:09	A	gateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:08:07	A	mask-api.fe2.apple-dns.net.	192.168.5.132
+❌ 17.248.209.67 (23 records)
+
+	Timestamp	Query Type	Domain	Source IP
+	31.05.2025 21:53:09	A	fmfmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 21:33:07	A	mask-api.icloud.com.	192.168.5.132
+	31.05.2025 21:29:41	A	mobilebackup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 21:25:57	A	p42-caldav.icloud.com.	192.168.5.132
+	31.05.2025 20:56:59	A	p41-quota.icloud.com.	192.168.5.132
+	31.05.2025 20:18:29	A	gateway.icloud.com.	192.168.5.132
+	31.05.2025 20:18:10	A	fmipmobile.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:13:39	A	p42-fmipmobile.icloud.com.	192.168.5.132
+	31.05.2025 20:01:04	A	calendars.icloud.com.	192.168.5.132
+	31.05.2025 20:01:01	A	caldav.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 20:00:58	A	p42-fmf.icloud.com.	192.168.5.132
+	31.05.2025 19:40:44	A	fmip.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:35:26	A	p42-fmip.icloud.com.	192.168.5.132
+	31.05.2025 19:33:40	A	contacts.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:32:16	A	setup.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:31:00	A	p42-contacts.icloud.com.	192.168.5.132
+	31.05.2025 19:27:42	A	quota.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:22:22	A	p42-mobilebackup.icloud.com.	192.168.5.132
+	31.05.2025 19:21:57	A	p42-quota.icloud.com.	192.168.5.132
+	31.05.2025 19:21:57	A	setup.icloud.com.	192.168.5.132
+	31.05.2025 19:15:49	A	gateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:10:36	A	acsegateway.fe2.apple-dns.net.	192.168.5.132
+	31.05.2025 19:08:07	A	mask-api.fe2.apple-dns.net.	192.168.5.132
+
+  activating one will directly push the notification...
