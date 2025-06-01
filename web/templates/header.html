@@ -107,6 +107,28 @@
     display: block;
   }
 
+  .menu-group.left,
+  .menu-group.center,
+  .menu-group.right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .menu-group {
+    flex-wrap: wrap;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 10px 20px;
+    background-color: #dcdcdc;
+  }
+
+
     </style>
     <script>
         function goToUrl(baseUrl) {
@@ -134,44 +156,39 @@
 <body>
   <div id="overlay"></div>
     <div class="header">
-        <div class="menu-group">
-            <label></label>
-            <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=block">Blocked Logs</button>
-            <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=pass">Passed Logs</button>
-            <button class="nav-button" data-url="{% url 'device-ip-overview' %}">Grouped IPs</button>
-            <button class="nav-button" data-url="{% url 'device_dns_records' %}">DNS</button>
-        </div>
-    
-        <div class="menu-group">
-            <label></label>
-            <button class="nav-button" data-url="{% url 'manage-devices' %}">Manage Devices</button>
-            <button class="nav-button" data-url="{% url 'domain-lookup' %}">Domain Lookup</button>
-            <button class="nav-button" data-url="{% url 'device-firewall-rules' %}">Firewall Rules</button>
-            <button class="nav-button" data-url="{% url 'device-logs' %}">Device Logs</button>
-            <button class="nav-button" data-url="{% url 'system-status' %}">Status</button>
-            <button class="nav-button" data-url="/admin">DB</button>
-            <button class="nav-button" data-url="/help">❔</button>
-        </div>
-    
-        <div class="menu-group">
-          <label for="deviceSelect">Device:</label>
-          <select id="deviceSelect" onchange="onDeviceSelectChange(this)">
-            <option value="" disabled>Select a device...</option>
-            {% for device in devices %}
-                {% if not device.archived %}
-                    <option value="{{ device.id }}"
-                        {% if selected_device_id == device.id %}selected{% endif %}>
-                        {{ device.device_id }} — {{ device.description }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-          </select> 
-                {% if user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-          {% csrf_token %}
-          <button type="submit">Logout</button>
-        </form>
-      {% endif %}
-
-        </div>
+      <div class="menu-group left">
+        <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=block">Blocked</button>
+        <button class="nav-button" data-url="{% url 'firewall_logs' %}?action=pass">Passed</button>
+        <button class="nav-button" data-url="{% url 'device-ip-overview' %}">ISP</button>
+        <button class="nav-button" data-url="{% url 'device_dns_records' %}">DNS</button>
       </div>
+      <div class="menu-group center">
+        <button class="nav-button" data-url="{% url 'manage-devices' %}">Devices</button>
+        <button class="nav-button" data-url="{% url 'domain-lookup' %}">Lookup</button>
+        <button class="nav-button" data-url="{% url 'device-firewall-rules' %}">Rules</button>
+        <button class="nav-button" data-url="{% url 'device-logs' %}">Logs</button>
+        <button class="nav-button" data-url="{% url 'system-status' %}">Status</button>
+      </div>
+      <div class="menu-group right">
+        <label for="deviceSelect">Device:</label>
+        <select id="deviceSelect" onchange="onDeviceSelectChange(this)">
+          <option disabled>Select…</option>
+          {% for device in devices %}
+            {% if not device.archived %}
+              <option value="{{ device.id }}" {% if selected_device_id == device.id %}selected{% endif %}>
+                {{ device.device_id }} — {{ device.description }}
+              </option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        <button class="nav-button" data-url="/admin">DB</button>
+        <button class="nav-button" data-url="/help">❔</button>
+        {% if user.is_authenticated %}
+          <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button class="nav-button">Logout</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>

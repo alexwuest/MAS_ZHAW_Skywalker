@@ -2,10 +2,20 @@
 {% include "header.html" %}
 <div class="content" style="height: 100%; min-height: 500px;">
     <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
-      <h2>DNS Records for {{ device.name }}</h2>
+      <h2>DNS Records for: {{ device.device_id }} - {{ device.description }}</h2>
+      
       <input type="text" id="dnsSearch" placeholder="Search DNS records..." style="margin-bottom: 10px; width: 100%; max-width: 400px; padding: 4px;">
+      <br><br>
+      <button type="button" id="checkAllVisible" onclick="toggleAllVisible(this)">Mark all</button>
+
+      <button type="button" onclick="submitSelectedDNS()">Add Firewall rules for selected</button>
+      <form id="dnsForm" method="post" action="{% url 'submit_dns_records' %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIdsInput">
+      </form>
+
         {% for resolved_ip, records in grouped_dns.items %}
-          <h3 style="margin-top: 20px;">
+          <h4 style="margin-top: 20px;">
             {% with rule_status|get_item:resolved_ip as status %}
               {% if status %}
                 ✅
@@ -13,15 +23,16 @@
                 ❌
               {% endif %}
             {% endwith %}
-            {{ resolved_ip }} ({{ records|length }} records)</h3>
+            {{ resolved_ip }} ({{ records|length }} records)</h4>
             <table class="sortable" style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
               <thead>
                 <tr style="background-color: #ffdca8;">
-                  <th style="text-align: left;"><input type="checkbox" id="checkAllVisible" onchange="toggleAllVisible(this)"></th>
+                  <th style="text-align: left;">
                   <th style="text-align: left;">Timestamp</th>
-                  <th style="text-align: left;">Query Type</th>
+                  <th style="text-align: left;">Type</th>
                   <th style="text-align: left;">Domain</th>
                   <th style="text-align: left;">Source IP</th>
+                  <th style="text-align: left;">Destination IP</th>
                 </tr>
               </thead>
               <tbody id="dnsTableBody">
@@ -32,6 +43,7 @@
                     <td>{{ record.query_type }}</td>
                     <td>{{ record.domain }}</td>
                     <td>{{ record.source_ip }}</td>
+                    <td>{{ resolved_ip }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -59,13 +71,17 @@
   });
 
 
-  function toggleAllVisible(source) {
-      document.querySelectorAll('#dnsTableBody tr').forEach(row => {
+  function toggleAllVisible(button) {
+      const dnsTableRows = document.querySelectorAll('#dnsTableBody tr');
+      const isMarking = button.textContent === "Mark all";
+
+      dnsTableRows.forEach(row => {
           if (row.style.display !== 'none') {
               const checkbox = row.querySelector('input[type="checkbox"]');
-              if (checkbox) checkbox.checked = source.checked;
+              if (checkbox) checkbox.checked = isMarking;
           }
       });
+      button.textContent = isMarking ? "Unmark all" : "Mark all";
   }
 
 

@@ -372,7 +372,6 @@ def device_dns_records_view(request):
     # Get relevant DNS records
     dns_records = DNSRecord.objects.filter(source_ip__in=ip_list).order_by('-timestamp')
     grouped_dns = group_by_resolved_ip(dns_records)
-    print(grouped_dns.keys())
 
     # Check rule status per resolved_ip
     rule_status = {}

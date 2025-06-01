@@ -205,6 +205,7 @@ class DNSRecordAdmin(admin.ModelAdmin):
     list_per_page = 500
     list_display = (
         'timestamp',
+        'last_seen_at',
         'source_ip',
         'resolved_ip',
         'query_type',

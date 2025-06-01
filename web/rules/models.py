@@ -124,7 +124,7 @@ class DNSRecord(models.Model):
     domain = models.CharField(max_length=255)
     resolved_ip = models.GenericIPAddressField(null=True, blank=True)
     raw_line = models.TextField()
-    last_seen_at = models.DateTimeField(auto_now_add=True)                      # updated all time
+    last_seen_at = models.DateTimeField(auto_now=True)                      # updated all time
 
 
 class FirewallRule(models.Model):

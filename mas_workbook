@@ -860,3 +860,38 @@ Found 12 ip addresses which have such dns lookups. All yet not in the ruleset.
 	31.05.2025 19:08:07	A	mask-api.fe2.apple-dns.net.	192.168.5.132
 
   activating one will directly push the notification...
+
+
+#################################################################
+# CHAT GPT
+
+🔹 Result – Did the test case succeed?
+
+The Result section should focus strictly on the defined objective. It answers:
+Was the intended use case completed successfully or not?
+
+Think of this section as "Outcome of the planned task."
+
+Include:
+Whether core functionality worked (e.g. messages loaded, media downloaded, balance shown).
+Which specific IPs or ISPs were allowed to make it work.
+Whether DNS lookups were sufficient, or more manual rule additions were needed.
+If the test failed, state it clearly and mention that further investigation is required.
+Any minor extra functionality that worked can be noted briefly.
+✅ Tip: Focus on Yes/No answers or simple confirmation of expected behavior.
+🔸 Observations – What did we notice beyond the core result?
+
+The Observations section is about additional insights you gained during testing. These can help you improve rule coverage, understand app behavior, or flag forensic risks.
+
+Think of this section as "Unexpected or noteworthy behavior noticed during the test."
+
+Include:
+Total volume of connections/IPs triggered by the app — were they reasonable or excessive?
+Domains resolved, e.g. analytics, CDN, or third-party services (that were not essential to the test objective).
+Effectiveness of IP enrichment (e.g. was metadata useful for identifying needed rules?).
+Any suspicious or privacy-related connections.
+Remote wipe contact attempts detected during the test (especially important for iOS).
+Any unexpected delays, retries, or parallel connections.
+✅ Tip: This is where you write things that are interesting or important for forensic evaluation, even if they didn’t affect the outcome directly.
+
+#################################################################
