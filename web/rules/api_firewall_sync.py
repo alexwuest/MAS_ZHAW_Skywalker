@@ -396,10 +396,57 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
     return rule_uuid
 
 
+
+##############################################################################################################################
+# DNS Rule management
+##############################################################################################################################
+def allow_ips_for_device_and_dns(records):
+    added_rules = []
+    for record in records:
+        print(record)
+        if record.resolved_ip:
+            lease = DeviceLease.objects.filter(ip_address=record.source_ip).order_by('-lease_start').first()
+            if lease and lease.device:
+                db_rule = FirewallRule.objects.filter(
+                    source_ip=record.source_ip,
+                    destination_ip=record.resolved_ip,
+                    end_date=None
+                ).first()
+                
+                if db_rule:
+                    print(f"Rule already exists for {record.source_ip} → {record.resolved_ip}")
+                    print("Rule already exists in DB, skipping creation.")
+                else:
+                    uuid = add_firewall_rule(ip_source=record.source_ip, ip_destination=record.resolved_ip)
+                    if uuid:
+                        print(f"Rule added to OPNsense: {record.source_ip} → {record.resolved_ip}")
+                        
+                        rule = FirewallRule.objects.create(
+                            source_ip=record.source_ip,
+                            device=lease.device,
+                            destination_ip=record.resolved_ip,
+                            protocol="any",
+                            port=0,
+                            action="PASS",
+                            end_date=None,
+                            manual=False,
+                            uuid=uuid
+                        )
+                        added_rules.append(rule)
+
+                    else:
+                        print(f"⚠️ Failed to add rule for {record.source_ip} → {record.resolved_ip}")
+    
+    apply_firewall_changes()
+    return added_rules
+
+
 ##############################################################################################################################
 # Archiving Device cleanup - Housekeeping ;-)
 ##############################################################################################################################
 def archiving_device(device):
+
+    ## Get all active rules for the device and set end_date to now
     active_rules = FirewallRule.objects.filter(
         device=device,
         end_date__isnull=True
@@ -412,7 +459,16 @@ def archiving_device(device):
         rule.end_date = now()
         rule.verify_opnsense = True
         rule.save(update_fields=["end_date", "verify_opnsense"])
-    
+
+    ## Get all active DeviceAllowedISP for the device and delete them
+    active_DeviceAllowedISP = DeviceAllowedISP.objects.filter(
+        device=device,
+    )
+
+    for active_ISP in active_DeviceAllowedISP:
+        active_ISP.delete()
+    print(f"Deleting {active_DeviceAllowedISP.count()} allowed ISPs for device {device}")
+
     return True
 
 

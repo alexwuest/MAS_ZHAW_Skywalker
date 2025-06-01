@@ -1,0 +1,103 @@
+{% load dict_extras %}
+{% include "header.html" %}
+<div class="content" style="height: 100%; min-height: 500px;">
+    <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
+      <h2>DNS Records for {{ device.name }}</h2>
+      <input type="text" id="dnsSearch" placeholder="Search DNS records..." style="margin-bottom: 10px; width: 100%; max-width: 400px; padding: 4px;">
+        {% for resolved_ip, records in grouped_dns.items %}
+          <h3 style="margin-top: 20px;">
+            {% with rule_status|get_item:resolved_ip as status %}
+              {% if status %}
+                ✅
+              {% else %}
+                ❌
+              {% endif %}
+            {% endwith %}
+            {{ resolved_ip }} ({{ records|length }} records)</h3>
+            <table class="sortable" style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
+              <thead>
+                <tr style="background-color: #ffdca8;">
+                  <th style="text-align: left;"><input type="checkbox" id="checkAllVisible" onchange="toggleAllVisible(this)"></th>
+                  <th style="text-align: left;">Timestamp</th>
+                  <th style="text-align: left;">Query Type</th>
+                  <th style="text-align: left;">Domain</th>
+                  <th style="text-align: left;">Source IP</th>
+                </tr>
+              </thead>
+              <tbody id="dnsTableBody">
+                {% for record in records %}
+                  <tr>
+                    <td><input type="checkbox" name="dns_selected" value="{{ record.id }}"></td>
+                    <td>{{ record.timestamp|date:"d.m.Y H:i:s" }}</td>
+                    <td>{{ record.query_type }}</td>
+                    <td>{{ record.domain }}</td>
+                    <td>{{ record.source_ip }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        {% endfor %}
+        </tbody>
+      </table>
+      <button type="button" onclick="submitSelectedDNS()">Submit Selected Entries</button>
+      <form id="dnsForm" method="post" action="{% url 'submit_dns_records' %}">
+        {% csrf_token %}
+        <input type="hidden" name="selected_ids" id="selectedIdsInput">
+      </form>
+    </div>
+</div>
+{% include "footer.html" %}
+
+<script>
+  document.getElementById('dnsSearch').addEventListener('keyup', function () {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll('#dnsTableBody tr');
+      rows.forEach(row => {
+          const text = row.innerText.toLowerCase();
+          row.style.display = text.includes(filter) ? '' : 'none';
+      });
+  });
+
+
+  function toggleAllVisible(source) {
+      document.querySelectorAll('#dnsTableBody tr').forEach(row => {
+          if (row.style.display !== 'none') {
+              const checkbox = row.querySelector('input[type="checkbox"]');
+              if (checkbox) checkbox.checked = source.checked;
+          }
+      });
+  }
+
+
+  function filterByMinutes(minutes) {
+      const now = new Date();
+      const threshold = new Date(now.getTime() - minutes * 60000);
+      document.querySelectorAll('#dnsTableBody tr').forEach(row => {
+          const tsStr = row.dataset.timestamp;
+          if (!tsStr) return;
+          const rowTime = new Date(tsStr);
+          row.style.display = (rowTime >= threshold) ? '' : 'none';
+      });
+  }
+
+
+  function clearTimeFilter() {
+      document.querySelectorAll('#dnsTableBody tr').forEach(row => {
+          row.style.display = '';
+      });
+  }
+
+
+  function submitSelectedDNS() {
+      const selected = [];
+      document.querySelectorAll('#dnsTableBody input[type="checkbox"]:checked').forEach(cb => {
+          selected.push(cb.value);
+      });
+      if (selected.length === 0) {
+          alert("No entries selected.");
+          return;
+      }
+      document.getElementById('selectedIdsInput').value = selected.join(',');
+      document.getElementById('dnsForm').submit();
+  }
+</script>

@@ -18,10 +18,9 @@ from .config import OPNSENSE_IP, API_KEY, API_SECRET, CERT_PATH
 from .api_logs_parser import api_dhcp_parser, is_private_ip
 from .ip_enrichment import ip_enrichment_queue
 from .models import Device, DNSRecord, DeviceLease, DeviceAllowedISP, FirewallLog, FirewallRule, MetadataSeenByDevice, DestinationMetadata
-from .api_firewall_sync import allow_blocked_ips_for_device, add_single_rule, archiving_device, adjust_invalid_source_ips, allow_ips_for_device_and_isp
+from .api_firewall_sync import allow_ips_for_device_and_dns, allow_blocked_ips_for_device, add_single_rule, archiving_device, adjust_invalid_source_ips, allow_ips_for_device_and_isp
 from .api_firewall import delete_rule_by_uuid, apply_firewall_changes, check_rule_exists
 from .forms import DeviceApprovalForm, AssignDeviceToLeaseForm, DomainLookupForm, HideLeaseForm
-
 
 ############################################################################
 # Emoji legend for code comments
@@ -174,7 +173,6 @@ def combined_firewall_logs_view(request):
 
     logs = "\n".join(enriched_logs)
 
-    # ISP metadata grouping only for block view
     isp_list = []
     isp_rule_status = {}
 
@@ -184,28 +182,26 @@ def combined_firewall_logs_view(request):
             lease_end__gt=timezone.now()
         ).values_list("ip_address", flat=True))
 
-        relevant_logs = FirewallLog.objects.filter(
+        seen_metadata_ids = FirewallLog.objects.filter(
             Q(source_ip__in=source_ips) | Q(destination_ip__in=source_ips),
             destination_metadata__isnull=False
-        ).select_related("destination_metadata")
+        ).values_list("destination_metadata_id", flat=True).distinct()
 
-        metadata_set = set(log.destination_metadata for log in relevant_logs if log.destination_metadata)
+        metadata_qs = DestinationMetadata.objects.filter(id__in=seen_metadata_ids)
+
+        active_rule_ips = set(FirewallRule.objects.filter(
+            source_ip__in=source_ips,
+            end_date__isnull=True
+        ).values_list("destination_ip", flat=True))
 
         metadata_by_isp = defaultdict(list)
-        for meta in metadata_set:
+        for meta in metadata_qs:
             metadata_by_isp[meta.isp or "Unknown"].append(meta)
 
+        isp_rule_status = {}
         for isp, entries in sorted(metadata_by_isp.items()):
             total = len(entries)
-            with_rules = 0
-            for meta in entries:
-                if FirewallRule.objects.filter(
-                    source_ip__in=source_ips,
-                    destination_ip=meta.ip,
-                    end_date__isnull=True
-                ).exists():
-                    with_rules += 1
-
+            with_rules = sum(1 for meta in entries if meta.ip in active_rule_ips)
             isp_rule_status[isp] = {
                 "total": total,
                 "with_rules": with_rules,
@@ -343,6 +339,76 @@ def device_ip_overview_view(request):
 })
 
 ###########################################################################
+# DNS view by device
+###########################################################################
+from .models import DNSRecord, Device, DeviceLease
+
+from collections import defaultdict
+
+def group_by_resolved_ip(dns_records):
+    grouped = defaultdict(list)
+    for record in dns_records:
+        grouped[record.resolved_ip].append(record)
+    return dict(grouped)
+
+
+def device_dns_records_view(request):
+    devices = Device.objects.all().order_by("device_id")
+    device_id = request.GET.get('device_id')
+    if not device_id:
+        return HttpResponseBadRequest("Missing device_id")
+
+    device = get_object_or_404(Device, id=device_id)
+
+    # Get source IPs for this device
+    ip_list = DeviceLease.objects.filter(device=device).values_list('ip_address', flat=True)
+
+    # Get relevant DNS records
+    dns_records = DNSRecord.objects.filter(source_ip__in=ip_list).order_by('-timestamp')
+    grouped_dns = group_by_resolved_ip(dns_records)
+    print(grouped_dns.keys())
+
+    # Check rule status per resolved_ip
+    rule_status = {}
+    for ip in grouped_dns.keys():
+        has_rule = FirewallRule.objects.filter(
+            device=device,
+            destination_ip=ip,
+            end_date__isnull=True  # active rule
+        ).exists()
+        rule_status[ip] = has_rule
+
+    return render(request, 'device_dns_records.html', {
+        'device': device,
+        'devices': devices,
+        'dns_records': dns_records,
+        'grouped_dns': grouped_dns,
+        'rule_status': rule_status,
+        'selected_device_id': device.id,
+    })
+
+###########################################################################
+
+@csrf_exempt
+def submit_dns_records(request):
+    if request.method == "POST":
+        ids = request.POST.get("selected_ids", "")
+        selected_ids = [int(x) for x in ids.split(",") if x.isdigit()]
+        records = DNSRecord.objects.filter(id__in=selected_ids)
+
+        added_rules = allow_ips_for_device_and_dns(records)
+        
+        return JsonResponse({
+            "status": "success",
+            "count": records.count(),
+            "ids": selected_ids,
+            "rules_added": len(added_rules),
+        })
+
+    return JsonResponse({"error": "Only POST allowed"}, status=405)
+
+###########################################################################
+###########################################################################
 
 @csrf_exempt
 @require_POST
@@ -350,7 +416,7 @@ def flush_metadata_seen_view(request):
     device_id = request.POST.get("device_id")
     if device_id:
         MetadataSeenByDevice.objects.filter(device__id=device_id).delete()
-    return redirect(f"/overview/?device_id={device_id}")
+    return redirect(f"/firewall/isp/?device_id={device_id}")
 
 ###########################################################################
 
@@ -366,7 +432,7 @@ def add_rule_view(request):
         if not check_rule_exists(source_ip, destination_ip):
             add_single_rule(source_ip, destination_ip, manual=True)
 
-    return redirect(request.META.get('HTTP_REFERER', '/overview/'))
+    return redirect(request.META.get('HTTP_REFERER', '/firewall/isp/'))
 
 ###########################################################################
 
@@ -396,7 +462,7 @@ def remove_rule_view(request):
                     end_date__isnull=True
                 ).update(end_date=timezone.now())
 
-    return redirect(request.META.get('HTTP_REFERER', '/overview/'))
+    return redirect(request.META.get('HTTP_REFERER', '/firewall/isp/'))
 
 
 ###########################################################################
@@ -506,14 +572,15 @@ def manage_devices_view(request):
             devices_active = Device.objects.filter(archived=False)
             
             for device in devices_active:
-                # Update archive status
                 device.archived = device.device_id in selected_ids
                 print(f"Device {device.device_id} archived status BEFORE: {device.archived}")
-                try:
-                    archiving_device(device)
-                except Exception as e:
-                    print(f"Error archiving existing rules {e}")
-                
+
+                if device.archived:
+                    try:
+                        archiving_device(device)
+                    except Exception as e:
+                        print(f"Error archiving existing rules {e}")
+
                 device.save(update_fields=["archived"])
 
             print(f"Updated archive status. Archived: {selected_ids}")
