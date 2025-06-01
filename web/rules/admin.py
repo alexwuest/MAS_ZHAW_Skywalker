@@ -217,7 +217,8 @@ class DNSRecordAdmin(admin.ModelAdmin):
     search_fields = (
         'source_ip',
         'resolved_ip',
-        'domain',        
+        'domain',
+        'raw_line',        
     )
     date_hierarchy = 'timestamp'
     ordering = ('-timestamp',)

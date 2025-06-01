@@ -24,70 +24,75 @@
         </select>
         <button onclick="location.reload();">Refresh Now</button>
         <br/>
-        <h3 style="margin-top: 24px;">Organisations (ISP)</h3>
-        <div id="ispList" style="font-size: 12px;">
-            <table style="font-size: 12px; width: 100%;">
-                <thead>
-                    <tr>
-                        <th style="text-align: left;"></th>
-                        <th style="text-align: left;"></th>
-                        <th style="text-align: left;"></th>
-                        <th style="text-align: left;"></th>
-                        <th style="text-align: left;"></th>
-                        
-                    </tr>
-                </thead>
-                <tbody id="ispList">
-                    {% for isp in isp_list %}
-                        <tr>
-                            <td>
-                                <input type="checkbox"
-                                    data-isp-name="{{ isp.name }}"
-                                    onchange="toggleISPLink(this);">
-                            </td>
-                                <td>
-                                    {% with isp_rule_status|get_item:isp.name as status %}
-                                        {% if status %}
-                                            <span class="isp-icons"
-                                                data-isp="{{ isp.name }}"
-                                                data-with-rules="{{ status.with_rules }}"
-                                                data-total="{{ status.total }}">
-                                                {% if status.all_added %}
-                                                    ✅
-                                                {% else %}
-                                                    ⚠️
+
+        <h3 onclick="toggleISPSection()" style="margin-top: 24px; cursor: pointer;">
+            Organisations (ISP) <span id="toggleSymbol">[–]</span>
+        </h3>
+            <div id="ispSection">
+                <div id="ispList" style="font-size: 12px;">
+                    <table style="font-size: 12px; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;"></th>
+                                <th style="text-align: left;"></th>
+                                <th style="text-align: left;"></th>
+                                <th style="text-align: left;"></th>
+                                <th style="text-align: left;"></th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="ispList">
+                            {% for isp in isp_list %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                            data-isp-name="{{ isp.name }}"
+                                            onchange="toggleISPLink(this);">
+                                    </td>
+                                        <td>
+                                            {% with isp_rule_status|get_item:isp.name as status %}
+                                                {% if status %}
+                                                    <span class="isp-icons"
+                                                        data-isp="{{ isp.name }}"
+                                                        data-with-rules="{{ status.with_rules }}"
+                                                        data-total="{{ status.total }}">
+                                                        {% if status.all_added %}
+                                                            ✅
+                                                        {% else %}
+                                                            ⚠️
+                                                        {% endif %}
+                                                    </span>
                                                 {% endif %}
-                                            </span>
-                                        {% endif %}
-                                    {% endwith %}
-                                </td>
-                            <td>
-                                {% with isp_rule_status|get_item:isp.name as status %}
-                                    {% if status %}
-                                        ({{ status.with_rules }}/{{ status.total }})
-                                    {% else %}
-                                        (0/0)
-                                    {% endif %}
-                                {% endwith %}
-                            </td>
-                            <td>{{ isp.name }}</td>
-                            <td>
-                                <button onclick="updateFirewallRulesForISP('{{ isp.name }}')" data-isp="{{ isp.name }}">
-                                    Update
-                                </button>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="4"><em>No ISPs found.</em></td></tr>
-                    {% endfor %}
-                        
-                </tbody>
-            </table>
-        </div>
-        <br/>
-        This button will update device rules. Adding new ones and removing outdated ones:
-        <br/><br/>
-        <button id="updateButton" onclick="updateFirewallRules()">Update All Rules!</button>
+                                            {% endwith %}
+                                        </td>
+                                    <td>
+                                        {% with isp_rule_status|get_item:isp.name as status %}
+                                            {% if status %}
+                                                ({{ status.with_rules }}/{{ status.total }})
+                                            {% else %}
+                                                (0/0)
+                                            {% endif %}
+                                        {% endwith %}
+                                    </td>
+                                    <td>{{ isp.name }}</td>
+                                    <td>
+                                        <button onclick="updateFirewallRulesForISP('{{ isp.name }}')" data-isp="{{ isp.name }}">
+                                            Update
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4"><em>No ISPs found.</em></td></tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                    </div>
+                    <br/>
+                    This button will update all ISP device rules. Adding new ones and removing outdated ones:
+                    <br/><br/>
+                    <button id="updateButton" onclick="updateFirewallRules()">Update All ISP Rules!</button>
+                    <br><br><hr>
+            </div>
 
 <!-- Fullscreen overlay during update -->
 <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.6); z-index:9999; text-align:center; padding-top:200px; font-size:20px;">
@@ -109,7 +114,7 @@
                 document.getElementById('deviceSelect').value = deviceId;
             }
 
-            fetch(`/api/device/${deviceId}/linked-isps/`)
+            fetch(`/firewall/isp/${deviceId}/linked-isps/`)
                 .then(response => response.json())
                 .then(data => {
                     const linkedIsps = data.linked_isps;
@@ -152,7 +157,7 @@
             const ispName = checkbox.dataset.ispName;
             const link = checkbox.checked;
 
-            fetch('/api/toggle-isp/', {
+            fetch('/firewall/isp/toggle_isp/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -209,7 +214,7 @@
             refreshSelect.value = "0";
             if (refreshTimeout) clearTimeout(refreshTimeout);
 
-            fetch("/update-firewall/", {
+            fetch("/firewall/logs/update_firewall/", {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": getCookie("csrftoken"),
@@ -257,7 +262,7 @@
         button.textContent = "Updating...";
         overlay.style.display = "block";
 
-        fetch("/update-firewall-isp/", {
+        fetch("/firewall/logs/update_firewall_isp/", {
             method: "POST",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken"),
@@ -286,6 +291,39 @@
             location.reload();
         });
     }
+
+
+    function toggleISPSection() {
+        const section = document.getElementById('ispSection');
+        const toggleSymbol = document.getElementById('toggleSymbol');
+
+        const isHidden = section.style.display === 'none';
+        section.style.display = isHidden ? 'block' : 'none';
+
+        // Update icon
+        if (toggleSymbol) {
+        toggleSymbol.textContent = isHidden ? '[–]' : '[+]';
+        }
+
+        // Store state
+        localStorage.setItem('ispSectionCollapsed', isHidden ? 'false' : 'true');
+    }
+
+    // On page load: restore the state
+    document.addEventListener('DOMContentLoaded', function () {
+        const section = document.getElementById('ispSection');
+        const toggleSymbol = document.getElementById('toggleSymbol');
+        const collapsed = localStorage.getItem('ispSectionCollapsed') === 'true';
+
+        if (collapsed) {
+        section.style.display = 'none';
+        if (toggleSymbol) toggleSymbol.textContent = '[+]';
+        } else {
+        section.style.display = 'block';
+        if (toggleSymbol) toggleSymbol.textContent = '[–]';
+        }
+    });
+
     </script>
 
 {% else %}
