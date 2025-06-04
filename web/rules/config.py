@@ -16,7 +16,7 @@ SSH_PARSER_ADDRESS = "root@192.168.5.1"     # Is used as address to parse dns en
 
 IP_TABLE = {}
 DEBUG = False                               # Debugging will log to console
-DEBUG_DNS = False                           # All DNS entries
+DEBUG_DNS = True                           # All DNS entries
 DEBUG_ALL = False                           # A pain for the console :-)
 
 API_USAGE = 0                               # 0 low, 1 medium, 2 high

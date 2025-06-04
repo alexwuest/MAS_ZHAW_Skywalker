@@ -2,6 +2,7 @@ import subprocess
 import re
 import os
 import time
+import ipaddress
 
 from django.db import IntegrityError
 
@@ -31,6 +32,13 @@ answer_re = re.compile(
     r'(?P<ts>\d{2}:\d{2}:\d{2}\.\d+)\s+IP\s+(?P<dst_ip>[\d.]+)\.53\s+>\s+(?P<src_ip>[\d.]+)\.(?P<src_port>\d+):\s+(?P<txid>\d+)\s+[^\s]*\s+(?P<rest>.*)',
     re.IGNORECASE
 )
+
+def is_valid_ip(ip_str):
+    try:
+        ipaddress.ip_address(ip_str)
+        return True
+    except ValueError:
+        return False
 
 
 
@@ -96,6 +104,17 @@ def dns_capture_worker():
                     domain = query_data["domain"]
                     query_type = query_data["query_type"]
                     raw_line = query_data["raw_line"]
+
+                    if is_valid_ip(rip):
+
+                        # Check if resolved IP is in Apple's IP block (17.0.0.0/8)
+                        if ipaddress.ip_address(rip) in ipaddress.ip_network("17.0.0.0/8"):
+                            print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+                            print("APPLE")
+                            print("APPLE")
+                            print("APPLE")
+                            print("APPLE")
+                            print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
 
                     record = DNSRecord.objects.filter(
                         source_ip=source_ip,

@@ -15,7 +15,11 @@
       </form>
 
         {% for resolved_ip, records in grouped_dns.items %}
-          <h4 style="margin-top: 20px;">
+          
+            <table class="sortable" style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
+              <thead>
+                <tr style="background-color: #ffdca8;">
+                  <th style="text-align: left;">
             {% with rule_status|get_item:resolved_ip as status %}
               {% if status %}
                 ✅
@@ -23,11 +27,7 @@
                 ❌
               {% endif %}
             {% endwith %}
-            {{ resolved_ip }} ({{ records|length }} records)</h4>
-            <table class="sortable" style="width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed;">
-              <thead>
-                <tr style="background-color: #ffdca8;">
-                  <th style="text-align: left;">
+            {{ resolved_ip }} ({{ records|length }})
                   <th style="text-align: left;">Timestamp</th>
                   <th style="text-align: left;">Type</th>
                   <th style="text-align: left;">Domain</th>

@@ -47,10 +47,10 @@
           <thead>
             <tr style="background-color: #ffdca8;">
               <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
-              <th style="text-align: left; padding: 6px;">Device ID</th>
+              <th style="text-align: left; padding: 6px; width: 95px">Device ID</th>
               <th style="text-align: left; padding: 6px;">Description</th>
               <th style="text-align: left; padding: 6px;">Source IP</th>
-              <th style="text-align: left; padding: 6px;">DNS</th>
+              <th style="text-align: left; padding: 6px; width: 80px">DNS</th>
               <th style="text-align: left; padding: 6px;">Created</th>
               <th style="text-align: left; padding: 6px;">Last active</th>
               <th style="text-align: left; padding: 6px; width: 80px">Examiner</th>
@@ -86,7 +86,7 @@
               </td>
               <td>
                 {{ device.last_active_ip }}
-                <button type="button" onclick="submitAdjustIP({{ device.id }})" title="Update rules as IP changed? This process is normally not needed!">🔄</button>
+                <button type="button" onclick="submitAdjustIP('{{ device.id }}')" title="Update rules as IP changed? This process is normally not needed!">🔄</button>
               </td>
               <td>
                 {% if not device.has_lease %}
@@ -174,12 +174,12 @@
                 <thead>
                     <tr style="background-color: #ffdca8;">
                         <th class="sorttable_nosort" style="text-align: left; padding: 6px; width: 20px"></th>
-                        <th style="text-align: left; padding: 6px; width: 90px">Device ID</th>
+                        <th style="text-align: left; padding: 6px; width: 70px">Device ID</th>
                         <th style="text-align: left; padding: 6px;">Description</th>
-                        <th style="text-align: left; padding: 6px;">DNS</th>
+                        <th style="text-align: left; padding: 6px; width: 70px">DNS</th>
                         <th style="text-align: left; padding: 6px;">Created</th>
                         <th style="text-align: left; padding: 6px;">Last active</th>
-                        <th style="text-align: left; padding: 6px;">Examiner</th>
+                        <th style="text-align: left; padding: 6px; width: 70px">Examiner</th>
                     </tr>
                 </thead>
                 <tbody>
