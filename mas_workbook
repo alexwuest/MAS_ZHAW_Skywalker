@@ -760,8 +760,10 @@ Found 12 ip addresses which have such dns lookups. All yet not in the ruleset.
 	31.05.2025 19:11:37	A	mask-api.fe2.apple-dns.net.	192.168.5.132
 	31.05.2025 19:08:09	A	gateway.fe2.apple-dns.net.	192.168.5.132
 	31.05.2025 19:07:07	A	p42-acsegateway.icloud.com.	192.168.5.132
-❌ 17.248.209.64 (19 records)
 
+
+
+❌ 17.248.209.64 (19 records)
 	Timestamp	Query Type	Domain	Source IP
 	31.05.2025 21:55:52	A	fmipmobile.fe2.apple-dns.net.	192.168.5.132
 	31.05.2025 21:53:09	A	p42-fmipmobile.icloud.com.	192.168.5.132
@@ -782,8 +784,10 @@ Found 12 ip addresses which have such dns lookups. All yet not in the ruleset.
 	31.05.2025 19:11:37	A	mask-api.fe2.apple-dns.net.	192.168.5.132
 	31.05.2025 19:10:36	A	acsegateway.fe2.apple-dns.net.	192.168.5.132
 	31.05.2025 19:07:07	A	p42-acsegateway.icloud.com.	192.168.5.132
-❌ 17.248.209.73 (24 records)
 
+
+
+❌ 17.248.209.73 (24 records)
 	Timestamp	Query Type	Domain	Source IP
 	31.05.2025 21:53:09	A	p42-fmipmobile.icloud.com.	192.168.5.132
 	31.05.2025 21:33:07	A	mask-api.icloud.com.	192.168.5.132
@@ -895,3 +899,604 @@ Any unexpected delays, retries, or parallel connections.
 ✅ Tip: This is where you write things that are interesting or important for forensic evaluation, even if they didn’t affect the outcome directly.
 
 #################################################################
+
+
+Mobile iPhone 14 Pro
+
+iOS 18.3.1
+Private WLAN off
+WLAN only
+
+Logged by another device into the Apple iCloud Account and added a wipe command for the device.
+
+Device running since quite a time.
+
+Opening Whatsapp, it shows "WhatsApp aktualisieren". That means i need to open the App Store to update it.
+Opening the App Store no connection...
+0/109 Rules Apple applied
+
+
+searched for "apple" in dns view
+
+❌ 17.33.194.222 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:25:45	A	sse-ws-p189.apple.com.	192.168.5.141	17.33.194.222
+❌ 23.212.194.151 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:25:44	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	23.212.194.151
+❌ 17.32.208.228 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:25:44	A	bpapi.apple.com.	192.168.5.141	17.32.208.228
+❌ 17.111.103.83 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:25:43	A	humb.apple.com.	192.168.5.141	17.111.103.83
+❌ 17.253.57.196 (10)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:12:29	A	configuration-lb.ls-apple.com.akadns.net.	192.168.5.141	17.253.57.196
+	03.06.2025 17:56:12	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.196
+	03.06.2025 17:51:25	A	mesu-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.196
+	03.06.2025 17:50:04	A	captive.apple.com.	192.168.5.141	17.253.57.196
+❌ 17.253.57.203 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:02	A	static.ess.apple.com.	192.168.5.141	17.253.57.203
+	03.06.2025 17:54:53	A	publicassets.cdn-apple.com.	192.168.5.141	17.253.57.203
+	03.06.2025 17:54:16	A	ocsp2.apple.com.	192.168.5.141	17.253.57.203
+	03.06.2025 17:54:07	A	init.ess.apple.com.	192.168.5.141	17.253.57.203
+❌ 17.248.209.68 (13)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:25:31	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.68
+	03.06.2025 18:21:19	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.68
+	03.06.2025 18:04:28	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.68
+	03.06.2025 18:04:02	A	fmf.fe2.apple-dns.net.	192.168.5.141	17.248.209.68
+	03.06.2025 17:56:48	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.68
+	03.06.2025 17:56:38	A	stocks-edge.apple.com.	192.168.5.141	17.248.209.68
+❌ 17.248.209.16 (15)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:25:31	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+	03.06.2025 18:21:19	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+	03.06.2025 18:04:02	A	fmf.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+	03.06.2025 18:04:02	A	caldav.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+	03.06.2025 17:56:48	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+	03.06.2025 17:56:38	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.16
+❌ 17.57.146.22 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:21:36	A	39.courier-push-apple.com.akadns.net.	192.168.5.141	17.57.146.22
+	03.06.2025 17:56:27	A	39-courier.push.apple.com.	192.168.5.141	17.57.146.22
+	03.06.2025 17:52:57	A	3-courier.push.apple.com.	192.168.5.141	17.57.146.22
+	03.06.2025 17:51:06	A	50-courier.push.apple.com.	192.168.5.141	17.57.146.22
+❌ 17.57.146.27 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:21:36	A	39.courier-push-apple.com.akadns.net.	192.168.5.141	17.57.146.27
+	03.06.2025 17:56:27	A	39-courier.push.apple.com.	192.168.5.141	17.57.146.27
+	03.06.2025 17:52:57	A	3-courier.push.apple.com.	192.168.5.141	17.57.146.27
+	03.06.2025 17:51:06	A	50-courier.push.apple.com.	192.168.5.141	17.57.146.27
+❌ 17.57.146.23 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:21:36	A	39.courier-push-apple.com.akadns.net.	192.168.5.141	17.57.146.23
+	03.06.2025 17:56:27	A	39-courier.push.apple.com.	192.168.5.141	17.57.146.23
+	03.06.2025 17:52:57	A	3-courier.push.apple.com.	192.168.5.141	17.57.146.23
+	03.06.2025 17:51:06	A	50-courier.push.apple.com.	192.168.5.141	17.57.146.23
+❌ 17.57.146.25 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:21:36	A	39.courier-push-apple.com.akadns.net.	192.168.5.141	17.57.146.25
+	03.06.2025 17:56:27	A	39-courier.push.apple.com.	192.168.5.141	17.57.146.25
+	03.06.2025 17:52:57	A	3-courier.push.apple.com.	192.168.5.141	17.57.146.25
+	03.06.2025 17:51:06	A	50-courier.push.apple.com.	192.168.5.141	17.57.146.25
+❌ 17.57.146.26 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:21:36	A	39.courier-push-apple.com.akadns.net.	192.168.5.141	17.57.146.26
+	03.06.2025 17:56:27	A	39-courier.push.apple.com.	192.168.5.141	17.57.146.26
+	03.06.2025 17:52:57	A	3-courier.push.apple.com.	192.168.5.141	17.57.146.26
+	03.06.2025 17:51:06	A	50-courier.push.apple.com.	192.168.5.141	17.57.146.26
+❌ 17.57.146.24 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:21:36	A	39.courier-push-apple.com.akadns.net.	192.168.5.141	17.57.146.24
+	03.06.2025 17:56:27	A	39-courier.push.apple.com.	192.168.5.141	17.57.146.24
+	03.06.2025 17:52:57	A	3-courier.push.apple.com.	192.168.5.141	17.57.146.24
+	03.06.2025 17:51:06	A	50-courier.push.apple.com.	192.168.5.141	17.57.146.24
+❌ 17.253.57.200 (10)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.200
+	03.06.2025 18:03:58	A	gspe85-ssl.ls.apple.com.	192.168.5.141	17.253.57.200
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.200
+	03.06.2025 17:55:20	A	mesu-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.200
+	03.06.2025 17:50:39	A	cdsassets.apple.com.	192.168.5.141	17.253.57.200
+	03.06.2025 17:50:03	A	app-site-association.cdn-apple.com.	192.168.5.141	17.253.57.200
+❌ 17.253.57.218 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:12:29	A	gsp57-ssl-locus.ls.apple.com.	192.168.5.141	17.253.57.218
+❌ 17.253.57.215 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:12:29	A	gsp57-ssl-locus.ls.apple.com.	192.168.5.141	17.253.57.215
+❌ 17.253.57.209 (11)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:12:29	A	configuration-lb.ls-apple.com.akadns.net.	192.168.5.141	17.253.57.209
+	03.06.2025 18:03:58	A	captive-cidr.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.209
+	03.06.2025 17:56:36	A	gspe79-ssl.ls.apple.com.	192.168.5.141	17.253.57.209
+	03.06.2025 17:56:30	A	init.ess.apple.com.	192.168.5.141	17.253.57.209
+	03.06.2025 17:56:28	A	configuration.ls.apple.com.	192.168.5.141	17.253.57.209
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.209
+	03.06.2025 17:51:36	A	gspe35-ssl.ls.apple.com.	192.168.5.141	17.253.57.209
+	03.06.2025 17:50:39	A	cdsassets.apple.com.	192.168.5.141	17.253.57.209
+❌ 17.253.57.201 (14)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:11:48	A	cl4.apple.com.	192.168.5.141	17.253.57.201
+	03.06.2025 18:07:13	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.201
+	03.06.2025 18:03:58	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.201
+	03.06.2025 17:56:28	A	gspe21-ssl.ls.apple.com.	192.168.5.141	17.253.57.201
+	03.06.2025 17:54:42	A	pancake.apple.com.	192.168.5.141	17.253.57.201
+	03.06.2025 17:54:16	A	ocsp2.apple.com.	192.168.5.141	17.253.57.201
+	03.06.2025 17:50:04	A	captive.apple.com.	192.168.5.141	17.253.57.201
+❌ 17.253.57.208 (7)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:11:48	A	cl4.apple.com.	192.168.5.141	17.253.57.208
+	03.06.2025 17:56:36	A	cl3.apple.com.	192.168.5.141	17.253.57.208
+	03.06.2025 17:56:30	A	init.ess.apple.com.	192.168.5.141	17.253.57.208
+	03.06.2025 17:54:53	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.208
+❌ 17.253.57.199 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:11:39	A	cl3-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.199
+	03.06.2025 18:03:59	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.199
+	03.06.2025 17:56:30	A	publicassets.cdn-apple.g.aaplimg.com.	192.168.5.141	17.253.57.199
+	03.06.2025 17:54:28	A	cl2.apple.com.	192.168.5.141	17.253.57.199
+	03.06.2025 17:50:04	A	mesu.apple.com.	192.168.5.141	17.253.57.199
+❌ 17.253.57.205 (7)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:11:39	A	cl3-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.205
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.205
+	03.06.2025 17:54:56	A	updates.cdn-apple.com.	192.168.5.141	17.253.57.205
+	03.06.2025 17:54:53	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.205
+	03.06.2025 17:50:03	A	cl1.apple.com.	192.168.5.141	17.253.57.205
+❌ 17.57.172.16 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:10:59	A	gsp10-ssl.apple.com.	192.168.5.141	17.57.172.16
+❌ 194.230.81.139 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:06:08	A	iphone-ld.origin-apple.com.akadns.net.	192.168.5.141	194.230.81.139
+	03.06.2025 18:01:21	A	iphone-ld.apple.com.	192.168.5.141	194.230.81.139
+❌ 194.230.81.146 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:06:08	A	iphone-ld.origin-apple.com.akadns.net.	192.168.5.141	194.230.81.146
+	03.06.2025 18:01:21	A	iphone-ld.apple.com.	192.168.5.141	194.230.81.146
+❌ 17.248.209.69 (9)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.69
+	03.06.2025 18:04:02	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.69
+	03.06.2025 18:04:01	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.69
+	03.06.2025 17:56:38	A	stocks-edge.apple.com.	192.168.5.141	17.248.209.69
+	03.06.2025 17:56:30	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.69
+❌ 17.248.209.74 (16)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+	03.06.2025 18:04:02	A	fmf.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+	03.06.2025 18:04:02	A	caldav.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+	03.06.2025 18:04:01	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+	03.06.2025 17:56:38	A	stocks-edge.apple.com.	192.168.5.141	17.248.209.74
+	03.06.2025 17:56:30	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.74
+❌ 17.248.209.71 (10)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.71
+	03.06.2025 18:04:02	A	fmf.fe2.apple-dns.net.	192.168.5.141	17.248.209.71
+	03.06.2025 17:56:48	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.71
+	03.06.2025 17:56:38	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.71
+	03.06.2025 17:56:38	A	stocks-edge.apple.com.	192.168.5.141	17.248.209.71
+	03.06.2025 17:56:30	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.71
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.71
+❌ 17.248.209.66 (9)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.66
+	03.06.2025 17:56:48	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.66
+	03.06.2025 17:56:38	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.66
+	03.06.2025 17:56:30	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.66
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.66
+❌ 17.248.209.65 (13)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.65
+	03.06.2025 18:04:02	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.65
+	03.06.2025 18:04:01	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.65
+	03.06.2025 17:56:30	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.65
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.65
+❌ 17.248.209.72 (14)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.72
+	03.06.2025 18:04:28	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.72
+	03.06.2025 18:04:02	A	caldav.fe2.apple-dns.net.	192.168.5.141	17.248.209.72
+	03.06.2025 18:04:01	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.72
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.72
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.72
+❌ 17.248.209.70 (12)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.70
+	03.06.2025 18:04:02	A	caldav.fe2.apple-dns.net.	192.168.5.141	17.248.209.70
+	03.06.2025 17:56:48	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.70
+	03.06.2025 17:56:38	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.70
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.70
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.70
+❌ 17.248.209.64 (11)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:13	A	mask-api.fe2.apple-dns.net.	192.168.5.141	17.248.209.64
+	03.06.2025 18:04:02	A	caldav.fe2.apple-dns.net.	192.168.5.141	17.248.209.64
+	03.06.2025 18:04:01	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.64
+	03.06.2025 17:56:38	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.64
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.64
+❌ 172.224.55.3 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:02	A	mask.apple-dns.net.	192.168.5.141	172.224.55.3
+❌ 172.224.55.11 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:07:02	A	mask.apple-dns.net.	192.168.5.141	172.224.55.11
+❌ 17.248.172.213 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:05:23	A	edge-136.deber3.ce.apple-dns.net.	192.168.5.141	17.248.172.213
+❌ 184.24.198.40 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:12	A	xp.itunes-apple.com.akadns.net.	192.168.5.141	184.24.198.40
+	03.06.2025 17:57:21	A	xp.apple.com.	192.168.5.141	184.24.198.40
+❌ 17.138.204.2 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:55	A	pds.ess.apple.com.	192.168.5.141	17.138.204.2
+❌ 23.212.192.26 (6)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:31	A	configuration.apple.com.akadns.net.	192.168.5.141	23.212.192.26
+	03.06.2025 18:04:11	A	init.itunes.apple.com.	192.168.5.141	23.212.192.26
+	03.06.2025 17:56:29	A	pd.itunes.apple.com.	192.168.5.141	23.212.192.26
+	03.06.2025 17:54:50	A	configuration.apple.com.	192.168.5.141	23.212.192.26
+❌ 17.253.57.210 (7)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:58	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.210
+	03.06.2025 17:54:07	A	init.ess.apple.com.	192.168.5.141	17.253.57.210
+	03.06.2025 17:52:42	A	mesu-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.210
+	03.06.2025 17:50:03	A	app-site-association.cdn-apple.com.	192.168.5.141	17.253.57.210
+❌ 17.248.209.67 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:28	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.67
+	03.06.2025 18:04:02	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.67
+	03.06.2025 17:56:30	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.67
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.67
+❌ 17.248.209.73 (14)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:02	A	fmf.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+	03.06.2025 18:04:02	A	caldav.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+	03.06.2025 18:04:01	A	setup.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+	03.06.2025 17:56:48	A	acsegateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+	03.06.2025 17:56:38	A	quota.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+	03.06.2025 17:56:37	A	stocks-edge.apple.com.	192.168.5.141	17.248.209.73
+	03.06.2025 17:56:29	A	fmip.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+	03.06.2025 17:52:36	A	gateway.fe2.apple-dns.net.	192.168.5.141	17.248.209.73
+❌ 146.75.119.6 (16)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:13	A	amp-api-edge.music.apple.com.	192.168.5.141	146.75.119.6
+	03.06.2025 18:04:00	A	amp-api.media-lb.apple.com.akadns.net.	192.168.5.141	146.75.119.6
+	03.06.2025 18:03:59	A	apps-mzstatic-cdn.itunes-apple.com.akadns.net.	192.168.5.141	146.75.119.6
+	03.06.2025 18:03:59	A	bag-cdn.itunes-apple.com.akadns.net.	192.168.5.141	146.75.119.6
+	03.06.2025 17:56:15	A	amp-api.apps.apple.com.	192.168.5.141	146.75.119.6
+	03.06.2025 17:56:13	A	amp-api-updates.apps.apple.com.	192.168.5.141	146.75.119.6
+	03.06.2025 17:56:12	A	bag-cdn-lb.itunes-apple.com.akadns.net.	192.168.5.141	146.75.119.6
+	03.06.2025 17:54:44	A	amp-api.media.apple.com.	192.168.5.141	146.75.119.6
+	03.06.2025 17:51:38	A	h3.apis.apple.map.fastly.net.	192.168.5.141	146.75.119.6
+	03.06.2025 17:50:09	A	bag.itunes.apple.com.	192.168.5.141	146.75.119.6
+❌ 17.253.57.202 (6)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:59	A	ocsp2-lb.apple.com.akadns.net.	192.168.5.141	17.253.57.202
+	03.06.2025 17:57:02	A	mesu-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.202
+	03.06.2025 17:56:36	A	cl3.apple.com.	192.168.5.141	17.253.57.202
+	03.06.2025 17:56:28	A	configuration.ls.apple.com.	192.168.5.141	17.253.57.202
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.202
+❌ 2.21.22.121 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:09	A	entitlements.edge-itunes-apple.com.akadns.net.	192.168.5.141	2.21.22.121
+❌ 2.21.22.105 (7)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:09	A	entitlements.edge-itunes-apple.com.akadns.net.	192.168.5.141	2.21.22.105
+	03.06.2025 17:56:30	A	gspe19-2-ssl.ls.apple.com.	192.168.5.141	2.21.22.105
+	03.06.2025 17:56:18	A	downloaddispatch.itunes.apple.com.	192.168.5.141	2.21.22.105
+	03.06.2025 17:55:05	A	entitlements.itunes.apple.com.	192.168.5.141	2.21.22.105
+	03.06.2025 17:54:43	A	fpinit.itunes.apple.com.	192.168.5.141	2.21.22.105
+	03.06.2025 17:50:08	A	gspe1-ssl.ls.apple.com.	192.168.5.141	2.21.22.105
+❌ 2.21.22.107 (5)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:09	A	entitlements.edge-itunes-apple.com.akadns.net.	192.168.5.141	2.21.22.107
+	03.06.2025 17:56:18	A	downloaddispatch.itunes.apple.com.	192.168.5.141	2.21.22.107
+	03.06.2025 17:55:05	A	entitlements.itunes.apple.com.	192.168.5.141	2.21.22.107
+	03.06.2025 17:54:43	A	fpinit.itunes.apple.com.	192.168.5.141	2.21.22.107
+❌ 17.253.57.195 (10)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:58	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.195
+	03.06.2025 18:03:58	A	captive-cidr.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.195
+	03.06.2025 17:55:28	A	publicassets.cdn-apple.g.aaplimg.com.	192.168.5.141	17.253.57.195
+	03.06.2025 17:54:07	A	init.ess.apple.com.	192.168.5.141	17.253.57.195
+	03.06.2025 17:51:36	A	gspe35-ssl.ls.apple.com.	192.168.5.141	17.253.57.195
+	03.06.2025 17:51:25	A	mesu-cdn.origin-apple.com.akadns.net.	192.168.5.141	17.253.57.195
+❌ 104.77.40.67 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:02	A	appleid.cdn-apple.com.	192.168.5.141	104.77.40.67
+❌ 17.157.96.170 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:04:01	A	amp-account.itunes.apple.com.	192.168.5.141	17.157.96.170
+❌ 17.253.57.206 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:58	A	gspe85-ssl.ls.apple.com.	192.168.5.141	17.253.57.206
+	03.06.2025 17:56:50	A	pancake.cdn-apple.com.akadns.net.	192.168.5.141	17.253.57.206
+	03.06.2025 17:56:28	A	gspe21-ssl.ls.apple.com.	192.168.5.141	17.253.57.206
+	03.06.2025 17:55:20	A	cstat.cdn-apple.com.	192.168.5.141	17.253.57.206
+	03.06.2025 17:50:04	A	mesu.apple.com.	192.168.5.141	17.253.57.206
+❌ 17.253.63.202 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	app-site-association.cdn-apple.com.	192.168.5.141	17.253.63.202
+❌ 17.253.105.202 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:58	A	smp-device-content.apple.com.	192.168.5.141	17.253.105.202
+❌ 17.253.105.201 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:58	A	smp-device-content.apple.com.	192.168.5.141	17.253.105.201
+❌ 17.253.57.198 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:03:58	A	smp-device-content.apple.com.	192.168.5.141	17.253.57.198
+	03.06.2025 17:56:36	A	gspe79-ssl.ls.apple.com.	192.168.5.141	17.253.57.198
+	03.06.2025 17:56:28	A	gspe35-applecdn-cutover.ls-apple.com.akadns.net.	192.168.5.141	17.253.57.198
+	03.06.2025 17:54:28	A	cl2.apple.com.	192.168.5.141	17.253.57.198
+	03.06.2025 17:54:07	A	init.ess.apple.com.	192.168.5.141	17.253.57.198
+❌ 172.224.55.4 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.4
+❌ 172.224.55.5 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.5
+❌ 172.224.55.12 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.12
+❌ 172.224.55.8 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.8
+❌ 172.224.55.10 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.10
+❌ 172.224.55.13 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.13
+❌ 172.224.55.6 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.6
+❌ 172.224.55.9 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 18:00:56	A	mask.apple-dns.net.	192.168.5.141	172.224.55.9
+❌ 17.242.184.19 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:59:52	A	gs-loc.ls-apple.com.akadns.net.	192.168.5.141	17.242.184.19
+	03.06.2025 17:59:52	A	gs-loc-new.ls-apple.com.akadns.net.	192.168.5.141	17.242.184.19
+❌ 17.138.144.4 (5)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:59:00	A	identity.ess-apple.com.akadns.net.	192.168.5.141	17.138.144.4
+	03.06.2025 17:55:04	A	identity.ess.apple.com.	192.168.5.141	17.138.144.4
+	03.06.2025 17:54:42	A	provision.ess.apple.com.	192.168.5.141	17.138.144.4
+	03.06.2025 17:54:42	A	pds.ess.apple.com.	192.168.5.141	17.138.144.4
+❌ 17.138.222.129 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:58:59	A	profile.ess-apple.com.akadns.net.	192.168.5.141	17.138.222.129
+❌ 17.253.57.204 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:30	A	publicassets.cdn-apple.g.aaplimg.com.	192.168.5.141	17.253.57.204
+	03.06.2025 17:56:30	A	init.ess.apple.com.	192.168.5.141	17.253.57.204
+	03.06.2025 17:54:53	A	publicassets.cdn-apple.com.	192.168.5.141	17.253.57.204
+	03.06.2025 17:50:03	A	cl1.apple.com.	192.168.5.141	17.253.57.204
+❌ 17.253.57.207 (8)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:28	A	gspe35-applecdn-cutover.ls-apple.com.akadns.net.	192.168.5.141	17.253.57.207
+	03.06.2025 17:55:28	A	publicassets.cdn-apple.g.aaplimg.com.	192.168.5.141	17.253.57.207
+	03.06.2025 17:55:02	A	static.ess.apple.com.	192.168.5.141	17.253.57.207
+	03.06.2025 17:54:56	A	updates.cdn-apple.com.	192.168.5.141	17.253.57.207
+❌ 17.253.57.197 (4)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:50	A	pancake.cdn-apple.com.akadns.net.	192.168.5.141	17.253.57.197
+	03.06.2025 17:55:20	A	cstat.cdn-apple.com.	192.168.5.141	17.253.57.197
+	03.06.2025 17:54:42	A	pancake.apple.com.	192.168.5.141	17.253.57.197
+❌ 17.253.53.203 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:50	A	pancake.cdn-apple.com.akadns.net.	192.168.5.141	17.253.53.203
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.53.203
+❌ 17.253.53.204 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:50	A	pancake.cdn-apple.com.akadns.net.	192.168.5.141	17.253.53.204
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.53.204
+	03.06.2025 17:54:42	A	pancake.apple.com.	192.168.5.141	17.253.53.204
+❌ 194.230.81.144 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:06	A	init-p01md.apple.com.	192.168.5.141	194.230.81.144
+❌ 17.242.179.27 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:35	A	gs-loc-new.ls-apple.com.akadns.net.	192.168.5.141	17.242.179.27
+❌ 23.212.193.118 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:31	A	gspe19-ssl.ls.apple.com.	192.168.5.141	23.212.193.118
+❌ 2.21.22.113 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:30	A	gspe19-2-ssl.ls.apple.com.	192.168.5.141	2.21.22.113
+	03.06.2025 17:54:43	A	fpinit.itunes.apple.com.	192.168.5.141	2.21.22.113
+❌ 194.230.81.145 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:06	A	init-p01md.apple.com.	192.168.5.141	194.230.81.145
+❌ 17.138.176.4 (3)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:42	A	pds.ess.apple.com.	192.168.5.141	17.138.176.4
+	03.06.2025 17:54:25	A	profile.ess.apple.com.	192.168.5.141	17.138.176.4
+❌ 17.145.16.2 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:42	A	pds.ess.apple.com.	192.168.5.141	17.145.16.2
+❌ 194.230.81.154 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:38	A	pds-init.ess.apple.com.	192.168.5.141	194.230.81.154
+❌ 194.230.81.138 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:38	A	pds-init.ess.apple.com.	192.168.5.141	194.230.81.138
+❌ 17.253.57.220 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:28	A	gsp-ssl.ls.apple.com.	192.168.5.141	17.253.57.220
+❌ 17.253.57.216 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:28	A	gsp-ssl.ls.apple.com.	192.168.5.141	17.253.57.216
+❌ 17.188.182.68 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:27	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.182.68
+	03.06.2025 17:56:27	A	init.push.apple.com.	192.168.5.141	17.188.182.68
+❌ 17.188.182.4 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:27	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.182.4
+	03.06.2025 17:56:27	A	init.push.apple.com.	192.168.5.141	17.188.182.4
+❌ 17.188.182.196 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:27	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.182.196
+	03.06.2025 17:56:27	A	init.push.apple.com.	192.168.5.141	17.188.182.196
+❌ 17.188.183.4 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:27	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.183.4
+	03.06.2025 17:56:27	A	init.push.apple.com.	192.168.5.141	17.188.183.4
+❌ 17.188.182.132 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:27	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.182.132
+	03.06.2025 17:56:27	A	init.push.apple.com.	192.168.5.141	17.188.182.132
+❌ 2.21.22.115 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:56:18	A	downloaddispatch.itunes.apple.com.	192.168.5.141	2.21.22.115
+❌ 184.24.196.28 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:44	A	sf-api-token-service.itunes.apple.com.	192.168.5.141	184.24.196.28
+❌ 2.21.22.123 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:08	A	gspe1-ssl.ls.apple.com.	192.168.5.141	2.21.22.123
+❌ 17.145.0.2 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:44	A	query.ess.apple.com.	192.168.5.141	17.145.0.2
+❌ 17.171.47.21 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:25	A	humb.apple.com.	192.168.5.141	17.171.47.21
+❌ 17.253.53.205 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.53.205
+❌ 17.253.53.202 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:23	A	smp-device-content.apple.com.	192.168.5.141	17.253.53.202
+❌ 2.21.22.106 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:05	A	entitlements.itunes.apple.com.	192.168.5.141	2.21.22.106
+	03.06.2025 17:54:43	A	fpinit.itunes.apple.com.	192.168.5.141	2.21.22.106
+❌ 2.21.22.122 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:55:05	A	entitlements.itunes.apple.com.	192.168.5.141	2.21.22.122
+❌ 184.24.196.175 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:56	A	iadsdk.apple.com.	192.168.5.141	184.24.196.175
+	03.06.2025 17:54:53	A	cf.iadsdk.apple.com.	192.168.5.141	184.24.196.175
+❌ 17.171.47.23 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:54	A	gdmf.apple.com.	192.168.5.141	17.171.47.23
+❌ 17.156.129.37 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:54	A	sandbox.itunes.apple.com.	192.168.5.141	17.156.129.37
+❌ 95.100.50.182 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:53	A	partiality.itunes.apple.com.	192.168.5.141	95.100.50.182
+❌ 17.253.37.203 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	app-site-association.cdn-apple.com.	192.168.5.141	17.253.37.203
+❌ 17.253.63.203 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	app-site-association.cdn-apple.com.	192.168.5.141	17.253.63.203
+❌ 17.253.14.123 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	time.apple.com.	192.168.5.141	17.253.14.123
+❌ 17.253.108.125 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	time.apple.com.	192.168.5.141	17.253.108.125
+❌ 17.253.14.251 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	time.apple.com.	192.168.5.141	17.253.14.251
+❌ 2.21.22.104 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:43	A	fpinit.itunes.apple.com.	192.168.5.141	2.21.22.104
+❌ 17.253.53.206 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:42	A	pancake.apple.com.	192.168.5.141	17.253.53.206
+❌ 17.32.194.12 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:42	A	aidc.apple.com.	192.168.5.141	17.32.194.12
+❌ 17.32.194.43 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:42	A	aidc.apple.com.	192.168.5.141	17.32.194.43
+❌ 17.179.252.18 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:42	A	gsas.apple.com.	192.168.5.141	17.179.252.18
+❌ 17.36.200.79 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:54:16	A	lcdn-locator.apple.com.	192.168.5.141	17.36.200.79
+❌ 17.33.200.238 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:40	A	sse-ws-p189.apple.com.	192.168.5.141	17.33.200.238
+❌ 17.188.143.189 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.143.189
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.143.189
+❌ 17.188.178.2 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.178.2
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.178.2
+❌ 17.188.178.34 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.178.34
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.178.34
+❌ 17.188.179.2 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.179.2
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.179.2
+❌ 17.188.143.157 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.143.157
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.143.157
+❌ 17.188.143.158 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.143.158
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.143.158
+❌ 17.188.178.226 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.178.226
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.178.226
+❌ 17.188.143.187 (2)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:52:37	A	init.push-apple.com.akadns.net.	192.168.5.141	17.188.143.187
+	03.06.2025 17:52:36	A	init.push.apple.com.	192.168.5.141	17.188.143.187
+❌ 17.188.170.10 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.170.10
+❌ 17.188.168.161 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.168.161
+❌ 17.188.171.74 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.171.74
+❌ 17.188.171.138 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.171.138
+❌ 17.188.170.72 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.170.72
+❌ 17.188.172.74 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.172.74
+❌ 17.188.172.10 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.172.10
+❌ 17.188.171.202 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:45	A	init.push.apple.com.	192.168.5.141	17.188.171.202
+❌ 17.57.172.10 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:34	A	gs-loc.apple.com.	192.168.5.141	17.57.172.10
+❌ 17.57.172.11 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:34	A	gs-loc.apple.com.	192.168.5.141	17.57.172.11
+❌ 17.137.162.2 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:04	A	humb.apple.com.	192.168.5.141	17.137.162.2
+❌ 17.253.14.245 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	doh.dns.apple.com.	192.168.5.141	17.253.14.245
+❌ 17.253.56.113 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	doh.dns.apple.com.	192.168.5.141	17.253.56.113
+❌ 64.78.200.1 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	doh.dns.apple.com.	192.168.5.141	64.78.200.1
+❌ 17.253.56.245 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	doh.dns.apple.com.	192.168.5.141	17.253.56.245
+❌ 17.253.14.243 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	doh.dns.apple.com.	192.168.5.141	17.253.14.243
+❌ 64.78.201.1 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	doh.dns.apple.com.	192.168.5.141	64.78.201.1
+❌ 17.253.37.204 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	app-site-association.cdn-apple.com.	192.168.5.141	17.253.37.204
+❌ 17.157.64.66 (1)	Timestamp	Type	Domain	Source IP	Destination IP
+	03.06.2025 17:50:03	A	gsa.apple.com.	192.168.5.141	17.157.64.66
+
+fmip.fe2.apple-dns.net <<<<<< FIND MY NETWORK
+gateway.fe2.apple-dns.net. <<<<<< FIND MY NETWORK
+A 17.248.209.64, A 17.248.209.70, A 17.248.209.66, A 17.248.209.74, A 17.248.209.72, A 17.248.209.65 (139)
+
+
+# Get store access
+✅	(4/4)	Fastly, Inc.	ISP for store
+ℹ️ bag.itunes.apple.com.
+ℹ️ h3.apis.apple.map.fastly.net.
+ℹ️ amp-api.media.apple.com.
+ℹ️ apps.mzstatic.com.
+ℹ️ bag-cdn-lb.itunes-apple.com.akadns.net.
+ℹ️ amp-api-updates.apps.apple.com.
+ℹ️ amp-api.apps.apple.com.
+ℹ️ is1-ssl.mzstatic.com.
+ℹ️ bag-cdn.itunes-apple.com.akadns.net.
+ℹ️ apps-mzstatic-cdn.itunes-apple.com.akadns.net.
+ℹ️ amp-api.media-lb.apple.com.akadns.net.
+ℹ️ is2-ssl.mzstatic.com.
+ℹ️ is3-ssl.mzstatic.com.
+ℹ️ is5-ssl.mzstatic.com.
+ℹ️ amp-api-edge.music.apple.com.
+ℹ️ is4-ssl.mzstatic.com.
+
+
+# Without WoodyNet no download possible, however the download is not from here it seems like a loadbalancer?
+✅	(2/2)	WoodyNet, Inc.
+Only DNS entry here is doh.dns.apple.com.
+
+
+# Get icloud access and verification with password if needed to install a new app
+gsa.apple.com. needs to be activated for authentification with icloud
+
+
+doh.dns.apple.com.
+
+ip range 17.253.57.0/24 allows store downloads /no wipe! sometimes it goes longer once 17.248.213.0/24 was blocked and shorty after again 57.0/24
+
+# Apps with in app purchases need always verification, even if the app is 0.00 CHF
+
+Now i waited for a entry like: p57-buy-lb.itunes-apple.com.akadns.net / p57-buy.itunes.apple.com
+Added the ip in this case 17.156.128.11 to the ruleset and verification of whatsapp worked
+
+Then the entry from dns
+📦 20:38:41.452292 IP 192.168.5.141.53599 > 192.168.5.1.53: 38148+ HTTPS? v.whatsapp.net. (32)
+DNS SSH Parser - Buffered query: {'timestamp': '20:38:41.452292', 'source_ip': '192.168.5.141', 'query_type': 'HTTPS', 'domain': 'v.whatsapp.net.', 'raw_line': '20:38:41.452292 IP 192.168.5.141.53599 > 192.168.5.1.53: 38148+ HTTPS? v.whatsapp.net. (32)', 'added_at': 1749069521.528567}
+
+And in ISP List
+	❌	(0/1)	Facebook, Inc.
+
+📦 20:44:37.343482 IP 192.168.5.141.51123 > 192.168.5.1.53: 16209+ HTTPS? www.whatsapp.com. (34)
+DNS SSH Parser - Buffered query: {'timestamp': '20:44:37.343482', 'source_ip': '192.168.5.141', 'query_type': 'HTTPS', 'domain': 'www.whatsapp.com.', 'raw_line': '20:44:37.343482 IP 192.168.5.141.51123 > 192.168.5.1.53: 16209+ HTTPS? www.whatsapp.com. (34)', 'added_at': 1749069877.4254808}
+📦 20:44:37.343494 IP 192.168.5.141.53373 > 192.168.5.1.53: 28870+ A? www.whatsapp.com. (34)
+DNS SSH Parser - Buffered query: {'timestamp': '20:44:37.343494', 'source_ip': '192.168.5.141', 'query_type': 'A', 'domain': 'www.whatsapp.com.', 'raw_line': '20:44:37.343494 IP 192.168.5.141.53373 > 192.168.5.1.53: 28870+ A? www.whatsapp.com. (34)', 'added_at': 1749069877.425494}
+📦 20:44:37.348435 IP 192.168.5.1.53 > 192.168.5.141.53373: 28870 2/0/0 CNAME mmx-ds.cdn.whatsapp.net., A 157.240.17.60 (87)
+DNS SSH Parser - Answer rest: CNAME mmx-ds.cdn.whatsapp.net., A 157.240.17.60 (87)
+✅ DNS SSH Parser - Stored new DNS: www.whatsapp.com. -> 157.240.17.60
+📦 20:44:37.384659 IP 192.168.5.1.53 > 192.168.5.141.51123: 16209 1/1/0 CNAME mmx-ds.cdn.whatsapp.net. (116)
+DNS SSH Parser - Answer rest: CNAME mmx-ds.cdn.whatsapp.net. (116)
+
+	✅	(3/3)	Facebook, Inc.
+
+
+Getting new chats ✅
+Getting old chats ✅
+Getting old messages ✅
+Getting old not downloaded images ✅
+Getting old not downloaded videos ✅
+sending messages ✅
+sending images ✅
+sending videos ✅
+
+RULES SET
+Action	Protocol	Source IP	Destination	Port	ISP	Since	Manual	DNS	Delete
+PASS	any	192.168.5.141	157.240.17.15
+Zurich, Switzerland	0	Facebook, Inc.	04.06.2025 21:00	False	False	Remove
+PASS	any	192.168.5.141	157.240.229.61
+Ashburn, United States	0	Facebook, Inc.	04.06.2025 21:00	False	False	Remove
+PASS	any	192.168.5.141	157.240.0.6
+Frankfurt am Main, Germany	0	Facebook, Inc.	04.06.2025 21:00	False	False	Remove
+PASS	any	192.168.5.141	157.240.0.61
+Frankfurt am Main, Germany	0	Facebook, Inc.	04.06.2025 20:52	False	False	Remove
+PASS	any	192.168.5.141	157.240.17.61
+Zurich, Switzerland	0	Facebook, Inc.	04.06.2025 20:52	False	False	Remove
+PASS	any	192.168.5.141	157.240.17.60
+Zurich, Switzerland	0	Facebook, Inc.	04.06.2025 20:52	False	False	Remove
+
+DNS OVERVIEW
+IP	ORG	ISP	DNS Request	Location	First seen	Last seen	DNS Reverse
+ −	157.240.17.15	Facebook, Inc.	Facebook, Inc.	ℹ️ scontent.xx.fbcdn.net.
+8031 Zurich, Switzerland	04.06.2025 20:53:13	04.06.2025 20:53:09	xx-fbcdn-shv-01-zrh1.fbcdn.net
+ −	157.240.17.61	Facebook, Inc.	Facebook, Inc.	ℹ️ g.whatsapp.net.
+ℹ️ chat.cdn.whatsapp.net.
+8031 Zurich, Switzerland	04.06.2025 20:45:41	04.06.2025 20:45:38	whatsapp-chatd-edge-shv-01-zrh1.facebook.com
+ −	157.240.17.60	Facebook, Inc.	Facebook, Inc.	ℹ️ v.whatsapp.net.
+ℹ️ mmx-ds.cdn.whatsapp.net.
+ℹ️ www.whatsapp.com.
+ℹ️ pps.whatsapp.net.
+ℹ️ static.whatsapp.net.
+ℹ️ media-zrh1-1.cdn.whatsapp.net.
+ℹ️ scontent.whatsapp.net.
+ℹ️ graph.whatsapp.com.
+ℹ️ dit.whatsapp.net.
+ℹ️ faq.whatsapp.com.
+ℹ️ acs.whatsapp.com.
+ℹ️ whatsapp.com.
+8031 Zurich, Switzerland	04.06.2025 17:06:11	04.06.2025 20:38:41	whatsapp-cdn-shv-01-zrh1.fbcdn.net
+ −	157.240.0.61	Facebook, Inc.	Facebook, Inc.	ℹ️ g-fallback.whatsapp.net.
+ℹ️ chat-fallback.cdn.whatsapp.net.
+60313 Frankfurt am Main, Germany	04.06.2025 20:46:03	04.06.2025 20:45:59	whatsapp-chatd-edge-shv-02-fra3.facebook.com
+ −	157.240.0.6	Facebook, Inc.	Facebook, Inc.	ℹ️ scontent.fallback.xx.fbcdn.net.
+60313 Frankfurt am Main, Germany	04.06.2025 20:53:13	04.06.2025 20:53:09	xx-fbcdn-shv-02-fra3.fbcdn.net
+ −	157.240.229.61	Facebook, Inc.	Facebook, Inc.	-	20149 Ashburn, United States	04.06.2025 21:00:08	04.06.2025 21:00:03	whatsapp-chatd-edge-shv-02-iad3.facebook.com
+
+Overall when i don't need to activate whatsapp by the appstore it works fine and it seems nothing is limited. WOHAA!!!
