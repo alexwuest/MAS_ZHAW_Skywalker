@@ -1806,3 +1806,31 @@ The ring arives. However deactivating the ruleset again the ring still works.
 If deactivating Amazon ips no ring is possible anymore. If reactivating these again the ring works.... again. Quite suspicious.
 
 Now deactivating the Amazon endpoints and adding the google ones. The ring... no ring... now it seems always to go over Amazon... not quite sure what here happend.
+
+now added a flush states as google had quite long connections. After that the ring worked again, even the rule was removed.
+Now after each change the states for the specific device are flushed to make sure all connections need to be done new for this device. Now the ring just workes when Googel LLC is activated. 
+I added now all rules without any talk google dns and no ring yet arrived.
+
+Now after 30 minutes wait to make really sure. Still no ring.
+
+I added now the talk google ips again. The ring arrived 5mins later. 
+So it seems that the ring is going over the mtalk.google.com ips. Added the DNS for better overview after the rules.
+It is quite interesting does each IP ends with 188. No other DNS are resolving to these ips than talk. No other google ip with 188 ending than the talk ones.
+A clear system behind? For other services i could just find for play.googleapis.com see the same behaviour with .223 at the end. 216.239.36.223, 216.239.38.223, 216.239.32.223, 216.239.34.223. But there was the first ip net the same. Not for the talk.
+
+PASS	any	192.168.5.140	74.125.128.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	mtalk.google.com
+PASS	any	192.168.5.140	173.194.208.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	alt6-mtalk.google.com
+PASS	any	192.168.5.140	108.177.96.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	mtalk.google.com.
+PASS	any	192.168.5.140	142.251.31.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	mtalk.google.com
+PASS	any	192.168.5.140	192.178.212.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	alt8-mtalk.google.com.
+PASS	any	192.168.5.140	172.217.218.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	mtalk.google.com
+PASS	any	192.168.5.140	142.251.190.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	alt7-mtalk.google.com.
+PASS	any	192.168.5.140	173.194.69.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	mtalk.google.com.
+PASS	any	192.168.5.140	142.250.101.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	alt5-mtalk.google.com.
+PASS	any	192.168.5.140	192.178.163.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	alt4-mtalk.google.com.
+PASS	any	192.168.5.140	108.177.125.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	alt3-mtalk.google.com.
+PASS	any	192.168.5.140	142.250.153.188	0	Google LLC	08.06.2025 17:34	False	False	Remove	mtalk.google.com
+PASS	any	192.168.5.140	142.250.4.188	0	Google LLC	08.06.2025 17:34	False	False	Remove 	alt2-mtalk.google.com. 
+
+Now with the ruleset all IPs from GOOGLE LLC allowed just without talk
+I can get into the store and download data. So two apps downloaded. No ring. yet.

@@ -15,6 +15,7 @@ ADJUST_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/setRule"
 SEARCH_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/searchRule"
 GET_RULE_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/get_rule"
 APPLY_ENDPOINT = f"{OPNSENSE_IP}/api/firewall/filter/apply"
+KILL_STATES = f"{OPNSENSE_IP}/api/diagnostics/firewall/kill_states"
 
 # shared sessions
 session = requests.Session()
@@ -193,7 +194,7 @@ def get_all_rules():
 
 
 
-def apply_firewall_changes():
+def apply_firewall_changes(ip=None):    
     try:
         response = requests.post(
             APPLY_ENDPOINT,
@@ -207,6 +208,18 @@ def apply_firewall_changes():
             print(f'Error applying firewall rules: {response.text}')
     except requests.RequestException as e:
         print(f"Network error while applying rules: {e}")
+
+    if ip:
+        # Flush states for the specific IP
+        flush_states_for_ip(ip)
+    else:
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
+        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
 
 
 def source_ip_adjustment(uuid, active_ip):
@@ -238,3 +251,19 @@ def source_ip_adjustment(uuid, active_ip):
         print(f"⚠️ Network error while adjusting rule: {e}")
 
     return None
+
+
+def flush_states_for_ip(ip):
+    url = f"{KILL_STATES}"
+    payload = {"filter": ip}
+    response = requests.post(
+        url,
+        data=payload,
+        auth=HTTPBasicAuth(API_KEY, API_SECRET),
+        verify=CERT_PATH
+    )
+
+    if response.status_code == 200:
+        print(f"✅ States flushed for {ip}")
+    else:
+        print(f"❌ Failed to flush states for {ip}: {response.status_code} - {response.text}")

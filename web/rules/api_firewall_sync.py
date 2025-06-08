@@ -255,7 +255,7 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
     removed = delete_multiple_rules(rules_to_remove) if rules_to_remove else 0
 
     if added > 0 or removed > 0:
-        apply_firewall_changes()
+        apply_firewall_changes(ip_source)
 
     config.API_USAGE -= 1
 
@@ -336,7 +336,7 @@ def allow_ips_for_device_and_isp(device_id, isp_name, mode="sync", return_remove
     if to_remove:
         removed = delete_multiple_rules([(r.source_ip, r.destination_ip) for r in to_remove])
 
-    apply_firewall_changes()
+    apply_firewall_changes(ip_source)
 
     return (added, removed) if return_removed else added
 
@@ -390,7 +390,7 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
         print(f"Error updating database: {e}")
         return False
     
-    apply_firewall_changes()
+    apply_firewall_changes(source_ip)
     return rule_uuid
 
 
@@ -438,7 +438,7 @@ def allow_ips_for_device_and_dns(records):
                     else:
                         print(f"⚠️ Failed to add rule for {record.source_ip} → {record.resolved_ip}")
     
-    apply_firewall_changes()
+    apply_firewall_changes(record.source_ip)
     return added_rules
 
 

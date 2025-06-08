@@ -4,7 +4,7 @@
     <div style="flex: 1; font-size: 13px; padding: 16px; overflow-y: auto;">
       <h2>DNS Records for: {{ device.device_id }} - {{ device.description }}</h2>
       
-      <input type="text" id="dnsSearch" placeholder="Search DNS records..." style="margin-bottom: 10px; width: 100%; max-width: 400px; padding: 4px;">
+      <input type="text" id="dnsSearch" placeholder="Search DNS records... search with ENTER" style="margin-bottom: 10px; width: 100%; max-width: 400px; padding: 4px;">
       <br><br>
       <button type="button" id="checkAllVisible" onclick="toggleAllVisible(this)">Mark all</button>
 
@@ -61,15 +61,16 @@
 {% include "footer.html" %}
 
 <script>
-  document.getElementById('dnsSearch').addEventListener('keyup', function () {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#dnsTableBody tr');
-      rows.forEach(row => {
-          const text = row.innerText.toLowerCase();
-          row.style.display = text.includes(filter) ? '' : 'none';
-      });
+  document.getElementById('dnsSearch').addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+          const filter = this.value.toLowerCase();
+          const rows = document.querySelectorAll('#dnsTableBody tr');
+          rows.forEach(row => {
+              const text = row.innerText.toLowerCase();
+              row.style.display = text.includes(filter) ? '' : 'none';
+          });
+      }
   });
-
 
   function toggleAllVisible(button) {
       const dnsTableRows = document.querySelectorAll('#dnsTableBody tr');
