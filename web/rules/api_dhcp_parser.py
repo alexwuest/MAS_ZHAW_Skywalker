@@ -35,51 +35,41 @@ def parse_opnsense_leases():
     
     except requests.exceptions.RequestException as e:
         print(f"⚠️ DHCP lease fetch failed: {e}")
+        return
 
-    if leases:
-        for lease in leases:
-            try:
-                if config.DEBUG_ALL:
-                    pprint(lease)  # log full raw lease for debugging
+    for lease in leases:
+        try:
+            if config.DEBUG_ALL:
+                pprint(lease)
 
-                ip = lease["address"]
-                mac = lease["mac"].lower()
-                starts = make_aware(datetime.datetime.strptime(lease["starts"], "%Y/%m/%d %H:%M:%S"))
-                ends = make_aware(datetime.datetime.strptime(lease["ends"], "%Y/%m/%d %H:%M:%S"))
-                hostname = lease.get("hostname", "")
-                manufacturer = lease.get("man", "")
-                interface = lease.get("if_descr", "")
+            ip = lease["address"]
+            mac = lease["mac"].lower()
+            starts = make_aware(datetime.datetime.strptime(lease["starts"], "%Y/%m/%d %H:%M:%S"))
+            ends = make_aware(datetime.datetime.strptime(lease["ends"], "%Y/%m/%d %H:%M:%S"))
+            hostname = lease.get("hostname", "")
+            manufacturer = lease.get("man", "")
+            interface = lease.get("if_descr", "")
 
-                # Find active lease for this IP and MAC
-                existing = DeviceLease.objects.filter(
-                    ip_address=ip,
-                    mac_address=mac,
-                    lease_end__gte=now()
-                ).order_by('-lease_start').first()
+            lease_obj, created = DeviceLease.objects.update_or_create(
+                ip_address=ip,
+                mac_address=mac,
+                defaults={
+                    "lease_start": starts,
+                    "lease_end": ends,
+                    "hostname": hostname,
+                    "manufacturer": manufacturer,
+                    "interface": interface,
+                    "last_active": now()
+                }
+            )
 
-                if existing:
-                    existing.lease_start = starts
-                    existing.lease_end = ends
-                    existing.hostname = hostname
-                    existing.manufacturer = manufacturer
-                    existing.interface = interface
-                    existing.last_active = now()
-                    existing.save()
-                    print(f"Updated lease: {mac} @ {ip}")
-                
-                else:
-                    DeviceLease.objects.create(
-                        ip_address=ip,
-                        mac_address=mac,
-                        lease_start=starts,
-                        lease_end=ends,
-                        hostname=hostname,
-                        manufacturer=manufacturer,
-                        interface=interface,
-                        last_active=now(),
-                        device=None
-                    )
-                    print(f"Created lease: {mac} @ {ip} ({hostname})")
+            # Only clear the device if this is a brand new lease record
+            if created:
+                lease_obj.device = None
+                lease_obj.save()
 
-            except Exception as e:
-                print(f"Error processing lease: {e}")
+            action = "Created" if created else "Updated"
+            print(f"{action} lease: {mac} @ {ip} ({hostname})")
+
+        except Exception as e:
+            print(f"❌ Error processing lease {lease.get('mac', '')}: {e}")

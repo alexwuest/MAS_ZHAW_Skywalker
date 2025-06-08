@@ -39,8 +39,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # AUTHENTICATION
-    path("auth/login/", auth_views.LoginView.as_view(), name="login"),
-    path("auth/logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
 
     # FIREWALL RULE MANAGEMENT
     path("add_rule/", add_rule_view, name="add-rule-view"),

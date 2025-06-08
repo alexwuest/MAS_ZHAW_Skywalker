@@ -12,6 +12,7 @@ from threading import Thread
 from .models import DNSRecord
 from . import config
 
+
 ssh_key_path = os.path.expanduser("~/.ssh/opnsense_key")
 
 # Buffers to track queries with timestamps
@@ -53,6 +54,8 @@ def dns_capture_worker():
         config.SSH_PARSER_ADDRESS,
         "tcpdump -i igc1 port 53 -n -l"
     ]
+
+    print(ssh_cmd)
 
     proc = subprocess.Popen(ssh_cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
 
@@ -105,17 +108,6 @@ def dns_capture_worker():
                     query_type = query_data["query_type"]
                     raw_line = query_data["raw_line"]
 
-                    if is_valid_ip(rip):
-
-                        # Check if resolved IP is in Apple's IP block (17.0.0.0/8)
-                        if ipaddress.ip_address(rip) in ipaddress.ip_network("17.0.0.0/8"):
-                            print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
-                            print("APPLE")
-                            print("APPLE")
-                            print("APPLE")
-                            print("APPLE")
-                            print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
-
                     record = DNSRecord.objects.filter(
                         source_ip=source_ip,
                         resolved_ip=rip,
@@ -126,8 +118,8 @@ def dns_capture_worker():
                     if record:
                         try:
                             record.save()  # auto_now updates timestamp
-                            #if config.DEBUG_DNS:
-                            print(f"🕓 DNS SSH Parser - Updated existing record: {domain} -> {rip}", flush=True)
+                            if config.DEBUG_DNS:
+                                print(f"🕓 DNS SSH Parser - Updated existing record: {domain} -> {rip}", flush=True)
                         except Exception as e:
                             print(f"❌ DNS SSH Parser - Failed to update record: {e}", flush=True)
                     else:
@@ -141,6 +133,32 @@ def dns_capture_worker():
                             )
                             if config.DEBUG_DNS:
                                 print(f"✅ DNS SSH Parser - Stored new DNS: {domain} -> {rip}", flush=True)
+                            
+                            if config.DEBUG_DNS_HIGHLIGHT:
+                                if "samsung" in domain or domain.endswith(".samsung.com"):
+                                    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+                                    print("SAMSUNG DETECTED")
+                                    print(domain + " -> " + rip)
+                                    print("SAMSUNG DETECTED")
+                                    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+
+                                if "google" in domain or domain.endswith(".google.com"):
+                                    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+                                    print("GOOGLE DETECTED")
+                                    print(domain + " -> " + rip)
+                                    print("GOOGLE DETECTED")
+                                    print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+
+                                if is_valid_ip(rip):
+
+                                    # Check if resolved IP is in Apple's IP block (17.0.0.0/8) as apple has many domains without directly apple included
+                                    if ipaddress.ip_address(rip) in ipaddress.ip_network("17.0.0.0/8"):
+                                        print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+                                        print("APPLE")
+                                        print(domain + " -> " + rip)
+                                        print("APPLE")
+                                        print("⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️")
+
                         except Exception as e:
                             print(f"❌ DNS SSH Parser - Failed to store DNS: {e}", flush=True)
 

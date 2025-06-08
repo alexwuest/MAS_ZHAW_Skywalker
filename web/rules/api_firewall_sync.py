@@ -336,9 +336,7 @@ def allow_ips_for_device_and_isp(device_id, isp_name, mode="sync", return_remove
     if to_remove:
         removed = delete_multiple_rules([(r.source_ip, r.destination_ip) for r in to_remove])
 
-    # Apply changes if needed
-    if added > 0 or removed > 0:
-        apply_firewall_changes()
+    apply_firewall_changes()
 
     return (added, removed) if return_removed else added
 
@@ -403,7 +401,6 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
 def allow_ips_for_device_and_dns(records):
     added_rules = []
     for record in records:
-        print(record)
         if record.resolved_ip:
             lease = DeviceLease.objects.filter(ip_address=record.source_ip).order_by('-lease_start').first()
             if lease and lease.device:
@@ -415,8 +412,11 @@ def allow_ips_for_device_and_dns(records):
                 
                 if db_rule:
                     print(f"Rule already exists for {record.source_ip} → {record.resolved_ip}")
-                    print("Rule already exists in DB, skipping creation.")
                 else:
+                    # Get metadata for the resolved IP
+                    metadata = DestinationMetadata.objects.filter(ip=record.resolved_ip, end_date__isnull=True).first()
+                    isp = metadata.isp if metadata else "Unknown"
+
                     uuid = add_firewall_rule(ip_source=record.source_ip, ip_destination=record.resolved_ip)
                     if uuid:
                         print(f"Rule added to OPNsense: {record.source_ip} → {record.resolved_ip}")
@@ -426,6 +426,7 @@ def allow_ips_for_device_and_dns(records):
                             device=lease.device,
                             destination_ip=record.resolved_ip,
                             protocol="any",
+                            isp_name=isp,
                             port=0,
                             action="PASS",
                             end_date=None,

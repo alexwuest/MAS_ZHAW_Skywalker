@@ -1500,3 +1500,309 @@ IP	ORG	ISP	DNS Request	Location	First seen	Last seen	DNS Reverse
  −	157.240.229.61	Facebook, Inc.	Facebook, Inc.	-	20149 Ashburn, United States	04.06.2025 21:00:08	04.06.2025 21:00:03	whatsapp-chatd-edge-shv-02-iad3.facebook.com
 
 Overall when i don't need to activate whatsapp by the appstore it works fine and it seems nothing is limited. WOHAA!!!
+
+# TODO Ideas
+# Add fixed blocked dns requests on dns server for known services like find my iphone. without ip no connection no rule to add by mistake
+# Add functions for dns names if runned on frontend get all requests for a specific dns name and add to ruleset. Like allow ios store, add access to gas.apple.com for authentification, fastly and woodynet for store access
+# Add view for dns views and rules based on that?
+
+
+
+#########################################
+New setup with Telegram
+
+No DNS requests seen. Seems does Telegram uses hardcoded ips for the app. No DNS requests at all. The ips showing up are not in the dns logs.
+
+Opening App no chat access. No pictures.
+
+Adding ISP Telegram
+
+	✅	(3/3)	Telegram Messenger Amsterdam Network	Update
+	✅	(3/3)	Telegram Messenger Network
+
+Getting full access on chats, messages, images, videos, sending messages, images and videos.
+For some chats other ips were loaded. But it was quite easy and everything was accessable
+
+	✅	(3/3)	Telegram Messenger Amsterdam Network	Update
+	✅	(1/1)	Telegram Messenger Inc	Update
+	✅	(4/4)	Telegram Messenger Network
+
+
+PASS	any	192.168.5.141	149.154.171.5
+Amsterdam, The Netherlands	0	Telegram Messenger Inc	05.06.2025 18:58	False	False	Remove
+PASS	any	192.168.5.141	91.108.56.112
+Amsterdam, The Netherlands	0	Telegram Messenger Network	05.06.2025 18:58	False	False	Remove
+PASS	any	192.168.5.141	149.154.165.120
+London, United Kingdom	0	Telegram Messenger Amsterdam Network	05.06.2025 18:53	False	False	Remove
+PASS	any	192.168.5.141	149.154.175.60
+Amsterdam, The Netherlands	0	Telegram Messenger Network	05.06.2025 18:51	False	False	Remove
+PASS	any	192.168.5.141	149.154.175.50
+Amsterdam, The Netherlands	0	Telegram Messenger Network	05.06.2025 18:51	False	False	Remove
+PASS	any	192.168.5.141	149.154.175.53
+Amsterdam, The Netherlands	0	Telegram Messenger Network	05.06.2025 18:51	False	False	Remove
+PASS	any	192.168.5.141	149.154.167.91
+London, United Kingdom	0	Telegram Messenger Amsterdam Network	05.06.2025 18:50	False	False	Remove
+PASS	any	192.168.5.141	149.154.167.223
+London, United Kingdom	0	Telegram Messenger Amsterdam Network	05.06.2025 18:50	False	False	Remove
+
+#########################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SAMSUNG Tests
+
+# Samsung Galaxy S21 
+# I started to send a ring with everything open. Ring ringed.
+# Started with Ring just Google. (Google LLC). Ring ringed.
+# Then everything just without Google LLC. Several times no ring possible.
+# Ring command comes from the Google LLC infrastructure.
+
+	✅	(1/1)	1984 ehf	Update
+	✅	(1/1)	AH CLOUD LTD	Update
+	✅	(2/2)	Aceville Pte.ltd.	Update
+	✅	(2/2)	Akamai International, BV	Update
+	✅	(10/10)	Akamai Technologies	Update
+	✅	(3/3)	Akamai Technologies, Inc.	Update
+	✅	(1/1)	Amazon Technologies Inc	Update
+	✅	(37/37)	Amazon Technologies Inc.	Update
+	✅	(10/10)	Amazon.com	Update
+	✅	(1/1)	Amazon.com, Inc	Update
+	✅	(78/78)	Amazon.com, Inc.	Update
+	✅	(1/1)	BellSouth.net Inc.	Update
+	✅	(6/6)	Cloudflare, Inc.	Update
+	✅	(1/1)	Contabo GmbH	Update
+	✅	(1/1)	Dominic Scholz trading as ITP-Solutions GmbH & Co. KG	Update
+	✅	(1/1)	Elcro Digital Services, LLC	Update
+	✅	(14/14)	Facebook, Inc.	Update
+	✅	(1/1)	Fasthosts Internet Ltd	Update
+	✅	(1/1)	Fastly, Inc.	Update
+	✅	(1/1)	FranTech Solutions	Update
+	❌	(0/48)	Google LLC	Update
+	✅	(1/1)	Hangzhou Alibaba Advertising Co., Ltd.	Update
+	✅	(7/7)	Hetzner Online GmbH	Update
+	✅	(1/1)	Internet Utilities NA LLC	Update
+	✅	(5/5)	Microsoft Corporation	Update
+	✅	(1/1)	Mvps LTD	Update
+	✅	(2/2)	OVH SAS	Update
+	✅	(2/2)	Oracle Corporation	Update
+	✅	(1/1)	REBA Communications BV	Update
+	✅	(5/5)	ReliableSite.Net LLC	Update
+	✅	(1/1)	ServerPoint.com	Update
+	✅	(2/2)	Sunrise GmbH	Update
+	✅	(3/3)	Telegram Messenger Amsterdam Network	Update
+	✅	(1/1)	The 1984 ehf	Update
+	✅	(1/1)	UnReal Servers, LLC	Update
+	✅	(1/1)	VERIZON	Update
+	✅	(1/1)	YousaFan LLC	Update
+	✅	(1/1)	netcup GmbH	Update
+
+
+
+
+IP	ORG	ISP	DNS Request	Location	First seen	Last seen	DNS Reverse
+ +	35.186.224.24	Google Cloud	Google LLC	ℹ️ accounts.spotify.com.
+N/A Kansas City, United States	06.06.2025 18:41:19	06.06.2025 18:41:18	24.224.186.35.bc.googleusercontent.com
+ +	142.250.178.234	Google LLC	Google LLC	ℹ️ www.googleapis.com.
+ℹ️ prod-lt-playstoregatewayadapter-pa.googleapis.com.
+ℹ️ firebaseremoteconfig.googleapis.com.
+ℹ️ optimizationguide-pa.googleapis.com.
+ℹ️ phonedeviceverification-pa.googleapis.com.
+ℹ️ safebrowsing.googleapis.com.
+ℹ️ gmscompliance-pa.googleapis.com.
+ℹ️ android.googleapis.com.
+ℹ️ geomobileservices-pa.googleapis.com.
+ℹ️ playstoregatewayadapter-pa.googleapis.com.
+ℹ️ deviceintegritytokens-pa.googleapis.com.
+ℹ️ digitalassetlinks.googleapis.com.
+ℹ️ geller-pa.googleapis.com.
+ℹ️ youtubei.googleapis.com.
+ℹ️ spot-pa.googleapis.com.
+ℹ️ infinitedata-pa.googleapis.com.
+ℹ️ firebaselogging.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:33:04	pnzrha-af-in-f10.1e100.net
+ +	142.250.178.202	Google LLC	Google LLC	ℹ️ www.googleapis.com.
+ℹ️ playstoregatewayadapter-pa.googleapis.com.
+ℹ️ prod-lt-playstoregatewayadapter-pa.googleapis.com.
+ℹ️ optimizationguide-pa.googleapis.com.
+ℹ️ gmscompliance-pa.googleapis.com.
+ℹ️ android.googleapis.com.
+ℹ️ deviceintegritytokens-pa.googleapis.com.
+ℹ️ geomobileservices-pa.googleapis.com.
+ℹ️ firebaseremoteconfig.googleapis.com.
+ℹ️ digitalassetlinks.googleapis.com.
+ℹ️ infinitedata-pa.googleapis.com.
+ℹ️ firebaselogging.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:32:59	pnzrha-aj-in-f10.1e100.net
+ +	142.250.203.110	Google LLC	Google LLC	ℹ️ android.apis.google.com.
+ℹ️ android.clients.google.com.
+ℹ️ play-fe.googleapis.com.
+ℹ️ clients2.google.com.
+8000 Zurich, Switzerland	06.06.2025 17:45:20	06.06.2025 17:32:57	zrh04s16-in-f14.1e100.net
+ +	8.8.4.4	Google Public DNS	Google LLC	ℹ️ dns.google.com.
+20149 Ashburn, United States	06.06.2025 19:14:39	06.06.2025 19:13:28	dns.google
+ +	8.8.8.8	Google Public DNS	Google LLC	ℹ️ dns.google.com.
+20149 Ashburn, United States	06.06.2025 19:14:37	06.06.2025 19:13:22	dns.google
+ +	172.217.168.42	Google LLC	Google LLC	ℹ️ www.googleapis.com.
+ℹ️ playstoregatewayadapter-pa.googleapis.com.
+ℹ️ prod-lt-playstoregatewayadapter-pa.googleapis.com.
+ℹ️ firebaseremoteconfig.googleapis.com.
+ℹ️ optimizationguide-pa.googleapis.com.
+ℹ️ phonedeviceverification-pa.googleapis.com.
+ℹ️ firebaseremoteconfigrealtime.googleapis.com.
+ℹ️ gmscompliance-pa.googleapis.com.
+ℹ️ deviceintegritytokens-pa.googleapis.com.
+ℹ️ geomobileservices-pa.googleapis.com.
+ℹ️ android.googleapis.com.
+ℹ️ digitalassetlinks.googleapis.com.
+ℹ️ geller-pa.googleapis.com.
+ℹ️ youtubei.googleapis.com.
+ℹ️ spot-pa.googleapis.com.
+ℹ️ infinitedata-pa.googleapis.com.
+ℹ️ firebaselogging.googleapis.com.
+8000 Zurich, Switzerland	06.06.2025 17:45:20	06.06.2025 17:33:41	zrh04s14-in-f10.1e100.net
+ +	142.250.178.206	Google LLC	Google LLC	ℹ️ app-measurement.com.
+ℹ️ android.clients.google.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:32:58	pnzrha-aj-in-f14.1e100.net
+ +	142.250.203.106	Google LLC	Google LLC	ℹ️ www.googleapis.com.
+ℹ️ playstoregatewayadapter-pa.googleapis.com.
+ℹ️ prod-lt-playstoregatewayadapter-pa.googleapis.com.
+ℹ️ firebaseremoteconfig.googleapis.com.
+ℹ️ optimizationguide-pa.googleapis.com.
+ℹ️ phonedeviceverification-pa.googleapis.com.
+ℹ️ firebaseremoteconfigrealtime.googleapis.com.
+ℹ️ gmscompliance-pa.googleapis.com.
+ℹ️ android.googleapis.com.
+ℹ️ deviceintegritytokens-pa.googleapis.com.
+ℹ️ geomobileservices-pa.googleapis.com.
+ℹ️ digitalassetlinks.googleapis.com.
+ℹ️ geller-pa.googleapis.com.
+ℹ️ youtubei.googleapis.com.
+ℹ️ spot-pa.googleapis.com.
+ℹ️ infinitedata-pa.googleapis.com.
+ℹ️ firebaselogging.googleapis.com.
+8000 Zurich, Switzerland	06.06.2025 17:44:20	06.06.2025 17:44:18	zrh04s16-in-f10.1e100.net
+ +	142.250.203.98	Google LLC	Google LLC	ℹ️ googleads.g.doubleclick.net.
+8000 Zurich, Switzerland	06.06.2025 17:45:20	06.06.2025 17:33:55	zrh04s16-in-f2.1e100.net
+ +	142.250.178.227	Google LLC	Google LLC	ℹ️ update.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:57:54	06.06.2025 17:57:52	pnzrha-af-in-f3.1e100.net
+ +	142.250.203.99	Google LLC	Google LLC	ℹ️ www.gstatic.com.
+ℹ️ beacons.gcp.gvt2.com.
+8000 Zurich, Switzerland	06.06.2025 18:06:32	06.06.2025 18:06:29	zrh04s16-in-f3.1e100.net
+ +	172.217.168.46	Google LLC	Google LLC	ℹ️ android.clients.google.com.
+ℹ️ dl.google.com.
+8000 Zurich, Switzerland	06.06.2025 17:45:20	06.06.2025 17:33:43	zrh04s14-in-f14.1e100.net
+ +	142.250.27.84	Google LLC	Google LLC	ℹ️ accounts.google.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:56:53	ra-in-f84.1e100.net
+ +	172.217.168.35	Google LLC	Google LLC	ℹ️ fonts.gstatic.com.
+ℹ️ firebase-settings.crashlytics.com.
+ℹ️ connectivitycheck.gstatic.com.
+8000 Zurich, Switzerland	06.06.2025 17:45:20	06.06.2025 17:32:58	zrh04s14-in-f3.1e100.net
+ +	142.251.31.188	Google LLC	Google LLC	-	94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:32:50	eq-in-f188.1e100.net
+ +	142.250.178.195	Google LLC	Google LLC	ℹ️ connectivitycheck.gstatic.com.
+ℹ️ beacons.gvt2.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:33:02	pnzrha-aj-in-f3.1e100.net
+ +	142.250.178.228	Google LLC	Google LLC	ℹ️ www.google.com.
+94043 Mountain View, United States	06.06.2025 17:45:18	06.06.2025 17:45:14	pnzrha-af-in-f4.1e100.net
+ +	142.250.4.188	Google LLC	Google LLC	ℹ️ alt2-mtalk.google.com.
+04625 Seoul, South Korea	06.06.2025 17:45:20	06.06.2025 17:33:04	sm-in-f188.1e100.net
+ +	216.239.34.223	Google LLC	Google LLC	ℹ️ play.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:33:03	N/A
+ +	142.250.178.238	Google LLC	Google LLC	ℹ️ android.clients.google.com.
+ℹ️ play.google.com.
+94043 Mountain View, United States	06.06.2025 17:45:20	06.06.2025 17:33:29	pnzrha-af-in-f14.1e100.net
+ +	216.239.32.223	Google LLC	Google LLC	ℹ️ play.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:44:24	06.06.2025 17:44:22	N/A
+ +	35.190.43.134	Google Cloud	Google LLC	ℹ️ usc1-gcp-v61.api.snapchat.com.
+ℹ️ gcp.api.snapchat.com.
+N/A Kansas City, United States	06.06.2025 17:45:20	06.06.2025 17:34:01	134.43.190.35.bc.googleusercontent.com
+ +	35.241.16.93	Google Cloud	Google LLC	ℹ️ bolt-gcdn.sc-cdn.net.
+N/A Kansas City, United States	06.06.2025 17:45:20	06.06.2025 17:34:03	93.16.241.35.bc.googleusercontent.com
+ +	35.244.195.33	Google Cloud	Google LLC	ℹ️ app-analytics-v2.snapchat.com.
+N/A Kansas City, United States	06.06.2025 17:45:20	06.06.2025 17:34:01	33.195.244.35.bc.googleusercontent.com
+ +	34.120.159.232	Google Cloud	Google LLC	ℹ️ usc1-gcp-v62.api.snapchat.com.
+N/A Kansas City, United States	06.06.2025 17:45:20	06.06.2025 17:34:01	232.159.120.34.bc.googleusercontent.com
+ +	216.239.38.223	Google LLC	Google LLC	ℹ️ play.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:45:07	06.06.2025 17:45:03	N/A
+ +	216.239.36.223	Google LLC	Google LLC	ℹ️ play.googleapis.com.
+94043 Mountain View, United States	06.06.2025 17:45:21	06.06.2025 17:45:43	N/A
+ +	216.239.35.0	Google LLC	Google LLC	ℹ️ time.android.com.
+ℹ️ time.google.com.
+30168 Austell, United States	06.06.2025 17:45:24	06.06.2025 17:44:03	time1.google.com
+ +	216.239.35.12	Google LLC	Google LLC	ℹ️ time.android.com.
+ℹ️ time.google.com.
+30168 Austell, United States	06.06.2025 17:44:24	06.06.2025 17:44:23	time4.google.com
+ +	216.239.35.8	Google LLC	Google LLC	ℹ️ time.android.com.
+ℹ️ time.google.com.
+30168 Austell, United States	06.06.2025 17:44:46	06.06.2025 17:44:44	time3.google.com
+ +	216.239.35.4	Google LLC	Google LLC	ℹ️ time.android.com.
+ℹ️ time.google.com.
+30168 Austell, United States	06.06.2025 17:45:07	06.06.2025 17:45:03	time2.google.com
+ +	172.217.168.54	Google LLC	Google LLC	ℹ️ i.ytimg.com.
+8000 Zurich, Switzerland	06.06.2025 17:56:55	06.06.2025 17:56:50	zrh04s14-in-f22.1e100.net
+ +	142.250.178.196	Google LLC	Google LLC	ℹ️ www.google.com.
+94043 Mountain View, United States	06.06.2025 18:58:22	06.06.2025 18:58:19	pnzrha-aj-in-f4.1e100.net
+ +	142.250.153.188	Google LLC	Google LLC	ℹ️ mtalk.google.com.
+94043 Mountain View, United States	06.06.2025 18:58:25	06.06.2025 18:58:20	ea-in-f188.1e100.net
+ +	108.177.125.188	Google LLC	Google LLC	ℹ️ alt3-mtalk.google.com.
+94043 Mountain View, United States	06.06.2025 18:58:44	06.06.2025 18:58:41	tp-in-f188.1e100.net
+ +	192.178.163.188	Google LLC	Google LLC	ℹ️ alt4-mtalk.google.com.
+94043 Mountain View, United States	06.06.2025 18:59:36	06.06.2025 18:59:30	tt-in-f188.1e100.net
+ +	142.250.101.188	Google LLC	Google LLC	ℹ️ alt5-mtalk.google.com.
+94043 Mountain View, United States	06.06.2025 19:00:34	06.06.2025 19:00:31	dz-in-f188.1e100.net
+ +	142.250.203.118	Google LLC	Google LLC	ℹ️ play-lh.googleusercontent.com.
+ℹ️ i.ytimg.com.
+8000 Zurich, Switzerland	06.06.2025 19:07:16	06.06.2025 19:05:56	zrh04s16-in-f22.1e100.net
+ +	173.194.69.188	Google LLC	Google LLC	ℹ️ mtalk.google.com.
+94043 Mountain View, United States	06.06.2025 19:05:42	06.06.2025 19:05:05	ef-in-f188.1e100.net
+ +	142.251.190.188	Google LLC	Google LLC	ℹ️ alt7-mtalk.google.com.
+94043 Mountain View, United States	06.06.2025 19:05:50	06.06.2025 19:05:47	pb-in-f188.1e100.net
+ +	173.194.160.73	Google LLC	Google LLC	ℹ️ rr4---sn-1gi7znes.gvt1.com.
+8000 Zurich, Switzerland	06.06.2025 19:06:52	06.06.2025 19:05:59	zrh04s13-in-f9.1e100.net
+ +	173.194.160.74	Google LLC	Google LLC	ℹ️ rr5---sn-1gi7znes.gvt1.com.
+8000 Zurich, Switzerland	06.06.2025 19:06:53	06.06.2025 19:05:59	zrh04s13-in-f10.1e100.net
+ +	74.125.108.199	Google LLC	Google LLC	ℹ️ rr2---sn-1gi7znek.gvt1.com.
+8000 Zurich, Switzerland	06.06.2025 19:06:54	06.06.2025 19:05:59	zrh04s17-in-f7.1e100.net
+ +	74.125.11.70	Google LLC	Google LLC	ℹ️ rr1---sn-1giz7n7l.gvt1.com.
+20121 Milan, Italy	06.06.2025 19:07:06	06.06.2025 19:07:04	zrh40s02-in-f6.1e100.net
+ +	74.125.11.74	Google LLC	Google LLC	ℹ️ rr5---sn-1giz7n7l.gvt1.com.
+20121 Milan, Italy	06.06.2025 19:07:06	06.06.2025 19:07:04	zrh40s02-in-f10.1e100.net
+
+when adding the ip's for mtalk.google.com
+
+PASS	any	192.168.5.140	173.194.208.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	108.177.96.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	142.251.31.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	192.178.212.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	172.217.218.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	142.251.190.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	173.194.69.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	142.250.101.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	192.178.163.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	108.177.125.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	142.250.153.188	0		06.06.2025 19:55	False	False	Remove
+PASS	any	192.168.5.140	142.250.4.188	0		06.06.2025 19:55	False	False	Remove
+
+The ring arives. However deactivating the ruleset again the ring still works.
+If deactivating Amazon ips no ring is possible anymore. If reactivating these again the ring works.... again. Quite suspicious.
+
+Now deactivating the Amazon endpoints and adding the google ones. The ring... no ring... now it seems always to go over Amazon... not quite sure what here happend.
