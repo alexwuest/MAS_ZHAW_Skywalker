@@ -1,6 +1,7 @@
 # Local files and directories
 certificate_crt.pem
 temp.py
+/web/db.sqlite3
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

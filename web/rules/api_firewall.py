@@ -72,6 +72,9 @@ def add_firewall_rule(ip_source, ip_destination, description=None):
 
 
 def delete_rule_by_uuid(rule_uuid):
+    """
+    Remove firewall rule needs to have the specific UUID
+    """
     try:
         response = session.post(
             f"{DEL_RULE_ENDPOINT}/{rule_uuid}",
@@ -90,6 +93,9 @@ def delete_rule_by_uuid(rule_uuid):
 
 
 def delete_multiple_rules(rules_to_remove):
+    """
+    Deletes multiple active firewall rules based on source and destination IPs.
+    """
     deleted_count = 0
 
     for ip_source, ip_destination in rules_to_remove:
@@ -122,6 +128,9 @@ def delete_multiple_rules(rules_to_remove):
 
 
 def get_all_rules_uuid(uuid):
+    """
+    Get all firewall rules for that specific UUID
+    """
     try:
         url = f"{GET_RULE_ENDPOINT}/{uuid}"
         response = requests.get(
@@ -150,7 +159,11 @@ def get_all_rules_uuid(uuid):
         return None
 
 
-def check_rule_exists(ip_source, ip_destination): # TODO REMOVE
+def check_rule_exists(ip_source, ip_destination):
+    """
+    Check if a rule exists needed parameter ip_source, ip_destination
+    Gives back True / False
+    """
     try:
         response = requests.post(
             SEARCH_RULE_ENDPOINT,
@@ -175,6 +188,9 @@ def check_rule_exists(ip_source, ip_destination): # TODO REMOVE
 
 
 def get_all_rules():
+    """
+    Gives back all rules no argument needed
+    """
     try:
         response = requests.post(
             SEARCH_RULE_ENDPOINT,
@@ -193,8 +209,10 @@ def get_all_rules():
         return False
 
 
-
 def apply_firewall_changes(ip=None):    
+    """
+    Apply firewall changes to get ruleset live. Needed after each change to take effect!
+    """
     try:
         response = requests.post(
             APPLY_ENDPOINT,
@@ -214,16 +232,12 @@ def apply_firewall_changes(ip=None):
         flush_states_for_ip(ip)
     else:
         print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
-        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
-        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
-        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
-        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
-        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
-        print("⚠️⚠️⚠️ No IP provided, skipping state flush.")
 
 
 def source_ip_adjustment(uuid, active_ip):
-    """ Adjust source ip for Devices where this has changed """
+    """
+    Adjust source ip for Devices where this has changed
+    """
 
     payload = {
         "rule": {
@@ -254,6 +268,9 @@ def source_ip_adjustment(uuid, active_ip):
 
 
 def flush_states_for_ip(ip):
+    """
+    Flush all states for that specific device. Argument ip needed.
+    """
     url = f"{KILL_STATES}"
     payload = {"filter": ip}
     response = requests.post(

@@ -1,4 +1,3 @@
-#TODO Longer inactive devices should be removed from the firewall list to keep it clean and API calls quicker
 from copy import deepcopy
 from django.utils import timezone
 import time
@@ -11,7 +10,9 @@ from . import config
 CHECK_INTERVAL_SECONDS = 60  # 15 minutes 900
 
 def get_active_ip(device=None, device_id=None):
-    """Returns the latest active IP for the device object or device_id, or None."""
+    """
+    Returns the latest active IP for the "device" object or "device_id", or None.
+    """
     if device:
         return (
             DeviceLease.objects
@@ -31,6 +32,9 @@ def get_active_ip(device=None, device_id=None):
 
 
 def get_allowed_isps(device_id):
+    """
+    Get Allowed ISPs from database, needed argument "device_id"
+    """
     return list(
         DeviceAllowedISP.objects
         .filter(device_id=device_id)
@@ -47,8 +51,11 @@ def get_blocked_ips_by_isp(isp_list, source_ip):
         ).values_list('destination_ip', flat=True)
     )
                         
-def check_rule_exists(ip_source, ip_destination):                                           # NEW Rule check!
-    # Try to find rule in the DB
+
+def check_rule_exists(ip_source, ip_destination): 
+    """
+    Check for rule if it exists needed Arguement "ip_source" AND "ip_destination"
+    """
     rule = FirewallRule.objects.filter(
         source_ip=ip_source,
         destination_ip=ip_destination,
@@ -79,6 +86,11 @@ def check_rule_exists(ip_source, ip_destination):                               
 # Sync OPNsense Firewall Rules
 ##############################################################################################################################
 def db_opnsense_sync():
+    """
+    This starts the sync for each entry marked before in the DB with "verify_opnsense". It starts to check if Entry is in OPNsense
+    API present if not remove from DB as well. If in OPNsense but not in DB remove from OPNsense. Always check if both possible otherwise
+    remove from the one or from the other to keep rules alligned.
+    """
     # Overview variables
     verified = 0
     ended = 0
@@ -266,6 +278,20 @@ def allow_blocked_ips_for_device(device_id, return_removed=False):
 # Management ISP Rules - Single ISP
 ##############################################################################################################################
 def allow_ips_for_device_and_isp(device_id, isp_name, mode="sync", return_removed=False):
+    """
+    Adds firewall allow rules for a device based on its allowed ISPs,
+    and removes any removed rules that are no longer valid.
+
+    Workflow:
+    - Gets the device's currently active IP.
+    - Retrieves destination IPs currently blocked but associated with allowed ISPs.
+    - Preloads existing non-DNS rules for the device to avoid duplication.
+    - For each allowed destination IP:
+        - If a rule already exists, marks it for re-verification.
+        - If not, creates a new allow rule both in the firewall (via API) and in the database.
+    - Removes any existing rules that no longer match the allowed ISP list or destination IP set.
+    - Applies pending firewall changes only if there were additions or deletions.
+    """
     print(f"[{mode.upper()}] Updating firewall rules for device {device_id} and ISP: {isp_name}")
     
     ip_source = get_active_ip(device_id=device_id)
@@ -345,6 +371,16 @@ def allow_ips_for_device_and_isp(device_id, isp_name, mode="sync", return_remove
 # Single rule addition from grouped view
 ##############################################################################################################################
 def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
+    """
+    Adds a single PASS rule to both the firewall and the local database for a given IP pair.
+
+    Workflow:
+    - Sends a request to the firewall (OPNsense) to allow traffic from source_ip to destination_ip.
+    - If successful, fetches the related device (if any) using active lease info.
+    - Looks up destination metadata (e.g., ISP) for enrichment.
+    - Saves the rule to the database (or fetches it if it already exists).
+    - Applies pending firewall changes.
+    """
     try:
         rule_uuid = add_firewall_rule(source_ip, destination_ip)
 
@@ -399,6 +435,15 @@ def add_single_rule(source_ip, destination_ip, manual=True, dns=False):
 # DNS Rule management
 ##############################################################################################################################
 def allow_ips_for_device_and_dns(records):
+    """
+    Creates firewall PASS rules for DNS-resolved IPs associated with known devices.
+
+    For each DNS record in the input:
+    - If a resolved IP is present and belongs to a known device:
+        - Checks if a rule already exists in the database.
+        - If not, retrieves metadata for the destination IP and adds a rule to the firewall.
+        - Saves the new rule to the database and tracks it in the returned list.
+    """
     added_rules = []
     for record in records:
         if record.resolved_ip:
@@ -446,6 +491,14 @@ def allow_ips_for_device_and_dns(records):
 # Archiving Device cleanup - Housekeeping ;-)
 ##############################################################################################################################
 def archiving_device(device):
+    """
+    Archives a device by deactivating its firewall rules and clearing associated allowed ISPs.
+
+    Workflow:
+    - Marks all active (end_date is null) firewall rules for the given device as ended (sets end_date to now).
+    - Flags each rule for OPNsense verification.
+    - Deletes all associated DeviceAllowedISP entries for the device.
+    """
 
     ## Get all active rules for the device and set end_date to now
     active_rules = FirewallRule.objects.filter(
@@ -477,6 +530,20 @@ def archiving_device(device):
 # Rule swap if IP changed for DEVICE
 ##############################################################################################################################
 def adjust_invalid_source_ips(device):
+    """
+    Updates active firewall rules for a device if its source IP has changed.
+
+    This function:
+    - Looks up the device's current active IP address from the DHCP lease.
+    - Finds all active firewall rules for the device that do not match the current IP.
+    - For each such rule:
+        - Calls `source_ip_adjustment()` to update the rule in OPNsense.
+        - If successful:
+            - Marks the existing rule as ended.
+            - Creates a new rule with the updated source IP and current timestamp.
+    - Increments and decrements `config.API_USAGE` to reflect external API usage.
+
+    """
     print(f"Lookup source IP adjustment for {device}")
     active_ip = get_active_ip(device=device)
     if not active_ip:
@@ -536,6 +603,16 @@ def adjust_invalid_source_ips(device):
 # Check if MetadataSeenByDevice needs to be updated
 ##############################################################################################################################
 def recheck_metadata_seen():
+    """
+    Periodically scans recent firewall logs to backfill MetadataSeenByDevice records.
+
+    This function runs in an infinite loop:
+    - Every interval (based on CHECK_INTERVAL_SECONDS), it:
+        - Retrieves firewall logs from the last 12 hours that contain metadata.
+        - Matches each log's source IP and timestamp to a DeviceLease to identify the device.
+        - If the metadata has not yet been linked to that device, it creates a MetadataSeenByDevice entry.
+    - Tracks and prints the number of new entries added during each cycle.
+    """
     print("Recheck for unlinked Metadata service started...")
     while True:
         try:
@@ -596,6 +673,16 @@ def recheck_metadata_seen():
 # Check for all Rules on OPNsense if any are missing in DB
 ##############################################################################################################################
 def check_opnsense_rules():
+    """
+    Synchronizes OPNsense firewall rules with the local database.
+
+    Workflow:
+    - Retrieves all current rules from the OPNsense firewall.
+    - For each rule:
+        - If it exists in the local DB as an active rule (`end_date=None`), no action is taken.
+        - If it does not exist in the DB, assumes it is orphaned and deletes it from OPNsense.
+    - Logs activity for debugging purposes if `config.DEBUG` or `config.DEBUG_ALL` are enabled.
+    """
     try:
         response = get_all_rules()
         if not response:

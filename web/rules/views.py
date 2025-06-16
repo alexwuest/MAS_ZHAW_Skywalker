@@ -138,6 +138,10 @@ def combined_firewall_logs_view(request):
     devices = Device.objects.all().order_by("device_id")
     action = request.GET.get("action", "block")
 
+    if device_id == "0":
+        device_id = None
+        return redirect("manage-devices")
+
     # Validate action type
     if action not in ["block", "pass"]:
         return HttpResponseBadRequest("Invalid action")
@@ -254,7 +258,6 @@ def combined_firewall_logs_view(request):
         "devices": devices,
         "selected_device_id": int(device_id) if device_id else None,
         "log_type": action,
-    
     })
 
 
@@ -927,8 +930,6 @@ def device_logs_view(request):
 ###########################################################################
 # STATUS OVERVIEW
 ###########################################################################
-#TODO REFACTORING FIREWALL TO API!
-
 def system_status_view(request):
     device_id = request.GET.get("device_id") or request.POST.get("device_id")
     now_time = timezone.now()
@@ -955,7 +956,8 @@ def system_status_view(request):
     active_firewall_rules = FirewallRule.objects.filter(end_date__isnull=True).count()
     verify_opnsense = FirewallRule.objects.filter(verify_opnsense=True).count()
     total_firewall_rules = FirewallRule.objects.count()
-
+    # This part is done in the final release with a new model where a thread is checking the state just all minutes, if online it stores 1 if offline 0
+    # The frontend just checks the db if online or not and the request is in ms than in seconds because of the timeout of 3 seconds.
     try:
         response = requests.get(
             f"{OPNSENSE_IP}/api/diagnostics/firewall/log",
