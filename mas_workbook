@@ -1426,6 +1426,9 @@ ip range 17.253.57.0/24 allows store downloads /no wipe! sometimes it goes longe
 # Apps with in app purchases need always verification, even if the app is 0.00 CHF
 
 Now i waited for a entry like: p57-buy-lb.itunes-apple.com.akadns.net / p57-buy.itunes.apple.com
+
+
+
 Added the ip in this case 17.156.128.11 to the ruleset and verification of whatsapp worked
 
 Then the entry from dns
@@ -1547,17 +1550,598 @@ London, United Kingdom	0	Telegram Messenger Amsterdam Network	05.06.2025 18:50	F
 
 #########################################
 
+BINANCE
+
+Added all "binance" dns entries 92
+
+	❌	(0/2)	ACE	Update
+	❌	(0/4)	Aceville Pte.ltd.	Update
+	❌	(0/2)	Akamai International B.V.	Update
+	❌	(0/21)	Akamai International, BV	Update
+	❌	(0/29)	Akamai Technologies	Update
+	❌	(0/14)	Akamai Technologies, Inc.	Update
+	⚠️	(7/8)	Amazon Technologies Inc	Update
+	⚠️	(43/63)	Amazon Technologies Inc.	Update
+	⚠️	(32/82)	Amazon.com, Inc.	Update
+	❌	(0/141)	Apple Inc.	Update
+	❌	(0/1)	BellSouth.net Inc.	Update
+	⚠️	(2/4)	Cloudflare, Inc.	Update
+	❌	(0/2)	Facebook, Inc.	Update
+	❌	(0/2)	Fastly, Inc.	Update
+	❌	(0/15)	Google LLC	Update
+	❌	(0/1)	Hangzhou Alibaba Advertising Co., Ltd.	Update
+	❌	(0/1)	Microsoft Corporation	Update
+	❌	(0/10)	Sunrise GmbH	Update
+	❌	(0/3)	Telegram Messenger Amsterdam Network	Update
+	❌	(0/1)	Telegram Messenger Inc	Update
+	❌	(0/4)	Telegram Messenger Network	Update
+	❌	(0/2)	WoodyNet, Inc.	Update
 
 
+ction	Protocol	Source IP	Destination	Port	ISP	Since	Manual	DNS	Delete
+PASS	any	192.168.5.141	3.113.94.195
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	18.180.190.155
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	52.197.227.27	0	Unknown	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	57.181.96.158
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	35.74.121.8
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	54.95.158.246
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	13.113.155.196
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	13.113.91.117
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.195.113.245
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.73.100.250
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.194.67.122
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.165.183.88
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.168.74.228
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.192.175.98
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.69.113.116
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	57.182.6.147
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	43.206.87.76
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	176.32.85.196
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	13.113.215.227
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.115.107.234
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.195.93.105
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.68.118.92
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.119
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.115.228.108	0	Unknown	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	43.206.179.8
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.197.224.75
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	57.182.162.196
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.195.144.88
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.90
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.180.36.32	0	Unknown	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.69.76.147
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.76.163.209
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.65.62.156
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.73.188.122
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	43.207.8.181
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.194.26.68
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.178.41.51
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.95.237.119
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.182.201.69
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.179.234.250
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.180.55.79
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.150.141.249
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.196.131.99
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.77.132.39
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.197.236.60
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	57.181.159.157
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.177.111.197
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.197.125.206
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.65.152.69
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	13.114.158.105
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	104.18.34.2
+Toronto, Canada	0	Cloudflare, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.65.246.3
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.165.183.122
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.92
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.150.104.133
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.196.188.141	0	Unknown	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.168.107.99
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.10
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.92.19.123
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.75.193.122
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	43.206.249.158
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.72.97.155
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	18.165.183.26
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	13.115.87.197
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.238.53.33	0	Unknown	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.95.117.131
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.150.195.196
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.150.42.2
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.199.36.67
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	35.79.143.56
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	52.199.173.238	0	Unknown	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	13.230.5.7
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	3.115.241.131
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	3.115.185.132
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	54.95.21.218
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	54.238.49.214
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.179.232.172	0	Unknown	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	176.34.54.199
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	35.76.229.236
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	52.69.213.8
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.181.33.54
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.177.166.132
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	172.64.153.254
+Toronto, Canada	0	Cloudflare, Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.178.240.33
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.182.160.64
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	54.65.18.245	0	Unknown	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	13.113.156.118
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	52.195.36.76
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	18.165.183.129
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	52.192.207.166	0	Unknown	10.06.2025 20:15	False	False	 −
+PASS	any	192.168.5.141	54.150.133.80	0	Unknown	10.06.2025 20:15	False	False	 −
+PASS	any	192.168.5.141	3.112.143.7	0	Unknown	10.06.2025 20:15	False	False
 
+Relogin with email / pass and 2FA was needed to gain access to the account. Probably because of multiple devices? Added just 1 day ago the account.
+USD 99.99 Acount Balance showing up. Transaction can be looked at in detail.
 
+Sometimes i had to open traffic some more so i ended up with 184 rules... quite isinstance
 
+Action	Protocol	Source IP	Destination	Port	ISP	Since	Manual	DNS	Delete
+PASS	any	192.168.5.141	54.250.65.201
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.178.14.41
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	13.113.25.7
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.180.197.70
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	43.207.8.181
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	52.194.121.5
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	3.114.26.80
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	52.68.118.92
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.238.49.214
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.165.183.88
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.65.152.69
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	52.193.225.211
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	176.32.85.196
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	57.182.6.147
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	52.193.130.179
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.180.190.155
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.180.162.107
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	43.206.63.126
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	13.113.156.118
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	52.195.144.88
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.168.74.228
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.150.23.124
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	35.73.170.72
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	35.79.250.27
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.165.183.106
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	35.79.152.34
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	13.113.91.117
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.177.166.132
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.95.237.119
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	3.114.20.199
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	18.179.234.250
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	13.230.220.117
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.168.83.168
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	13.112.181.162
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	43.206.179.8
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	35.76.163.209
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	54.150.104.240
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:46	False	False	 −
+PASS	any	192.168.5.141	13.230.82.17
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	35.75.184.161
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	54.95.5.20
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	54.249.124.204
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	52.198.88.143
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	3.113.188.116
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	52.68.109.233
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	18.179.81.224
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	3.114.46.185
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	35.76.161.217
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:45	False	False	 −
+PASS	any	192.168.5.141	18.177.157.20
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	35.73.48.190
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	3.115.182.229
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	3.112.120.90
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	57.182.117.67
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	18.177.91.115
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	54.178.103.186
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	52.194.160.199
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	54.199.194.133
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:44	False	False	 −
+PASS	any	192.168.5.141	13.114.225.150
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.177.184.215
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.177.177.234
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.180.15.247
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	35.73.34.55
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	176.32.84.4
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	54.249.21.49
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	35.79.154.123
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	54.238.183.196
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	43.206.250.238
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.180.117.1
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	54.250.254.3
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.165.183.96
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	52.193.145.254
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	52.198.68.0
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	43.206.86.35
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.178.207.25
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	52.196.237.131
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	13.115.147.212
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	54.168.162.132
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	3.114.76.27
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	52.68.111.114
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	57.181.217.99
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.165.183.115
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	35.73.33.214
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.165.183.3
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	18.176.216.91
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	54.64.5.179
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	52.197.205.100
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	54.238.90.87
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:43	False	False	 −
+PASS	any	192.168.5.141	13.114.220.81
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	54.64.149.130
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	175.41.224.143
+Tokyo, Japan	0	AMAZON-RESOURCES	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	52.192.82.109
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	54.65.35.177
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	52.197.109.19
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	35.74.60.105
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	35.79.71.62
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	18.182.175.2
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	52.199.106.226
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	3.113.133.195
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	43.206.3.47
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	13.114.85.236
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	52.194.49.218
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	52.193.66.152
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	57.180.106.187
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	54.248.244.218
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	13.113.135.111
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	54.250.82.189
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	52.68.0.62
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	13.115.126.25
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	176.34.24.198
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	57.182.53.119
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:40	False	False	 −
+PASS	any	192.168.5.141	18.165.183.26
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:39	False	False	 −
+PASS	any	192.168.5.141	3.113.94.195
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	52.197.227.27	0	Unknown	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	57.181.96.158
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	35.74.121.8
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	54.95.158.246
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	13.113.155.196
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:32	False	False	 −
+PASS	any	192.168.5.141	52.195.113.245
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.73.100.250
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.194.67.122
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.192.175.98
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.69.113.116
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	43.206.87.76
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	13.113.215.227
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.115.107.234
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.195.93.105
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.119
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.115.228.108	0	Unknown	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.197.224.75
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	57.182.162.196
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.90
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.180.36.32	0	Unknown	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.69.76.147
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.65.62.156
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.73.188.122
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.194.26.68
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.178.41.51
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.182.201.69
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.180.55.79
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.150.141.249
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.196.131.99
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.77.132.39
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.197.236.60
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	57.181.159.157
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.177.111.197
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.197.125.206
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	13.114.158.105
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	104.18.34.2
+Toronto, Canada	0	Cloudflare, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.65.246.3
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	18.165.183.122
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.92
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.150.104.133
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	52.196.188.141	0	Unknown	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.168.107.99
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	3.165.190.10
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	54.92.19.123
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.75.193.122
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	43.206.249.158
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:31	False	False	 −
+PASS	any	192.168.5.141	35.72.97.155
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	13.115.87.197
+Tokyo, Japan	0	Amazon Technologies Inc	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.238.53.33	0	Unknown	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.95.117.131
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.150.195.196
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.150.42.2
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	54.199.36.67
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	35.79.143.56
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:30	False	False	 −
+PASS	any	192.168.5.141	52.199.173.238	0	Unknown	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	13.230.5.7
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	3.115.241.131
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	3.115.185.132
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	54.95.21.218
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.179.232.172	0	Unknown	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	176.34.54.199
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	35.76.229.236
+Tokyo, Japan	0	Amazon.com, Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	52.69.213.8
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.181.33.54
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	172.64.153.254
+Toronto, Canada	0	Cloudflare, Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.178.240.33
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:29	False	False	 −
+PASS	any	192.168.5.141	18.182.160.64
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	54.65.18.245	0	Unknown	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	52.195.36.76
+Tokyo, Japan	0	Amazon Technologies Inc.	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	18.165.183.129
+Zurich, Switzerland	0	Amazon.com, Inc.	10.06.2025 20:22	False	False	 −
+PASS	any	192.168.5.141	52.192.207.166	0	Unknown	10.06.2025 20:15	False	False	 −
+PASS	any	192.168.5.141	54.150.133.80	0	Unknown	10.06.2025 20:15	False	False	 −
+PASS	any	192.168.5.141	3.112.143.7	0	Unknown	10.06.2025 20:15	False	False	 −
 
-
-
-
-
-
+				
+	❌	(0/2)	ACE	Update
+	⚠️	(1/1)	AMAZON-RESOURCES	Update
+	❌	(0/4)	Aceville Pte.ltd.	Update
+	❌	(0/2)	Akamai International B.V.	Update
+	❌	(0/21)	Akamai International, BV	Update
+	❌	(0/29)	Akamai Technologies	Update
+	❌	(0/14)	Akamai Technologies, Inc.	Update
+	⚠️	(15/18)	Amazon Technologies Inc	Update
+	⚠️	(89/108)	Amazon Technologies Inc.	Update
+	⚠️	(69/126)	Amazon.com, Inc.	Update
+	❌	(0/142)	Apple Inc.	Update
+	❌	(0/1)	BellSouth.net Inc.	Update
+	⚠️	(2/4)	Cloudflare, Inc.	Update
+	❌	(0/2)	Facebook, Inc.	Update
+	❌	(0/2)	Fastly, Inc.	Update
+	❌	(0/15)	Google LLC	Update
+	❌	(0/1)	Hangzhou Alibaba Advertising Co., Ltd.	Update
+	❌	(0/1)	Microsoft Corporation	Update
+	❌	(0/10)	Sunrise GmbH	Update
+	❌	(0/3)	Telegram Messenger Amsterdam Network	Update
+	❌	(0/1)	Telegram Messenger Inc	Update
+	❌	(0/4)	Telegram Messenger Network	Update
+	❌	(0/1)	ThreatMetrix Inc.	Update
+	❌	(0/2)	WoodyNet, Inc.	Update
 
 
 
@@ -1834,3 +2418,994 @@ PASS	any	192.168.5.140	142.250.4.188	0	Google LLC	08.06.2025 17:34	False	False	R
 
 Now with the ruleset all IPs from GOOGLE LLC allowed just without talk
 I can get into the store and download data. So two apps downloaded. No ring. yet.
+
+Tried now to add the talk domains to the dns blocklist to see if that will prevent traffic to these domains at all...
+
+talk.google.com
+mtalk.google.com
+alt1-mtalk.google.com
+alt2-mtalk.google.com
+alt3-mtalk.google.com
+alt4-mtalk.google.com
+alt5-mtalk.google.com
+alt6-mtalk.google.com
+alt7-mtalk.google.com
+alt8-mtalk.google.com
+alt9-mtalk.google.com
+
+
+#################
+Whatsapp
+
+	❌	(0/1)	Aceville Pte.ltd.	Update
+	❌	(0/2)	Akamai International, BV	Update
+	❌	(0/2)	Akamai Technologies	Update
+	❌	(0/1)	Akamai Technologies, Inc.	Update
+	❌	(0/15)	Amazon Technologies Inc.	Update
+	❌	(0/10)	Amazon.com	Update
+	❌	(0/44)	Amazon.com, Inc.	Update
+	❌	(0/1)	BellSouth.net Inc.	Update
+	❌	(0/1)	BitaByte LLC	Update
+	❌	(0/13)	Cloudflare, Inc.	Update
+	❌	(0/1)	Contabo GmbH	Update
+	❌	(0/21)	Facebook, Inc.	Update
+	❌	(0/1)	Fastly, Inc.	Update
+	❌	(0/53)	Google LLC	Update
+	❌	(0/1)	Hangzhou Alibaba Advertising Co., Ltd.	Update
+	❌	(0/1)	Infomaniak Network Management	Update
+	❌	(0/1)	Internet Utilities NA LLC	Update
+	❌	(0/10)	Microsoft Corporation	Update
+	❌	(0/1)	Network Platforms (PTY) LTD	Update
+	❌	(0/1)	OVH SAS	Update
+	❌	(0/2)	Oracle Corporation	Update
+	❌	(0/1)	Sunrise GmbH	Update
+	❌	(0/3)	Telegram Messenger Amsterdam Network	Update
+	❌	(0/4)	Telegram Messenger Network	Update
+	❌	(0/1)	Wikimedia Europe network	Update
+	❌	(0/1)	netcup GmbH	Update
+
+
+Über DNS Whatsapp freigegeben. Nachrichten werden geladen. Videos nicht.
+
+✅ 3.33.221.48 (1)	Domain	Timestamp	Last seen	Type	Source IP
+	e13.whatsapp.net.	12.06.2025 06:51:08	12.06.2025 06:51:08	A	192.168.5.140
+✅ 3.33.252.61 (1)	Domain	Timestamp	Last seen	Type	Source IP
+	e2.whatsapp.net.	12.06.2025 06:50:38	12.06.2025 06:50:38	A	192.168.5.140
+
+✅ 157.240.0.61 (1)	Domain	Timestamp	Last seen	Type	Source IP
+	g-fallback.whatsapp.net.	12.06.2025 06:48:37	12.06.2025 06:48:37	A	192.168.5.140
+✅ 157.240.17.61 (1)	Domain	Timestamp	Last seen	Type	Source IP
+	g.whatsapp.net.	12.06.2025 06:47:37	12.06.2025 06:47:37	A	192.168.5.140
+
+
+Shorty after two new entries follow:
+✅ 157.240.0.60 (1)	Domain	Timestamp	Last seen	Type	Source IP
+	mmg-fallback.whatsapp.net.	12.06.2025 06:53:44	12.06.2025 06:53:44	A	192.168.5.140
+✅ 157.240.17.60 (1)	Domain	Timestamp	Last seen	Type	Source IP
+	mmg.whatsapp.net.	12.06.2025 06:53:28	12.06.2025 06:53:28	A	192.168.5.140
+
+	Instead of adding many rules i could go with 6 to get full access. Calls, Videos, Pictures and old chat entries.
+
+	⚠️	(2/48)	Amazon.com, Inc.	Update
+	❌	(0/1)	BellSouth.net Inc.	Update
+	❌	(0/1)	BitaByte LLC	Update
+	❌	(0/13)	Cloudflare, Inc.	Update
+	❌	(0/1)	Contabo GmbH	Update
+	⚠️	(4/25)	Facebook, Inc.	Update
+
+#################
+Telegram
+
+It seems Telegram does not operate with DNS names. So no DNS requests here.help
+As i have just a few rules adding all ips is not a deal and there is no other services from telegram
+
+	❌	(0/3)	Telegram Messenger Amsterdam Network	Update
+	❌	(0/4)	Telegram Messenger Network	Update
+
+Telegram Messenger Amsterdam Network (3)
+IP	ORG	ISP	DNS Request	Location	First seen	Last seen	DNS Reverse
+ +	149.154.167.223	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom	12.06.2025 05:21:48	12.06.2025 06:47:28	N/A
+ +	149.154.167.41	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom	12.06.2025 05:21:49	12.06.2025 06:47:28	N/A
+ +	149.154.167.92	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom	12.06.2025 05:21:49	12.06.2025 06:47:28	N/A
+
+Telegram Messenger Network (4)
+IP	ORG	ISP	DNS Request	Location	First seen	Last seen	DNS Reverse
+ +	91.108.56.167	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands	12.06.2025 05:22:46	12.06.2025 07:04:26	N/A
+ +	149.154.175.100	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands	12.06.2025 05:25:01	12.06.2025 05:24:44	N/A
+ +	149.154.175.57	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands	12.06.2025 05:29:46	12.06.2025 06:48:25	N/A
+ +	149.154.175.53	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands	12.06.2025 05:30:15	12.06.2025 06:48:33	N/A
+
+-----
+
+During usage adding some more rules
+
+Telegram Messenger Amsterdam Network (4)
+IP				ORG	ISP										DNS Location
+149.154.167.223	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom
+ 149.154.167.41	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom
+149.154.167.92	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom
+149.154.165.120	N/A	Telegram Messenger Amsterdam Network	-	EC1N London, United Kingdom
+
+Telegram Messenger Network (5)
+IP				ORG	ISP							DNS Location
+91.108.56.167	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands
+149.154.175.100	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands
+149.154.175.57	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands
+149.154.175.53	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands
+149.154.175.60	N/A	Telegram Messenger Network	-	1012 Amsterdam, The Netherlands
+
+Getting old messages and videos. Normal app usage!
+
+#################
+Session
+
+Is quite a different application it uses the tor network for communication. With a Oxen service everyone can run a session server.
+
+Action	Protocol	Source IP	Destination	Port	ISP	Since	Manual	DNS	Delete
+PASS	any	192.168.5.140	104.21.112.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.80.1
+Toronto, Canada	0	Cloudflare, Inc.	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.96.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.64.1
+Toronto, Canada	0	Cloudflare, Inc.	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.32.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.48.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.16.1
+Toronto, Canada	0	Cloudflare, Inc.	12.06.2025 08:34	False	False	 -
+
+No possibility to add it under isp or blocked view as the service is running literarly anywher
+Needed to look for getsession.org. DNS and allow these ips above.id
+
+Ok still no communication possible.
+
+IPv4 TCP	192.168.5.140	*	*	22020 - 22023	*	*	1	SESSION TRY!
+Adding the following ports to a general ip gives the opporunity to connect to all OXEN ports. 
+
+https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=22022
+No ports registred in iana for 22020 - 22023
+
+09:01:53 - 12.06.2025 - 192.168.5.140:59833  → 192.168.5.1:53       🔒 Private Network
+09:01:52 - 12.06.2025 - 192.168.5.140:50314  → 164.68.98.57:22021   ✅ Contabo GmbH
+09:01:43 - 12.06.2025 - 192.168.5.140:31738  → 192.168.5.1:53       🔒 Private Network
+09:01:22 - 12.06.2025 - 192.168.5.140:39388  → 164.68.98.57:22021   ✅ Contabo GmbH
+09:00:46 - 12.06.2025 - 192.168.5.140:33090  → 164.68.98.57:22021   ✅ Contabo GmbH
+09:00:36 - 12.06.2025 - 192.168.5.140:49816  → 162.19.67.191:22021  ✅ OVH SAS
+09:00:28 - 12.06.2025 - 192.168.5.140:34792  → 164.68.98.57:22021   ✅ Contabo GmbH
+09:00:12 - 12.06.2025 - 192.168.5.140:49990  → 162.19.67.191:22021  ✅ OVH SAS
+08:59:51 - 12.06.2025 - 192.168.5.140:54934  → 164.68.98.57:22021   ✅ Contabo GmbH
+08:59:22 - 12.06.2025 - 192.168.5.140:63487  → 192.168.5.1:53       🔒 Private Network
+08:59:19 - 12.06.2025 - 192.168.5.140:49100  → 164.68.98.57:22021   ✅ Contabo GmbH
+08:58:35 - 12.06.2025 - 192.168.5.140:46438  → 164.68.98.57:22021   ✅ Contabo GmbH
+08:58:25 - 12.06.2025 - 192.168.5.140:58224  → 162.19.67.191:22021  ✅ OVH SAS
+08:58:13 - 12.06.2025 - 192.168.5.140:49598  → 192.168.5.1:53       🔒 Private Network
+08:58:07 - 12.06.2025 - 192.168.5.140:50788  → 162.19.67.191:22021  ✅ OVH SAS
+08:58:03 - 12.06.2025 - 192.168.5.140:51156  → 162.19.67.191:22021  ✅ OVH SAS
+08:58:00 - 12.06.2025 - 192.168.5.140:60412  → 164.68.98.57:22021   ✅ Contabo GmbH
+08:58:00 - 12.06.2025 - 192.168.5.140:60402  → 164.68.98.57:22021   ✅ Contabo GmbH
+08:58:00 - 12.06.2025 - 192.168.5.140:51154  → 162.19.67.191:22021  ✅ OVH SAS
+08:57:53 - 12.06.2025 - 192.168.5.140:33272  → 195.201.134.115:22021 ✅ Hetzner Online GmbH
+08:57:45 - 12.06.2025 - 192.168.5.140:50328  → 164.68.115.246:22021 ✅ Contabo GmbH
+08:57:29 - 12.06.2025 - 192.168.5.140:45277  → 192.168.5.1:53       🔒 Private Network
+08:57:28 - 12.06.2025 - 192.168.5.140:40030  → 91.231.182.106:22021 ✅ South Park Networks LLC
+08:57:28 - 12.06.2025 - 192.168.5.140:40016  → 91.231.182.106:22021 ✅ South Park Networks LLC
+08:57:28 - 12.06.2025 - 192.168.5.140:60714  → 159.65.192.33:22021  ✅ DigitalOcean, LLC
+08:57:28 - 12.06.2025 - 192.168.5.140:60704  → 159.65.192.33:22021  ✅ DigitalOcean, LLC
+
+
+
+
+
+
+
+
+162.19.67.191:22021  ✅ OVH SAS
+164.68.98.57:22021   ✅ Contabo GmbH
+195.201.134.115:22021 ✅ Hetzner Online GmbH
+164.68.115.246:22021 ✅ Contabo GmbH
+91.231.182.106:22021 ✅ South Park Networks LLC
+159.65.192.33:22021  ✅ DigitalOcean, LLC
+
+
+
+
+
+
+#################
+
+BINANCE
+
+Trying to get access but the app wants to reauth but login screen doesn't appear. 86 Rules applied and still there are getting new addresses quite quickly...
+
+	A000000002	192.168.5.140	18.181.33.54	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.140	52.197.236.60	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.140	52.196.131.99	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.140	13.112.83.208	Unknown	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	35.72.78.194	Unknown	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.197.133.2	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	57.180.237.10	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.192.82.109	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.199.44.135	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.168.107.99	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	43.207.254.38	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.180.130.136	Unknown	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.179.82.43	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.150.104.240	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.65.35.177	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.250.55.84	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.168.162.132	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.181.156.70	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	3.115.241.131	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	175.41.224.143	AMAZON-RESOURCES	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.95.158.246	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.69.76.147	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.177.125.56	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.193.194.95	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	3.112.120.90	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.238.156.145	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.199.20.213	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	13.114.220.81	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.177.91.115	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	3.115.107.234	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.64.149.130	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	35.75.201.185	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.197.109.19	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.193.230.234	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	57.182.166.80	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.199.71.116	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.150.222.100	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	35.72.96.25	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.176.104.85	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.150.133.80	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	13.112.84.193	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.195.110.170	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.192.207.166	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	35.75.163.144	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	3.115.145.115	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	57.180.158.20	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.178.238.183	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.65.219.3	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.192.254.114	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	57.180.213.63	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	43.207.16.29	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.65.202.147	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.199.139.138	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.194.113.212	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.199.98.206	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	35.76.103.51	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.179.85.43	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.197.8.46	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.250.14.11	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	13.115.70.2	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.192.167.160	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.198.90.136	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	13.230.113.157	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.165.183.88	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	18.165.183.26	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	18.165.183.129	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	18.165.183.122	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	172.64.153.254	Cloudflare, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	57.182.53.119	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.95.237.119	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.10	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.65.96.98	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.92	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	57.182.157.140	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.95.243.65	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	13.112.109.150	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	35.79.250.27	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	13.113.135.111	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.65.14.184	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	104.18.34.2	Cloudflare, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	52.195.245.128	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	35.76.90.23	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	18.179.181.77	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.90	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.199.129.10	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	13.115.126.25	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	52.199.245.130	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.119	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.65.176.184	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+
+
+❌ 34.120.195.249 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.190.38 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.190.36 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.190.39 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.190.62 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.181.40.152 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:05:39	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 52.197.236.60 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:04:57	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 18.181.33.54 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:04:57	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 52.196.131.99 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:04:57	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 35.72.78.194 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:04:05	10.06.2025 21:04:05	A	fstream.binance.info.	192.168.5.140
+✅ 18.177.91.115 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 3.115.107.234 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:03:33	A	nbstream.binance.info.	192.168.5.140
+✅ 54.168.162.132 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 52.69.76.147 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:03:33	A	nbstream.binance.info.	192.168.5.140
+✅ 54.168.107.99 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 3.115.241.131 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 54.95.158.246 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:03:33	A	nbstream.binance.info.	192.168.5.140
+✅ 3.112.120.90 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:03:33	10.06.2025 21:04:57	A	nbstream.binance.info.	192.168.5.140
+✅ 13.112.83.208 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:53	10.06.2025 21:00:53	A	fstream.binance.info.	192.168.5.140
+❌ 18.165.185.182 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.185.78 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.185.138 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.185.187 (2)	Timestamp	Last seen	Type	Domain	Source IP
+✅ 54.250.55.84 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 18.181.156.70 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 18.179.82.43 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 52.197.133.2 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 43.207.254.38 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 18.177.125.56 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 52.193.194.95 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 52.199.44.135 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:00:26	10.06.2025 21:00:26	A	nbstream.binance.info.	192.168.5.140
+✅ 54.150.222.100 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:59:46	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 18.178.238.183 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:57:46	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 18.179.85.43 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:57:46	10.06.2025 21:04:05	A	fstream.binance.info.	192.168.5.140
+✅ 52.197.8.46 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:57:46	10.06.2025 20:57:46	A	fstream.binance.info.	192.168.5.140
+✅ 54.250.14.11 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:57:46	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+❌ 13.224.98.6 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 13.224.98.40 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 13.224.98.150 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 13.224.98.148 (2)	Timestamp	Last seen	Type	Domain	Source IP
+✅ 18.165.183.26 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:00:53	A	themis.binance.info.	192.168.5.140
+	10.06.2025 20:54:45	10.06.2025 20:54:45	A	themis.binance.com.	192.168.5.140
+✅ 18.165.183.88 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:00:53	A	themis.binance.info.	192.168.5.140
+	10.06.2025 20:54:45	10.06.2025 20:54:45	A	themis.binance.com.	192.168.5.140
+✅ 18.165.183.129 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:00:53	A	themis.binance.info.	192.168.5.140
+	10.06.2025 20:54:45	10.06.2025 20:54:45	A	themis.binance.com.	192.168.5.140
+✅ 18.165.183.122 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:00:53	A	themis.binance.info.	192.168.5.140
+	10.06.2025 20:54:45	10.06.2025 20:54:45	A	themis.binance.com.	192.168.5.140
+✅ 52.192.167.160 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 57.180.213.63 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 54.65.202.147 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:04:05	A	fstream.binance.info.	192.168.5.140
+✅ 13.115.70.2 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 52.194.113.212 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:04:05	A	fstream.binance.info.	192.168.5.140
+✅ 57.180.158.20 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:00:53	A	fstream.binance.info.	192.168.5.140
+✅ 52.198.90.136 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:04:05	A	fstream.binance.info.	192.168.5.140
+✅ 52.199.98.206 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:45	10.06.2025 21:05:39	A	fstream.binance.info.	192.168.5.140
+✅ 3.115.145.115 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 52.199.139.138 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 43.207.16.29 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 13.230.113.157 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 35.76.103.51 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 35.75.163.144 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 52.192.254.114 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 54.65.219.3 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 21:05:38	A	stream.binance.info.	192.168.5.140
+✅ 54.150.104.240 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:53:42	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 18.180.130.136 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:53:42	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 52.192.82.109 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 52.197.109.19 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:53:42	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 35.75.201.185 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 175.41.224.143 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 57.180.237.10 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 52.193.230.234 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:44	10.06.2025 20:55:44	A	nbstream.binance.info.	192.168.5.140
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	nbstream.binance.com.	192.168.5.140
+✅ 35.72.96.25 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 13.112.84.193 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 52.192.207.166 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 52.195.110.170 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 57.182.166.80 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 52.199.71.116 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 54.150.133.80 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+✅ 18.176.104.85 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:55:22	10.06.2025 20:55:22	A	fstream.binance.com.	192.168.5.140
+❌ 54.199.138.92 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 54.65.229.52 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 43.132.66.251 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 43.132.66.245 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 43.132.66.242 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 43.132.66.196 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 43.152.43.121 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 43.174.14.42 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.125 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.52 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.73 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.59 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 57.182.154.176 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 54.150.177.128 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 54.150.192.122 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 35.75.70.88 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 52.198.206.235 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 52.196.137.100 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 104.22.30.73 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 104.22.31.73 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.67.21.108 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.128 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.67 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.109 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.12 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 157.240.17.15 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.197.190 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.197.126 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.197.39 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.197.158 (2)	Timestamp	Last seen	Type	Domain	Source IP
+✅ 57.182.157.140 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 35.79.250.27 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 54.199.129.10 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 54.95.237.119 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 57.182.53.119 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 35.76.90.23 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 13.115.126.25 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+✅ 13.113.135.111 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:43	10.06.2025 20:53:43	A	fstream.binance.com.	192.168.5.140
+❌ 18.165.183.94 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.60 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.80 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 18.165.183.29 (1)	Timestamp	Last seen	Type	Domain	Source IP
+✅ 54.65.35.177 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	nbstream.binance.com.	192.168.5.140
+✅ 13.114.220.81 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	nbstream.binance.com.	192.168.5.140
+✅ 54.199.20.213 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	nbstream.binance.com.	192.168.5.140
+✅ 54.238.156.145 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	nbstream.binance.com.	192.168.5.140
+✅ 54.64.149.130 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	nbstream.binance.com.	192.168.5.140
+✅ 54.65.14.184 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 54.95.243.65 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 52.195.245.128 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 52.199.245.130 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 54.65.96.98 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 18.179.181.77 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 13.112.109.150 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+✅ 54.65.176.184 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 20:53:42	10.06.2025 20:53:42	A	stream.binance.com.	192.168.5.140
+❌ 54.250.190.153 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 157.240.17.35 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 157.240.17.17 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.217.168.42 (5)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 142.250.178.202 (6)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 142.250.178.234 (6)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 142.250.203.106 (6)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.217.168.74 (6)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.217.168.67 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 52.30.159.140 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 52.212.120.150 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.217.168.35 (2)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.217.168.86 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 172.217.168.78 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 216.239.32.36 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 216.239.34.36 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.190.12 (1)	Timestamp	Last seen	Type	Domain	Source IP
+✅ 3.165.190.90 (2)	Timestamp	Last seen	Type	Domain	Source IP
+	06.06.2025 19:07:40	10.06.2025 21:00:52	A	www.binance.com.	192.168.5.140
+❌ 3.165.190.52 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 3.165.190.103 (1)	Timestamp	Last seen	Type	Domain	Source IP
+❌ 54.64.55.214 (1)	Timestamp	Last seen	Type	Domain	Source IP
+✅ 104.18.34.2 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	06.06.2025 19:07:40	10.06.2025 21:05:51	A	www.binance.info.	192.168.5.140
+✅ 172.64.153.254 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	06.06.2025 19:07:40	10.06.2025 21:05:51	A	www.binance.info.	192.168.5.140
+✅ 3.165.190.10 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	06.06.2025 19:07:40	10.06.2025 21:00:52	A	www.binance.com.	192.168.5.140
+✅ 3.165.190.119 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	06.06.2025 19:07:40	10.06.2025 21:00:52	A	www.binance.com.	192.168.5.140
+✅ 3.165.190.92 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	06.06.2025 19:07:40	10.06.2025 21:00:52	A	www.binance.com.	192.168.5.140
+
+
+no new ips are showing up... it seems the android app behaves different. Looks always when logging in it opens a separate window overlay. When the market and news are there, everything related to the account is not avaiable. The ISP list is quite long now!
+
+
+	❌	(0/1)	1984 ehf	Update
+	❌	(0/1)	1Access Sweden AB	Update
+	❌	(0/2)	ACE	Update
+	❌	(0/1)	AH CLOUD LTD	Update
+	⚠️	(1/1)	AMAZON-RESOURCES	Update
+	❌	(0/4)	Aceville Pte.ltd.	Update
+	❌	(0/54)	Akamai International B.V.	Update
+	❌	(0/50)	Akamai International, BV	Update
+	❌	(0/51)	Akamai Technologies	Update
+	❌	(0/12)	Akamai Technologies, Inc.	Update
+	❌	(0/1)	Altern8 SA	Update
+	❌	(0/2)	Alwyzon	Update
+	⚠️	(4/5)	Amazon Technologies Inc	Update
+	⚠️	(32/214)	Amazon Technologies Inc.	Update
+	❌	(0/53)	Amazon.com	Update
+	❌	(0/1)	Amazon.com, Inc	Update
+	⚠️	(25/301)	Amazon.com, Inc.	Update
+	❌	(0/1)	Asociacion Espanix	Update
+	❌	(0/1)	Autonomica AB	Update
+	❌	(0/1)	BNK-BNK	Update
+	❌	(0/1)	Bahnhof Internet	Update
+	❌	(0/2)	Beijing Guanghuan Xinwang Digital	Update
+	❌	(0/12)	BellSouth.net Inc.	Update
+	❌	(0/3)	Bytedance Inc.	Update
+	❌	(0/1)	CARNET	Update
+	⚠️	(2/17)	Cloudflare, Inc.	Update
+	❌	(0/1)	Cogent Communications	Update
+	❌	(0/30)	Contabo GmbH	Update
+	❌	(0/1)	Craigslist, Inc.	Update
+	❌	(0/1)	Cyberlink Internet Services AG	Update
+	❌	(0/1)	DELTA Fiber Nederland B.V.	Update
+	❌	(0/12)	DataCamp Limited	Update
+	❌	(0/6)	Datacamp Limited	Update
+	❌	(0/1)	Datasource AG	Update
+	❌	(0/1)	Deutsche Telekom AG	Update
+	❌	(0/4)	DigitalOcean, LLC	Update
+	❌	(0/1)	Divergent Networks LTD	Update
+	❌	(0/1)	Dominic Scholz trading as ITP-Solutions GmbH & Co. KG	Update
+	❌	(0/1)	Elcro Digital Services, LLC	Update
+	❌	(0/1)	Exion Networks SA	Update
+	❌	(0/37)	Facebook, Inc.	Update
+	❌	(0/1)	Fasthosts Internet Ltd	Update
+	❌	(0/10)	Fastly, Inc.	Update
+	❌	(0/9)	FranTech Solutions	Update
+	❌	(0/1)	Freedom Internet BV	Update
+	❌	(0/1)	GHOSTnet GmbH	Update
+	❌	(0/1)	Glattwerk AG Duebendorf	Update
+	❌	(0/96)	Google LLC	Update
+	❌	(0/1)	Greenhost BV	Update
+	❌	(0/2)	HIVELOCITY, Inc.	Update
+	❌	(0/1)	Hangzhou Alibaba Advertising Co., Ltd.	Update
+	❌	(0/2)	Hetzner	Update
+	❌	(0/1)	Hetzner Online AG	Update
+	❌	(0/30)	Hetzner Online GmbH	Update
+	❌	(0/2)	Hohl IT e.U.	Update
+	❌	(0/1)	HostHatch	Update
+	❌	(0/1)	HostPapa	Update
+	❌	(0/1)	Hostdzire Web Services Private Limited	Update
+	❌	(0/1)	Hosting Bot, LLC	Update
+	❌	(0/1)	Hosting.de GmbH	Update
+	❌	(0/1)	IN-BERLIN	Update
+	❌	(0/4)	IONOS SE	Update
+	❌	(0/1)	IONOS SE ber.de	Update
+	❌	(0/1)	IncogNET LLC	Update
+	❌	(0/1)	Infomaniak Network SA	Update
+	❌	(0/1)	Init7 (Switzerland) Ltd	Update
+	❌	(0/3)	Init7 (Switzerland) Ltd.	Update
+	❌	(0/1)	International Telecommunication Union	Update
+	❌	(0/2)	Internet Utilities NA LLC	Update
+	❌	(0/1)	Interserver, Inc	Update
+	❌	(0/1)	JSC MediaSoft Ekspert	Update
+	❌	(0/1)	Kanton Zug	Update
+	❌	(0/1)	Kantonsschule Zug	Update
+	❌	(0/1)	LINODE	Update
+	❌	(0/1)	LINVEO, LLC	Update
+	❌	(0/1)	Lyse Tele AS	Update
+	❌	(0/2)	M-net Telekommunikations GmbH	Update
+	❌	(0/1)	Matteo Martelloni trading as DELUXHOST	Update
+	❌	(0/4)	Microsoft	Update
+	❌	(0/65)	Microsoft Corporation	Update
+	❌	(0/4)	Mvps LTD	Update
+	❌	(0/2)	NEXELLENT	Update
+	❌	(0/1)	NPL Management LTD	Update
+	❌	(0/3)	NTP Services Spare	Update
+	❌	(0/1)	Netnod AB	Update
+	❌	(0/1)	Network Platforms (PTY) LTD	Update
+	❌	(0/1)	Nexeon Technologies	Update
+	❌	(0/1)	Nine Internet Solutions AG	Update
+	❌	(0/1)	NodeHub LLC	Update
+	❌	(0/1)	OVH ISP	Update
+	❌	(0/12)	OVH SAS	Update
+	❌	(0/2)	OVH US LLC	Update
+	❌	(0/3)	Online S.A.S.	Update
+	❌	(0/11)	Oracle Corporation	Update
+	❌	(0/1)	PEG TECH INC	Update
+	❌	(0/1)	PQ HOSTING PLUS S.R.L.	Update
+	❌	(0/1)	PROFITBRICKS	Update
+	❌	(0/1)	Products Up GmbH	Update
+	❌	(0/1)	Proxad / Free SAS	Update
+	❌	(0/4)	REBA Communications BV	Update
+	❌	(0/1)	RIPE Network Coordination Centre	Update
+	❌	(0/12)	ReliableSite.Net LLC	Update
+	❌	(0/1)	S.C. INFOTECH-GRUP S.R.L.	Update
+	❌	(0/1)	SCALEWAY	Update
+	❌	(0/1)	STOFA	Update
+	❌	(0/1)	Sahdsoft Technologies CC	Update
+	❌	(0/1)	Saitis Network, N.Desir	Update
+	❌	(0/1)	ServerPoint.com	Update
+	❌	(0/1)	Signalx Cloud Communications LTD	Update
+	❌	(0/1)	Solid Systems LLC	Update
+	❌	(0/1)	Sparked Host LLC	Update
+	❌	(0/21)	Sunrise GmbH	Update
+	❌	(0/1)	Svensk Teleutveckling & Produktinnovation, STUPI AB	Update
+	❌	(0/2)	Swisscom (Schweiz) AG	Update
+	❌	(0/1)	T-2, d.o.o.	Update
+	❌	(0/1)	TWANG	Update
+	❌	(0/6)	Telegram Messenger Amsterdam Network	Update
+	❌	(0/4)	Telegram Messenger Network	Update
+	❌	(0/1)	The 1984 ehf	Update
+	❌	(0/1)	The Constant Company	Update
+	❌	(0/1)	The Infrastructure Group B.V.	Update
+	❌	(0/1)	The Optimal Link Corporation	Update
+	❌	(0/1)	Tier.Net Technologies LLC	Update
+	❌	(0/1)	Trabia SRL	Update
+	❌	(0/2)	UNIBI	Update
+	❌	(0/1)	UnReal Servers, LLC	Update
+	❌	(0/2)	UniGE	Update
+	❌	(0/1)	VERIZON	Update
+	❌	(0/1)	VPS1	Update
+	❌	(0/1)	Verein zur Foerderung eines Deutschen Forschungsnetzes e.V.	Update
+	❌	(0/1)	W I X NET DO BRASIL LTDA - ME	Update
+	❌	(0/1)	Wojciech Czapkowicz	Update
+	❌	(0/1)	Xelon AG	Update
+	❌	(0/1)	Yandex.Cloud LLC	Update
+	❌	(0/1)	YousaFan LLC	Update
+	❌	(0/3)	iWay AG	Update
+	❌	(0/12)	netcup GmbH
+
+Ok account seems to be resolved by bnbstatic.compile
+
+✅ 3.165.190.38 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:06:42	10.06.2025 21:06:42	A	public.bnbstatic.com.	192.168.5.140
+✅ 3.165.190.36 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:06:42	10.06.2025 21:06:42	A	public.bnbstatic.com.	192.168.5.140
+✅ 3.165.190.39 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:06:42	10.06.2025 21:06:42	A	public.bnbstatic.com.	192.168.5.140
+✅ 3.165.190.62 (1)	Timestamp	Last seen	Type	Domain	Source IP
+	10.06.2025 21:06:42	10.06.2025 21:06:42	A	public.bnbstatic.com.	192.168.5.140
+
+After adding that, it worked to go to the account mask. Login successful. Email / Pass / 2FA. Account balance showing up. Details for Transaction can be read.
+I will need to test that later how my own device behaves if that short relogin is normal. App seems to work as expected. No additional ips showing up. 98 ips everything is working as expected.
+
+
+	A000000002	192.168.5.140	18.165.183.12	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	18.165.183.128	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	3.165.190.38	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	3.165.190.39	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	3.165.190.62	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	3.165.190.36	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	18.165.183.109	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	18.165.183.67	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:13 p.m.	-
+	A000000002	192.168.5.140	18.181.40.152	Unknown	False	False	False	-	June 10, 2025, 9:09 p.m.	-
+	A000000002	192.168.5.140	18.181.33.54	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.140	52.197.236.60	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.140	52.196.131.99	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:05 p.m.	-
+	A000000002	192.168.5.140	13.112.83.208	Unknown	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	35.72.78.194	Unknown	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.197.133.2	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	57.180.237.10	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.192.82.109	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.199.44.135	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.168.107.99	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	43.207.254.38	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.180.130.136	Unknown	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.179.82.43	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.150.104.240	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.65.35.177	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.250.55.84	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.168.162.132	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.181.156.70	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	3.115.241.131	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	175.41.224.143	AMAZON-RESOURCES	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.95.158.246	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.69.76.147	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.177.125.56	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.193.194.95	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	3.112.120.90	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.238.156.145	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.199.20.213	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	13.114.220.81	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	18.177.91.115	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	3.115.107.234	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	54.64.149.130	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	35.75.201.185	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.197.109.19	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	52.193.230.234	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9:04 p.m.	-
+	A000000002	192.168.5.140	57.182.166.80	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.199.71.116	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.150.222.100	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	35.72.96.25	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.176.104.85	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.150.133.80	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	13.112.84.193	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.195.110.170	Unknown	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.192.207.166	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	35.75.163.144	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	3.115.145.115	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	57.180.158.20	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.178.238.183	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.65.219.3	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.192.254.114	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	57.180.213.63	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	43.207.16.29	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.65.202.147	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.199.139.138	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.194.113.212	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.199.98.206	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	35.76.103.51	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.179.85.43	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.197.8.46	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	54.250.14.11	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	13.115.70.2	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.192.167.160	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	52.198.90.136	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	13.230.113.157	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 9 p.m.	-
+	A000000002	192.168.5.140	18.165.183.88	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	18.165.183.26	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	18.165.183.129	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	18.165.183.122	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:55 p.m.	-
+	A000000002	192.168.5.140	172.64.153.254	Cloudflare, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	57.182.53.119	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.95.237.119	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.10	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.65.96.98	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.92	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	57.182.157.140	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.95.243.65	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	13.112.109.150	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	35.79.250.27	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	13.113.135.111	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.65.14.184	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	104.18.34.2	Cloudflare, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	52.195.245.128	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	35.76.90.23	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	18.179.181.77	Amazon Technologies Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.90	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.199.129.10	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	13.115.126.25	Amazon Technologies Inc	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	52.199.245.130	Unknown	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	3.165.190.119	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+	A000000002	192.168.5.140	54.65.176.184	Amazon.com, Inc.	False	False	False	-	June 10, 2025, 8:54 p.m.	-
+
+
+	just a shortened overview
+
+		❌	(0/1)	AH CLOUD LTD	Update
+	⚠️	(1/1)	AMAZON-RESOURCES	Update
+	❌	(0/4)	Aceville Pte.ltd.	Update
+	❌	(0/54)	Akamai International B.V.	Update
+	❌	(0/50)	Akamai International, BV	Update
+	❌	(0/51)	Akamai Technologies	Update
+	❌	(0/12)	Akamai Technologies, Inc.	Update
+	❌	(0/1)	Altern8 SA	Update
+	❌	(0/2)	Alwyzon	Update
+	⚠️	(4/5)	Amazon Technologies Inc	Update
+	⚠️	(32/214)	Amazon Technologies Inc.	Update
+	❌	(0/53)	Amazon.com	Update
+	❌	(0/1)	Amazon.com, Inc	Update
+	⚠️	(33/301)	Amazon.com, Inc.	Update
+	❌	(0/1)	Asociacion Espanix	Update
+	❌	(0/1)	Autonomica AB	Update
+	❌	(0/1)	BNK-BNK	Update
+	❌	(0/1)	Bahnhof Internet	Update
+	❌	(0/2)	Beijing Guanghuan Xinwang Digital	Update
+	❌	(0/12)	BellSouth.net Inc.	Update
+	❌	(0/3)	Bytedance Inc.	Update
+	❌	(0/1)	CARNET	Update
+	⚠️	(2/18)	Cloudflare, Inc.	Update
+	❌	(0/1)	Cogent Communications
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	-------
+
+
+
+	Steps:
+•	Connected the test device (iOS and Android) to a WLAN with a default-deny firewall policy.
+•	Launched Session Messanger and observed that no content loaded initially. 
+•	Monitored Blocked view and could not identify anything related to Session Messanger
+•	 Used with getsession.org the Lookup method in the frontend and got 7 addresses which resolved to Cloudflare, Inc.
+
+104.21.112.1	Cloudflare, Inc.
+104.21.16.1	Cloudflare, Inc.
+104.21.48.1	Cloudflare, Inc.
+104.21.64.1	Cloudflare, Inc.
+104.21.80.1	Cloudflare, Inc.
+104.21.32.1	Cloudflare, Inc.
+104.21.96.1	Cloudflare, Inc.•	 
+
+Added Cloudflare in the Blocked view but no new chats appeard in the app.
+Honestly till this step i just thought session is a normal chat as others as i never was in touch with that. So i started some investigation and found quickly out
+
+please explain here a bit about session infrastructure
+
+With this knowledge i was thinking if there is a specific entry node. However i could just see many entries on the Blocked view i did not see before. Many hosters. 
+
+	❌	(0/1)	1984 ehf	Update
+	❌	(0/1)	1Access Sweden AB	Update
+	❌	(0/2)	ACE	Update
+	❌	(0/1)	AH CLOUD LTD	Update
+	❌	(0/1)	Altern8 SA	Update
+	❌	(0/2)	Alwyzon	Update
+	❌	(0/1)	Asociacion Espanix	Update
+	❌	(0/1)	Autonomica AB	Update
+	❌	(0/1)	BNK-BNK	Update
+	❌	(0/1)	Bahnhof Internet	Update
+	❌	(0/1)	CARNET	Update
+	❌	(0/1)	Cogent Communications	Update
+	❌	(0/1)	Craigslist, Inc.	Update
+	❌	(0/1)	Cyberlink Internet Services AG	Update
+	❌	(0/1)	DELTA Fiber Nederland B.V.	Update
+	❌	(0/1)	Datasource AG	Update
+	❌	(0/1)	Deutsche Telekom AG	Update
+	❌	(0/1)	Divergent Networks LTD	Update
+	❌	(0/1)	Dominic Scholz trading as ITP-Solutions GmbH & Co. KG	Update
+	❌	(0/1)	Elcro Digital Services, LLC	Update
+	❌	(0/1)	Exion Networks SA	Update
+	❌	(0/1)	Fasthosts Internet Ltd	Update
+	❌	(0/1)	Freedom Internet BV	Update
+	❌	(0/1)	GHOSTnet GmbH	Update
+	❌	(0/1)	Glattwerk AG Duebendorf	Update
+	❌	(0/1)	Greenhost BV	Update
+	❌	(0/2)	HIVELOCITY, Inc.	Update
+	❌	(0/2)	Hohl IT e.U.	Update
+	❌	(0/1)	HostHatch	Update
+	❌	(0/1)	HostPapa	Update
+	❌	(0/1)	Hostdzire Web Services Private Limited	Update
+	❌	(0/1)	Hosting Bot, LLC	Update
+	❌	(0/1)	Hosting.de GmbH	Update
+	❌	(0/1)	IN-BERLIN	Update
+	❌	(0/1)	IncogNET LLC	Update
+	❌	(0/1)	Infomaniak Network SA	Update
+	❌	(0/1)	International Telecommunication Union	Update
+	❌	(0/2)	Internet Utilities NA LLC	Update
+	❌	(0/1)	Interserver, Inc	Update
+	❌	(0/1)	JSC MediaSoft Ekspert	Update
+	❌	(0/1)	LINODE	Update
+	❌	(0/1)	LINVEO, LLC	Update
+	❌	(0/1)	Lyse Tele AS	Update
+	❌	(0/2)	M-net Telekommunikations GmbH	Update
+	❌	(0/1)	Matteo Martelloni trading as DELUXHOST	Update
+	❌	(0/4)	Mvps LTD	Update
+	❌	(0/1)	NPL Management LTD	Update
+	❌	(0/3)	NTP Services Spare	Update
+	❌	(0/1)	Netnod AB	Update
+	❌	(0/1)	Network Platforms (PTY) LTD	Update
+	❌	(0/1)	Nexeon Technologies	Update
+	❌	(0/1)	Nine Internet Solutions AG	Update
+	❌	(0/1)	NodeHub LLC	Update
+	❌	(0/3)	Online S.A.S.	Update
+	❌	(0/1)	PEG TECH INC	Update
+	❌	(0/1)	PQ HOSTING PLUS S.R.L.	Update
+	❌	(0/1)	PROFITBRICKS	Update
+	❌	(0/1)	Products Up GmbH	Update
+	❌	(0/1)	Proxad / Free SAS	Update
+	❌	(0/4)	REBA Communications BV	Update
+	❌	(0/12)	ReliableSite.Net LLC	Update
+	❌	(0/1)	S.C. INFOTECH-GRUP S.R.L.	Update
+	❌	(0/1)	SCALEWAY	Update
+	❌	(0/1)	STOFA	Update
+	❌	(0/1)	Sahdsoft Technologies CC	Update
+	❌	(0/1)	Saitis Network, N.Desir	Update
+	❌	(0/1)	ServerPoint.com	Update
+	❌	(0/1)	Signalx Cloud Communications LTD	Update
+	❌	(0/1)	Solid Systems LLC	Update
+	❌	(0/1)	Sparked Host LLC	Update
+	❌	(0/1)	Svensk Teleutveckling & Produktinnovation, STUPI AB	Update
+	❌	(0/1)	T-2, d.o.o.	Update
+	❌	(0/1)	TWANG	Update
+	❌	(0/1)	The 1984 ehf	Update
+	❌	(0/1)	The Constant Company	Update
+	❌	(0/1)	The Infrastructure Group B.V.	Update
+	❌	(0/1)	The Optimal Link Corporation	Update
+	❌	(0/1)	Tier.Net Technologies LLC	Update
+	❌	(0/1)	Trabia SRL	Update
+	❌	(0/2)	UNIBI	Update
+	❌	(0/1)	UnReal Servers, LLC	Update
+	❌	(0/2)	UniGE	Update
+	❌	(0/1)	VERIZON	Update
+	❌	(0/1)	VPS1	Update
+	❌	(0/1)	Verein zur Foerderung eines Deutschen Forschungsnetzes e.V.	Update
+	❌	(0/1)	W I X NET DO BRASIL LTDA - ME	Update
+	❌	(0/1)	Wojciech Czapkowicz	Update
+	❌	(0/1)	Xelon AG	Update
+	❌	(0/1)	Yandex.Cloud LLC	Update
+	❌	(0/1)	YousaFan LLC	Update
+
+This approach will not help. 
+
+With DNS getsession.org i added all rules to the firewall. 7 total
+
+PASS	any	192.168.5.140	104.21.112.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.80.1
+Toronto, Canada	0	Cloudflare, Inc.	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.96.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.64.1
+Toronto, Canada	0	Cloudflare, Inc.	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.32.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.48.1	0	Unknown	12.06.2025 08:34	False	False	 -
+PASS	any	192.168.5.140	104.21.16.1
+Toronto, Canada	0	Cloudflare, Inc.	12.06.2025 08:34	False	False	 -
+
+clearly showing the most ISPs are unknown.
+
+Still no communication possible.
+
+Looked which connections are blocked and looked in the 
+
+IPv4 TCP	192.168.5.140	*	*	22020 - 22023	*	*	1	SESSION TRY!
+Adding the following ports to a general ip gives the opporunity to connect to all OXEN ports. 
