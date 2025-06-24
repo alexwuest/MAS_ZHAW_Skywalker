@@ -1,77 +1,66 @@
-#  Title Page
-#  Abstract
-#  Table of Contents
-#  List of Abbreviations
+# Forensic Network Control System
 
+This project implements a Django-based network control framework designed to provide **secure, selective Internet access for seized mobile devices** during forensic investigations. It integrates with the **OPNsense firewall** to enable fine-grained, case-specific rule management while minimising the risk of remote wipes or unintended data modification.
 
-# 1.Introduction
-- Based on the "Disposition". Why is it neccessary to have the opportunity to get mobile / computer devices online with blocking everything by default and allowing just neccessary connections.
-- Explain the remote wipe problem.
-- Goal of the work. Reference to use cases.
-- What the work contains and what it will not contain (scope)
+## 🧭 Purpose
 
+Modern mobile devices require online access to retrieve cloud-based evidence (e.g., iCloud photos, WhatsApp chats, Binance transactions). However, uncontrolled network access poses a risk of data loss due to:
+- Remote wipe commands
+- Background sync
+- Tracking or alert signals
 
-# 2.Background
+This system allows forensic examiners to **safely bring devices online** in a controlled, monitored environment using:
+- DNS-level filtering
+- ISP-based rule grouping
+- Enriched IP metadata
+- Dynamic, per-device firewall rule enforcement
 
-## Firewalls
-- Evolution of Firewalls
-- Existing Firewalls
-- Comparison of firewalls like pfSense, OPNSense just iptables/nftables or also commercial ones like Fortinet or PaloAlto.
-    
-## Remote Wipe research (android / ios)
+## 🔧 Features
 
+- 🔐 Selective firewall rule control (via the OPNsense API)
+- 📄 DNS and IP logging per device
+- 🌍 IP enrichment using third-party services (e.g., `ip-api.com`)
+- 🧠 Automated rule creation based on observed DNS/IP activity
+- 🖥️ Web interface for investigators to monitor and control network access
+- 🔎 Log views showing allowed/blocked connections with metadata
+- 🧱 Alias support for high-performance rule handling (via OPNsense)
 
-# 3.Methodology / Implementation??
+## 📦 Tech Stack
 
-## Software and Hardware evaluation
-- Software why OPNSense
-- Hardware why Protectly
+- Python 3.10+
+- Django 4.x
+- PostgreSQL (or any Django-supported DB)
+- OPNsense Firewall (Tested on version 25.1 "Ultimate Unicorn")
+- Bootstrap/Tailwind CSS (for frontend)
+- Optional: `ip-api.com` for IP enrichment
 
-## Program System Architecture and Software Design
-### Core Program
-- Overview about models (Show some details under the hood like UML and ERD Diagrams)
-- Device and Lease Management (Why this is a great approach and why it makes management much easier)
-- Background Processes (automated all 5 seconds in the background)
-    - Parsing (Parses the logfiles from the firewall and stores into the sql lite db)
-    - IP Enrichment (From a single ip to much more information - this is the absolute core without that the project would not be possible)
-- Automatisation by API (API Calls, samples, ideas)
+---
 
-### Web UI
-- Views
-- Admin DB view
+## 🚀 Installation
 
-## Use cases
-Here is a temporary list of use cases after some talks in our agency.
+### 1. Clone the Repository
 
-- Get videos or pictures directly out of the apple cloud.
-- Get two factor authentication for Snapchat
-- Get two factor authentication for Meta (like Facebook Code Generator)
-- Get into a crypto wallet app (which one?)
-- Get Chat Messages or attachments from Telegram which are not stored on the device. 
+```bash
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+```
 
-# 4. Analysis / Result
-> Not quite sure here. Should I use a chapter analysis or result or both?
+### 2. Set Up a Virtual Environment
+python3 -m venv venv
+source venv/bin/activate
 
-## Test plan and evaluation
-- Remote wipe theme
-- Use cases
+### 3. Install Dependencies
+pip install -r requirements.txt
 
-## Results
-- Remote wipe
-- Use cases
-- Other observations
+### 4. Configure Environment Variables
+Create a .env file or set these manually:
+API_KEY=
+API_SECRET=
+OPNSENSE_IP=
 
-# 5. Discussion / Conclusion
-## Problems During developing the methodology
-In this chapter i want to outline some problems i had. Slow website loading. Duplicate entries from logs. 
-DNS IPs where removed when no ISP there. How I could solve that problems like mostly no API calls from views.
-Most API calls always from background process. Views access just the db directly. Makes page load quicker, less problems with more than one viewer etc.
+### 5. Apply Migrations and Create a Superuser
+python manage.py migrate
+python manage.py createsuperuser
 
-## Discussion
-Reflect the results - is it like the expected outcome? If there is a difference, why is there a difference?
-
-## Conclusion
-What did i achieve? Key learnings and insights? What will be possible in the future?
-
-#  References
-#  Declaration of Originality
+### 6. Start the Development Server
+python manage.py runserver 0.0.0.0:8000
