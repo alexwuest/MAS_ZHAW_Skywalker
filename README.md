@@ -82,7 +82,7 @@ OPNsense is an open-source, FreeBSD-based firewall and routing platform used in 
 
 -   Download (ISO/Installer): https://opnsense.org/download/
 -   Documentation: https://docs.opnsense.org/
--   API Reference: https://docs.opnsense.org/development/api.html
+-   API Reference: https://docs.opnsense.org/development/api.html  
 ⚠️ Ensure your OPNsense installation is version 25.1 or newer (tested version: Ultimate Unicorn 25.1).
 
 ### Django Framework
@@ -91,5 +91,5 @@ Django is a high-level Python web framework used in this project to manage firew
 -   Download & Installation:
     Via pip: pip install django
     Or visit: https://www.djangoproject.com/download/
--   Documentation: https://docs.djangoproject.com/en/stable/
+-   Documentation: https://docs.djangoproject.com/en/stable/  
 ⚠️ Ensure your Django installation is higher than 4.x.
