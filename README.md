@@ -54,13 +54,42 @@ pip install -r requirements.txt
 
 ### 4. Configure Environment Variables
 Create a .env file or set these manually:
+```bash
 API_KEY=
 API_SECRET=
 OPNSENSE_IP=
+```
 
 ### 5. Apply Migrations and Create a Superuser
+```bash
 python manage.py migrate
 python manage.py createsuperuser
+```
 
 ### 6. Start the Development Server
+```bash
 python manage.py runserver 0.0.0.0:8000
+```
+
+---
+
+## 📚 Documentation and Resources
+
+This project integrates a Django-based web application with the OPNsense firewall via its API. To fully understand or extend the system, the following official resources are highly recommended:
+
+### OPNsense
+OPNsense is an open-source, FreeBSD-based firewall and routing platform used in this project for firewall rule control and DNS handling.
+
+Download (ISO/Installer): https://opnsense.org/download/
+Documentation: https://docs.opnsense.org/
+API Reference: https://docs.opnsense.org/development/api.html
+⚠️ Ensure your OPNsense installation is version 25.1 or newer (tested version: Ultimate Unicorn 25.1).
+
+### Django Framework
+Django is a high-level Python web framework used in this project to manage firewall state, rules, IP enrichment, and provide a frontend interface.
+
+Download & Installation:
+Via pip: pip install django
+Or visit: https://www.djangoproject.com/download/
+Documentation: https://docs.djangoproject.com/en/stable/
+⚠️ Ensure your Django installation is higher than 4.x.
