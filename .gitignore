@@ -3,6 +3,9 @@ certificate_crt.pem
 temp.py
 /web/db.sqlite3
 
+# macOS system files
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
