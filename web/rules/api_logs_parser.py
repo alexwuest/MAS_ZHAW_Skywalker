@@ -69,7 +69,7 @@ def enrich_ip(ip, source_ip, timestamp=None):
 
     memory_entry = config.IP_TABLE[ip]
 
-    # If entry already here and not old for recheck, skip it
+    # If entry is already in memory and not older than RECHECK_AFTER_HOURS, skip it!
     if memory_entry.get("_lookup_done"):
         
         try:
@@ -83,7 +83,7 @@ def enrich_ip(ip, source_ip, timestamp=None):
         except Exception:
             pass
 
-    # DB check
+    # Check entry in DB
     db_entry = DestinationMetadata.objects.filter(ip=ip, end_date__isnull=True).first()
     if db_entry and django_now() - db_entry.last_checked < datetime.timedelta(hours=RECHECK_AFTER_HOURS):
         config.IP_TABLE[ip]["_lookup_done"] = True

@@ -41,8 +41,7 @@ This system allows forensic examiners to **safely bring devices online** in a co
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/alexwuest/MAS_ZHAW.git
 ```
 
 ### 2. Set Up a Virtual Environment
